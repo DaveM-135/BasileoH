@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+
+	<div th:fragment="detalleEvaluacion" class="modal fade" id="modalDetalleEvaluacion" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-xl" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<div class="d-flex justify-content-between align-items-center" style="width: 100%;">
+					
+					<h6 class="modal-title" th:text="'Detalle de evaluaci&oacute;n ' + ${evaluacionDesempeno.descEvaluacionDesempeno} + ' (' + 
+					${#dates.monthNameShort(evaluacionDesempeno.fecPeriodoInicio)} + ' ' + ${#dates.year(evaluacionDesempeno.fecPeriodoInicio)} + ' - ' + ${#dates.monthNameShort(evaluacionDesempeno.fecPeriodoFin)} + ' ' + ${#dates.year(evaluacionDesempeno.fecPeriodoFin)} + ')'"></h6><br>
+						<span th:id="${evaluacionDesempeno.codEvaluacionDesempeno}" data-dismiss="modal" onclick="verDetalleEvaluacion(this.id); return false;" class="close" style="font-size: 12px; cursor: pointer;" >Actualizar <i class="fas fa-sync-alt fa-fw"></i></span>
+					</div>
+					<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true" >&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="table-responsive fz-12">
+						<table class="table" id="dataTable" width="100%" cellspacing="0">
+							<thead>
+								<tr>
+									<th>Recurso</th>
+									<th>Evaluador(es)</th>
+									<th>Metas</th>
+									<th>Competencias</th>
+									<th>Resultado</th>
+									<th>Empresa</th>
+									<th>Final</th>
+									<th>Estatus</th>
+									<th>Opciones</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="recurso : ${evaluacionDesempeno.recursosEvaluacion}" th:if="${recurso.valTipoEvaluador == 1}">
+									<td th:text="${recurso.descRecurso}"></td>
+									<td th:text="${recurso.evaluadoresConcat}"></td>
+									<td><a class="" th:classappend="${recurso.valResultadoMetas} <= 60 ? 'semaforo1' : 
+										(${recurso.valResultadoMetas} > 60 AND ${recurso.valResultadoMetas} <= 75  ? 'semaforo2' :
+										 (${recurso.valResultadoMetas} > 75 AND ${recurso.valResultadoMetas} <= 90  ? 'semaforo3' :
+										  (${recurso.valResultadoMetas} > 90  ? 'semaforo4' : '')
+										 )
+										)" href="#" th:id="${recurso.codEvaluacionDesempeno}  + '-' + ${recurso.codRecurso}" th:onclick="${evaluacionDesempeno.valEstatus == 2} ? 'verDetalleMetas(this.id)' : 'verDetalleMetasEdicion(this.id)'" th:text="${recurso.valResultadoMetas}  + '%'"></a></td>
+									<td><a class="" th:classappend="${recurso.promedioCompetencias} <= 60 ? 'semaforo1' : 
+										(${recurso.promedioCompetencias} > 60 AND ${recurso.promedioCompetencias} <= 75  ? 'semaforo2' :
+										 (${recurso.promedioCompetencias} > 75 AND ${recurso.promedioCompetencias} <= 90  ? 'semaforo3' :
+										  (${recurso.promedioCompetencias} > 90  ? 'semaforo4' : '')
+										 )
+										)" href="#" th:id="${recurso.codEvaluacionDesempeno}  + '-' + ${recurso.codRecurso}" onclick="verDetalleCompetencias(this.id)" th:text="${recurso.promedioCompetencias}  + '%'"></a></td>
+									<td class="" th:classappend="${recurso.valResultadoGeneral == NULL} ? 'semaforo1' : (${recurso.valResultadoGeneral} <= 60 ? 'semaforo1' : 
+										(${recurso.valResultadoGeneral} > 60 AND ${recurso.valResultadoGeneral} <= 75  ? 'semaforo2' :
+										 (${recurso.valResultadoGeneral} > 75 AND ${recurso.valResultadoGeneral} <= 90  ? 'semaforo3' :
+										  (${recurso.valResultadoGeneral} > 90  ? 'semaforo4' : '')
+										 ))
+										)" th:text="${recurso.valResultadoGeneral == NULL} ? '--' : ${recurso.valResultadoGeneral} + ' %'"></td>
+									<td class="" th:classappend="${recurso.evaluacionDesempeno.valPromedioEmpresa == NULL} ? 'semaforo1' : (${recurso.evaluacionDesempeno.valPromedioEmpresa} <= 60 ? 'semaforo1' : 
+										(${recurso.evaluacionDesempeno.valPromedioEmpresa} > 60 AND ${recurso.evaluacionDesempeno.valPromedioEmpresa} <= 75  ? 'semaforo2' :
+										 (${recurso.evaluacionDesempeno.valPromedioEmpresa} > 75 AND ${recurso.evaluacionDesempeno.valPromedioEmpresa <= 90}  ? 'semaforo3' :
+										  (${recurso.evaluacionDesempeno.valPromedioEmpresa} > 90  ? 'semaforo4' : '')
+										 ))
+										)" th:text="${recurso.evaluacionDesempeno.valPromedioEmpresa == NULL} ? '--' : ${recurso.evaluacionDesempeno.valPromedioEmpresa} + ' %'"></td>
+									<td class="" th:classappend="${recurso.valResultadoFinal == NULL} ? 'semaforo1' : (${recurso.valResultadoFinal} <= 60 ? 'semaforo1' : 
+										(${recurso.valResultadoFinal} > 60 AND ${recurso.valResultadoFinal} <= 75  ? 'semaforo2' :
+										 (${recurso.valResultadoFinal} > 75 AND ${recurso.valResultadoFinal} <= 90  ? 'semaforo3' :
+										  (${recurso.valResultadoFinal} > 90  ? 'semaforo4' : '')
+										 ))
+										)" th:text="${recurso.valResultadoFinal == NULL} ? '--' : ${recurso.valResultadoFinal} + ' %'"></td>
+									<td>
+										<span th:if="${recurso.valEstatusGeneral} == 1" class="badge badge-danger" th:text="${recurso.estatusGeneral}"></span>
+										<span th:if="${recurso.valEstatusGeneral} > 1 AND ${recurso.valEstatusGeneral} < 5" class="badge badge-info" th:text="${recurso.estatusGeneral}"></span>
+										<span th:if="${recurso.valEstatusGeneral} == 5" class="badge badge-success" th:text="${recurso.estatusGeneral}"></span>
+									</td>
+									<td>
+										<a th:if="${recurso.valEstatus} < 3" th:id="${recurso.codEvaluacionDesempeno}+'-'+${recurso.codRecurso}" href="#" onclick="verEvaluadores(this.id); return false;" class="badge badge-info">Configurar evaluadores <i class="fas fa-cog"></i></a>
+										<a th:if="${recurso.evaluacionDesempeno.valEstatus} == 2" th:id="${recurso.codEvaluacionDesempeno}  + '-' + ${recurso.codRecurso}" onclick="descargarResultados(this.id);" href="#" class="badge badge-info">Resultados <i class="fas fa-download"></i></a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="modal-footer">
+<!-- 					<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button> -->
+					<button type="button" data-dismiss="modal" class="btn btn-primary">Aceptar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div th:fragment="fragmentModalEvaluadoresRecurso" class="modal fade" id="modalEvaluadoresRecurso" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-md" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h6 class="modal-title" th:text="${titulo}"></h6>
+					<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<table class="table" id="tableEvaluadoresRecurso" width="100%" cellspacing="0" >
+						<thead>
+							<tr>
+								<th class="d-flex justify-content-center align-items-center" style="vertical-align: middle;">
+								<select class="js-example-placeholder-single js-states form-control" id="selectPosiblesEvaluadores">
+  									<option th:each="recurso : ${listaRecursosActivos}" th:text="${recurso.descRecurso} + ' ' + ${recurso.descApellidoPaterno}  + ' - ' + ${recurso.puesto.descPuesto}" th:value="${recurso.codRecurso}"></option>
+								</select>
+								<div style="padding-left: 10px;">
+									<a href="#" onclick="agregarEvaluador(); return false;" class="badge badge-primary">Agregar  <i  class="fas fa-plus"></i></a>
+								</div>
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="evaluador : ${listaEvaluadores}">
+								<td>
+									<input type="checkbox" class="chkEvaluador" name="chkEvaluador" th:value="${evaluador.codEvaluador}" checked="checked"/>&nbsp;
+									<span th:text="${evaluador.descEvaluador}"></span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<input type="hidden" id="re" th:value="${re}">
+					<input type="hidden" id="ev" th:value="${ev}">
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+					<button type="button" id="" onclick="guardarEvaluadores(); return false;" class="btn btn-primary">Aceptar</button>
+				</div>
+			</div>
+		</div>
+		<script>
+		$(".js-example-placeholder-single").select2({
+		    placeholder: "Agregar un nuevo evaluador",
+		    allowClear: true,
+		    width: '100%'
+		});
+		</script>
+	</div>
+	
+	
+	<div th:fragment="nuevaEvaluacion" class="modal fade" id="modalNuevaEvaluacion" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-md" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h6 class="modal-title" th:text="${titulo}"></h6>
+					<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<form id="formularioEvaluacion" th:action="@{/formEvaluacion}" role="form" th:object="${evaluacionDesempeno}" method="post">
+				<div class="modal-body">
+					<input type="hidden" th:field="*{codEvaluacionDesempeno}">
+					<input type="hidden" th:field="*{valEstatus}">
+					<div class="row">
+						<div class="form-group col-md-12">
+							<label for="descPerfil">Nombre de la evaluaci&oacute;n</label>
+							<input type="text" class="form-control inputPerfil" th:field="*{descEvaluacionDesempeno}" placeholder="Nombre de la evaluaci&oacute;n" maxlength="100" th:readonly="${evaluacionDesempeno.valEstatus} == 1">
+							<small id="validacionNombre" style="color:red;">Dato requerido</small>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-md-6">
+							<label for="fecPeriodoInicio">Inicio del periodo</label>
+							<input type="month" class="form-control inputPerfil" th:field="*{fecPeriodoInicio}" th:readonly="${evaluacionDesempeno.valEstatus} == 1">
+							<small id="validacionInicioPeriodo" style="color:red;">Dato requerido</small>
+						</div>
+						<div class="form-group col-md-6">
+							<label for="fecPeriodoFin">Fin del periodo</label>
+							<input type="month" class="form-control inputPerfil" th:field="*{fecPeriodoFin}" th:readonly="${evaluacionDesempeno.valEstatus} == 1">
+							<small id="validacionFinPeriodo" style="color:red;">Dato requerido</small>
+						</div>
+					</div>
+					<div class="row">
+						<div th:if="${evaluacionDesempeno.valEstatus} == null OR ${evaluacionDesempeno.valEstatus} == 0" class="form-check" style="margin-left: 16px;">
+							<input type="checkbox" class="form-check-input" id="inicioEvaluacion" name="inicioEvaluacion">
+							<label class="form-check-label" for="valEstatus">Iniciar evaluaci&oacute;n</label>
+						</div>
+						<div th:if="${evaluacionDesempeno.valEstatus} == 1" class="form-check" style="margin-left: 16px;">
+							<input type="checkbox" class="form-check-input" name="cierreEvaluacion">
+							<label class="form-check-label" for="valEstatus">Cerrar evaluaci&oacute;n</label>
+						</div>
+					</div>
+					
+					<div class="row" id="tablaCandidatos" style="padding-top: 15px; margin-left: 12px; margin-right: 12px;">
+					<div class="table-responsive fz-12">
+						<span>Selecciona los recursos a participar</span>
+						<div class="overflow">
+						<table class="table" id="dataTable" width="100%" cellspacing="0">
+							<thead>
+								<tr>
+									<th style="position: sticky; top: 0;  z-index: 10; background-color: #ffffff;"><input type="checkbox" id="chkTodos"/>&nbsp;Nombre</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="recurso : ${listaRecursos}">
+									<td>
+										<input type="checkbox" class="chkRecurso" name="chkRecurso" th:value="${recurso.id}"/>&nbsp;
+										<span th:text="${recurso.nombre} + ' ' + ${recurso.apellido}"></span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						</div>
+					</div>
+					</div>
+					
+				</div>
+				</form>
+				<div class="modal-footer">
+					<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+					<button type="button" onclick="guardarEvaluacion(); return false;" class="btn btn-primary">Aceptar</button>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+		$(document).ready(function() {
+		    
+			$('#inicioEvaluacion').change(function() {
+		        if(this.checked) {
+		        	$("#tablaCandidatos").show();
+		        } else {
+		        	$(".chkRecurso").prop("checked", false);
+		        	$("#chkTodos").prop("checked", false);
+		        	$("#tablaCandidatos").hide();
+		        }
+		    });
+		    
+		    
+		    $("#chkTodos").on("click", function() {
+				$(".chkRecurso").prop("checked", this.checked);
+			});
+		    
+		    
+		    $(".chkRecurso").on("click", function() {
+				if ($(".chkRecurso").length == $(".chkRecurso:checked").length) {
+					$("#chkTodos").prop("checked", true);
+				} else {
+					$("#chkTodos").prop("checked", false);
+				}
+			});
+		    
+		});
+		</script>
+	</div>
+
+</body>
+</html>

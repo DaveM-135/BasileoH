@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+	<div th:replace="layout/layout::head"></div>
+	<link th:href="@{/css/perfiles.css}" rel="stylesheet">
+	<link th:href="@{/vendor/jquery/jquery-ui.min.css}" rel="stylesheet">
+</head>
+
+<body id="page-top">
+<input id="authGetName" type="hidden" th:value="${#authentication.getName()}"></input>
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul th:replace="layout/layout::menu"> </ul>
+    <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <header th:replace="layout/layout::header"></header>
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_RH')">
+
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-1">
+                        <h1 class="h3 mb-2 text-gray-800">Perfiles</h1>
+                        <a href="#" onclick="nuevoPerfil(); return false;" class="btn btn-primary">
+                            <i class="fas fa-plus fa-sm text-white-50"></i> Nuevo perfil
+                        </a>
+                    </div>
+                    
+                     <div class="row" id="sortable">
+						<div class="col-md-6 col-lg-4" style="padding: 10px;" th:each="perfil : ${listaPerfiles}">
+							<div class="card" th:id="${perfil.codPerfil}">
+								<div class="card-header no-border">
+									<h5 class="card-title" th:text="${perfil.descPerfil}"></h5>
+								</div>
+								<div class="card-body pt-0">
+									<div class="widget-49">
+										<div class="widget-49-title-wrapper">
+											<div class="widget-49-date-primary">
+												<i class="fas fa-user"></i>
+											</div>
+											<div class="widget-49-meeting-info">
+												<span class="widget-49-pro-title" th:text="'Objetivo del ' + ${perfil.descPerfil}"></span> 
+												<a href="#" th:id="${perfil.codPerfil}" onclick="verAsignados(this.id); return false;"><span class="widget-49-meeting-time" th:text="${perfil.totalRecursosAsignados} + ' recursos actualmente asignados'"></span></a>
+											</div>
+										</div>
+										<div style="overflow: auto; height: 150px;  font-weight: 400; font-size: 13px; padding: 15px 10px;  color: #727686;">
+											<span th:text="${perfil.descObjetivo}"></span>
+										</div>
+	<!-- 									<ol class="widget-49-meeting-points"> -->
+	<!-- 										<li class="widget-49-meeting-item" th:each="funcion : ${#strings.arraySplit(perfil.descFunciones, '.')}"> -->
+	<!-- 											<span th:text="${funcion}"></span> -->
+	<!-- 										</li> -->
+	<!-- 									</ol> -->
+										<div class="widget-49-meeting-action d-flex justify-content-between">
+											<div>
+												<a href="#" th:id="${perfil.codPerfil}" onclick="verMetasyCompetencias(this.id); return false;">Ver metas y competencias</a>
+											</div>
+											<div>
+											<span class="badge badge-pill badge-success" style="cursor: pointer;" th:id="${perfil.codPerfil}" onclick="editarP(this.id); return false;">Editar <i class="far fa-edit"></i></span>
+											<span th:if="${perfil.totalRecursosAsignados == 0}" style="cursor: pointer;" class="badge badge-pill badge-danger" th:id="${perfil.codPerfil}" onclick="borrarPerfil(this.id); return false;">Borrar <i class="fas fa-trash-alt"></i></span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+                    
+				</div>
+	            <!-- End of Main Content -->
+
+				<div sec:authorize="hasAnyRole('ROLE_APROB','ROLE_USER')">
+					<div style="text-align: center;">
+						<img style="width: 30%; border-radius: 20px;" th:src="@{/img/img-accessDenied.png}">
+						<p style="font-size: 14px; color: red; font-stretch: 500;">Acceso denegado</p>
+					</div>
+				</div>
+
+				<!-- Div para recargar y visualizar metas y competencias de perfil seleccionado -->
+	            <div id="divMetasCompetencias">
+				
+				</div>
+				
+				
+				<!-- Div para cargar o crear un perfil nuevo -->
+				<div id="divPerfil">
+					
+				</div>
+				
+				<!-- Div para cargar competencias -->
+				<div id="divCompetencias">
+					
+				</div>
+				
+				<!-- Div para cargar competencias -->
+				<div id="divMeta">
+					
+				</div>
+				
+				<!-- Div para cargar competencias -->
+				<div id="divAsignados">
+					
+				</div>
+
+
+				<!-- Footer -->
+	            <footer th:replace="layout/layout :: footer"></footer>
+	            <!-- End of Footer -->
+
+        	</div>
+        	<!-- End of Content Wrapper -->
+
+	    </div>
+	    <!-- End of Page Wrapper -->
+	    
+	</div>
+
+    <!-- Scroll to Top Button--> <div class="st-actionContainer right-bottom" id="btnFlash"> <div class="st-btn-container right-bottom" onclick="flashSurvey(); return false;"> <div class="st-button-main"><i class="fa fa-bolt" aria-hidden="true"></i></div> </div> </div>
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- ModalLogout -->
+    <footer th:replace="layout/layout :: modalLogout"></footer>
+    <!-- End ModalLogout -->
+
+    <!-- Bootstrap core JavaScript-->
+    <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+    <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+    
+     <!-- Core plugin Jquery UI-->
+    <script th:src="@{/vendor/jquery/jquery-ui.min.js}"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script th:src="@{/js/sb-admin-2.min.js}"></script>
+
+    <script th:src="@{/js/datosRecursoSesion.js}"></script>
+    <script th:src="@{/js/perfiles.js}"></script>
+    <script th:src="@{/js/loading.js}"></script>
+    
+    
+    
+</body>
+
+</html>

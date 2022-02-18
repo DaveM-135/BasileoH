@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="layout/layout::head"></head>
+
+<body id="page-top">
+<input id="authGetName" type="hidden" th:value="${#authentication.getName()}"></input>
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul th:replace="layout/layout::menu"> </ul>
+    <!-- End of Sidebar -->
+
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+      	 <header th:replace="layout/layout :: header"></header>
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-1">
+            <h1 class="h3 mb-0 text-gray-800"><span class="tituloA">Detalle de gastos</span></h1>
+          </div>
+
+            <!--form-->
+              <form th:if="${not #lists.isEmpty(proyectosAsignados)}" class="user" th:action="@{/recursoGastoAlta}" th:Object="${recursoGasto}" method="post" enctype="multipart/form-data">
+              
+                <input type="hidden" th:value="${r}" name="codRecurso">
+                
+                <!-- <p class="tituloC">Realiza la captura de gastos correspondiente.</p> -->
+                
+                <div class="form-group row">
+                  <div class="col-sm-12 col-md-6 col-lg-4 mb-4 mb-sm-4">
+                    <label for="nombreProyecto">Proyecto</label>
+                    <select class="form-control " th:field="*{codProyecto}" id="proyecto">
+                        <option th:each="proyectoAsignado : ${proyectosAsignados}" th:value="${proyectoAsignado.codProyecto}" th:text="${proyectoAsignado.descProyecto}" th:selected="false"/>
+                      </select>
+                  </div>
+                  <div class="col-sm-12 col-md-6 col-lg-4  mb-4 mb-sm-4">
+                  	<label for="tipoFacturacion">Tipo de gasto</label>
+                     <select class="form-control " th:field="*{tipoGasto.codTipoGasto}" id="tipoGasto">
+                        <option th:each="tipoGasto : ${tiposGastos}" th:value="${tipoGasto.codTipoGasto}" th:text="${tipoGasto.descTipoGasto}" th:selected="false"/>
+                      </select>
+                  </div>
+                  <div class="col-sm-12 col-md-6 col-lg-4  mb-4 mb-sm-4">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-6 col-md-6 col-lg-4  mb-4 mb-sm-4">
+                     <label for="codigoProyecto">Fecha</label>
+					 <input type="date" th:field="*{fecGasto}" class="form-control" id="fechaGasto" oninvalid="setCustomValidity('Fecha inválida')" onchange="try{setCustomValidity('')}catch(e){}" required>
+                  </div>
+                  <div class="col-sm-12 col-md-6 col-lg-4 mb-4 mb-sm-4">
+                    <label for="presupuesto">Importe</label>
+                    <input type="number" th:field="*{impGasto}" class="form-control" id="Cantidad" placeholder="Cantidad" oninvalid="setCustomValidity('Importe inválido')" onchange="try{setCustomValidity('')}catch(e){}" min=1 max=9999999 step="any" required>
+                  </div>
+                  <div class="col-sm-12 col-md-6 col-lg-4 mb-4 mb-sm-4">
+                    
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-12 col-md-6 col-lg-4 mb-4 mb-sm-4">
+                    <label for="totalHoras">Comentario</label>
+                    <textarea class="form-control" th:field="*{descComentario}" id="Comentario" rows="3" maxlength="230" oninvalid="setCustomValidity('Campo inválido')" onchange="try{setCustomValidity('')}catch(e){}" required></textarea>
+                  </div>
+                  <div class="col-sm-12 col-md-6 col-lg-4 mb-4 mb-sm-4">
+				  <label for="totalHoras">Selecciona tu comprobante <span style="font-size: 14px; color: #c02c57;">(Max.10Mb)</span></label>
+                    <div class="input-group col-sm-12 mb-12 mb-sm-12">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroupFileAddon01">Comprobante</span>
+                        </div>
+                        <div class="custom-file">
+                            <input th:if="*{comprobante} != null" type="file" name="compImg" class="custom-file-input" id="file" accept="image/png, .jpeg, .jpg" aria-describedby="inputGroupFileAddon01">
+                            <input th:if="*{comprobante} == null" type="file" name="compImg" class="custom-file-input" id="file" accept="image/png, .jpeg, .jpg" aria-describedby="inputGroupFileAddon01" required>
+                            <label class="custom-file-label" for="inputGroupFile01"></label>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-12 col-md-6 col-lg-4 mb-4 mb-sm-4">
+                  	<label for="">Imagen</label>
+                    <div id="preview">
+                    	<img th:if="*{comprobante} != null" class="img-thumbnail rounded" style="max-height: 200px;" th:src="@{'/imagenGasto/' + ${recursoGasto.codRecursoGasto} + '/' + ${recursoGasto.tipoGasto.codTipoGasto} + '/' + ${recursoGasto.codProyecto} + '/' + ${recursoGasto.codRecurso} +  '/' + ${recursoGasto.codCliente} +  '/' + ${recursoGasto.codEstatusProyecto}}">
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="form-group row">
+                   <div class="col-sm-5 mb-6 mb-sm-0">
+                      <br>
+                       <input type="submit" value="Guardar" class="btn btn-primary"/>
+                       <a class="btn btn-secondary" type="button" th:href="@{/misGastos/}+${#authentication.getName()}" >Cancelar</a>
+                   </div>
+                   <div class="col-sm-3 mb-6 mb-sm-0">
+                      <br>
+                      
+                   </div>
+                   <div class="col-sm-4 mb-6 mb-sm-0">
+                      <br>
+                      
+                   </div>
+                </div>
+              </form>
+            <!--form-->
+            <div th:if="${#lists.isEmpty(proyectosAsignados)}">
+
+				<!-- Content Row -->
+				<div class="row">
+					<div class="col-lg-12 mb-10">
+
+						<div class="card shadow mb-4">
+							<div class="card-body">
+								<div class="text-center">
+									<img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 20rem;" th:src="@{/img/img-banca.png}" alt="">
+								</div>
+								<p class="text-center">
+									No tienes proyectos asignados, no es posible registrar gastos.
+								</p>
+							</div>
+						</div>
+
+					</div>
+				</div>
+						<a class="btn btn-secondary" type="button" th:href="@{/misGastos/}+${#authentication.getName()}" >Regresar</a>
+            </div>
+
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+       <footer th:replace="layout/layout :: footer"></footer>
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button--> <div class="st-actionContainer right-bottom" id="btnFlash"> <div class="st-btn-container right-bottom" onclick="flashSurvey(); return false;"> <div class="st-button-main"><i class="fa fa-bolt" aria-hidden="true"></i></div> </div> </div>
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+ <!-- ModalLogout -->
+ <footer th:replace="layout/layout :: modalLogout"></footer>
+ <!-- End ModalLogout -->
+
+  <!-- Bootstrap core JavaScript-->
+  <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+  <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script th:src="@{/js/sb-admin-2.min.js}"></script>
+
+  <!-- Page level plugins -->
+  <script th:src="@{/vendor/chart.js/Chart.min.js}"></script>
+
+  <!-- Page level custom scripts -->
+  <script th:src="@{/js/demo/chart-area-demo.js}"></script>
+  <script th:src="@{/js/demo/chart-pie-demo.js}"></script>
+  <script th:src="@{/js/recursoGastoAlta.js}"></script>
+  
+  <script th:src="@{/js/datosRecursoSesion.js}"></script>
+
+</body>
+
+</html>
+

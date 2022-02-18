@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="layout/layout::head"></head>
+
+<body id="page-top">
+<input id="authGetName" type="hidden" th:value="${#authentication.getName()}"></input>
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul th:replace="layout/layout::menu"> </ul>
+    <!-- End of Sidebar -->
+
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+        <header th:replace="layout/layout :: header"></header>
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <!-- <h1 class="h3 mb-2 text-gray-800" th:text="${titulo}"></h1> -->
+          <div th:if="*{codCliente} != NULL" ><a th:href="@{'/dataCliente/'} + *{codCliente}" th:text="'&laquo; regresar'"></a></div>
+          <div th:if="${agenda.codCliente != NULL}"><a th:href="@{'/dataCliente/'} + ${agenda.codCliente}" th:text="'&laquo; regresar'"></a></div>
+          <!-- <p class="mb-4">Completa la informaci&oacute;n del nuevo contacto.</p> -->
+
+          <form th:action="@{/formContacto}" th:Object="${agenda}" method="POST">
+              <div class="card shadow mb-4">
+                <!-- Card Header - Accordion -->
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Datos del contacto</h6>
+                </div>
+                <!-- Card Content - Collapse -->
+                <div class="collapse show" id="collapseCardContacto">
+                  <div class="card-body">
+                  
+                  <div class="row">
+                  	<!-- <div class="form-group col-12 col-md-4">
+                  		<label class="col-form-label">Cliente</label>
+                        <select th:field="*{codCliente}" class="custom-select">
+                          <option th:each="cliente:${clienteList}" th:value="${cliente.codCliente}" th:text="${cliente.descCliente}"></option>
+                        </select>
+                  	</div> -->
+                  	<div class="form-group col-12 col-md-4">
+                        <input id="cliente_id" type="hidden" th:field="*{codCliente}">
+                        <label class="col-form-label">Nombre:</label>
+	                    <input type="text" th:field="*{descContacto}" class="form-control" th:errorClass="'form-control alert-danger'" required/>
+	                    <small class="form-text text-danger" th:if="${#fields.hasErrors('descContacto')}" th:errors="*{descContacto}"></small>
+					</div>
+					<div id="switch_activo" class="form-group col-12 col-md-4">
+				    	<label class="col-form-label">Activo</label><br>
+				    	<label class="switch">
+						  <input id="vactivo" type="checkbox"/>
+						  <span class="slider round"></span>
+						</label>
+						<input id="result" type="hidden" th:field="*{valActivo}"/>
+				    </div>
+                  </div>
+                  
+                  
+                  
+                  <div class="row">
+                     <div class="form-group col-12 col-md-3">
+                      <label class="col-form-label">Correo electr&oacute;nico:</label>
+                      <input type="text" th:field="*{descCorreoElectronico}" class="form-control" th:errorClass="form-control alert-danger" pattern="^\S{1,}@\S{2,}\.\S{2,}$" required/>
+                      <small class="form-text text-danger" th:if="${#fields.hasErrors('descCorreoElectronico')}" th:errors="*{descCorreoElectronico}"></small>
+                    </div>
+                     <div class="form-group col-12 col-md-3">
+                        <label class="col-form-label">Tel&eacute;fono celular:</label>
+                        <input type="tel" th:field="*{descTelCelular}" class="form-control telefono" th:errorClass="'form-control alert-danger'" oninvalid="setCustomValidity('N&uacute;mero inv&aacute;lido')" onchange="try{setCustomValidity('')}catch(e){}" pattern="(\d{2,3})(-)(\d{3,4})(-)(\d{4})" required/>
+                        <small class="form-text text-danger" th:if="${#fields.hasErrors('descTelCelular')}" th:errors="*{descTelCelular}"></small>
+                      </div>
+                      <div class="form-group col-8 col-md-3">
+                        <label class="col-form-label">Tel&eacute;fono empresa:</label>
+                        <input type="tel" th:field="*{descTelEmpresa}" class="form-control telefono" oninvalid="setCustomValidity('N&uacute;mero inv&aacute;lido')" onchange="try{setCustomValidity('')}catch(e){}" pattern="(\d{2,3})(-)(\d{3,4})(-)(\d{4})"/>
+                        <small class="form-text text-danger" th:if="${#fields.hasErrors('descTelEmpresa')}" th:errors="*{descTelEmpresa}"></small>
+                      </div>
+                      <div class="form-group col-4 col-md-1">
+                        <label class="col-form-label">Extensi&oacute;n:</label>
+                        <input type="tel" th:field="*{descTelExt}" class="form-control" oninvalid="setCustomValidity('Ext&eacute;nci&oacute;n inv&aacute;lida')"/>
+                        <small class="form-text text-danger" th:if="${#fields.hasErrors('descTelExt')}" th:errors="*{descTelExt}"></small>
+                      </div>
+                   </div>
+                   
+                   
+                   <div class="row">
+                   <div class="form-group col-12 col-md-3">
+                      <label class="col-form-label">Clasificaci&oacute;n de puesto:</label>
+                      <select th:field="*{codCargo}" class="custom-select">
+                      <option th:each="cargo : ${cargoList}" th:value="${cargo.codCargo}" th:text="${cargo.descCargo}">
+                      </option>
+                      </select>
+                    </div>
+                      <div class="form-group col-12 col-md-3">
+                        <label class="col-form-label">Cargo:</label>
+                        <input type="text" th:field="*{descPuesto}" class="form-control" th:errorClass="'form-control alert-danger'"/>
+                        <small class="form-text text-danger" th:if="${#fields.hasErrors('descPuesto')}" th:errors="*{descPuesto}"></small>
+                      </div>
+                     <div class="form-group col-12 col-md-2">
+                      <label class="col-form-label">Recursos a cargo:</label>
+                      <input type="number" th:field="*{valRecursosACargo}" min=0 class="form-control"/>
+                      <small class="form-text text-danger" th:if="${#fields.hasErrors('valRecursosACargo')}" th:errors="*{valRecursosACargo}"></small>
+                    </div>
+                    <div class="form-group col-12 col-md-2">
+						<label class="col-form-label">Fecha de nacimiento:</label>
+                        <input id="input_fec_nac" type="text" th:field="*{fecNacimiento}" class="form-control" th:errorClass="form-control alert-danger" oninvalid="setCustomValidity('Campo inv&aacute;lido')" onchange="try{setCustomValidity('')}catch(e){}"/>
+                        <small><label id="fec_nac" class="form-text text-danger"></label></small>
+				    </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <input type="submit" value="Guardar" class="btn btn-primary"/>
+              </div>
+            </div>
+            <input type="hidden" th:field="*{codContacto}"/>
+            <input type="hidden" th:field="*{fecRegistro}"/>
+          </form>
+		    </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+       <!-- Footer -->
+      <footer th:replace="layout/layout :: footer"></footer>
+      <!-- End of Footer -->
+
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button--> <div class="st-actionContainer right-bottom" id="btnFlash"> <div class="st-btn-container right-bottom" onclick="flashSurvey(); return false;"> <div class="st-button-main"><i class="fa fa-bolt" aria-hidden="true"></i></div> </div> </div>
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+	 <!-- ModalLogout -->
+      <footer th:replace="layout/layout :: modalLogout"></footer>
+      <!-- End ModalLogout -->
+
+  <!-- Bootstrap core JavaScript-->
+  <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+  <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script th:src="@{/js/sb-admin-2.min.js}"></script>
+
+  <!-- Page level plugins -->
+  <script th:src="@{/vendor/datatables/jquery.dataTables.min.js}"></script>
+  <script th:src="@{/vendor/datatables/dataTables.bootstrap4.min.js}"></script>
+
+  <!-- Page level custom scripts -->
+  <script th:src="@{/js/demo/datatables-demo.js}"></script>
+  
+  <script th:src="@{/js/datosRecursoSesion.js}"></script>
+  <script th:src="@{/js/fecNacContacto.js}"></script>
+  <script th:src="@{/js/phone.js}"></script>
+  <script th:src="@{/js/url.js}"></script>
+  <script th:src="@{/js/switch.js}"></script>
+  <script type="text/javascript">
+  	if($("#descContacto").val() === ''){
+  		$("#switch_activo").hide();
+  	}
+  	else{
+  		$("#switch_activo").show();
+  	}
+  </script>
+</body>
+
+</html>

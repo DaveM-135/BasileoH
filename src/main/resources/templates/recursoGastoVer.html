@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="layout/layout::head"></head>
+
+<body id="page-top">
+<input id="authGetName" type="hidden" th:value="${#authentication.getName()}"></input>
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul th:replace="layout/layout::menu"> </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+      	 <header th:replace="layout/layout :: header"></header>
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-1">
+            <h1 class="h3 mb-0 text-gray-800"><span class="tituloA">Detalle de gastos</span></h1>
+            
+          </div>
+			<a href="#" onclick="window.history.go(-1); return false;" th:text="'&laquo; regresar'"></a>
+            <!--form-->
+              <form class="user" th:action="@{/recursoGastoAlta}" th:Object="${recursoGasto}" method="post">
+              
+                <input type="hidden" th:value="${r}" name="codRecurso">
+                
+                <!-- <p class="tituloC">Realiza la captura de gastos correspondiente.</p> -->
+                <div class="form-group row">
+                  <div class="col-sm-12 col-md-6 col-lg-4 mb-4 mb-sm-4">
+                    <label for="nombreProyecto">Proyecto</label>
+                    <select class="form-control " th:field="*{codProyecto}" id="proyecto" disabled>
+                        <option th:each="proyectoAsignado : ${proyectosAsignados}" th:value="${proyectoAsignado.codProyecto}" th:text="${proyectoAsignado.descProyecto}" th:selected="false"/>
+                      </select>
+                  </div>
+                  <div class="col-sm-12 col-md-6 col-lg-4 mb-4 mb-sm-4">
+                  	<label for="tipoFacturacion">Tipo de gasto</label>
+                     <select class="form-control " th:field="*{tipoGasto.codTipoGasto}" id="tipoGasto" disabled>
+                        <option th:each="tipoGasto : ${tiposGastos}" th:value="${tipoGasto.codTipoGasto}" th:text="${tipoGasto.descTipoGasto}" th:selected="false"/>
+                      </select>
+                  </div>
+                  <div class="col-sm-12 col-md-6 col-lg-4 mb-4 mb-sm-4">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-12 col-md-6 col-lg-4 mb-4 mb-sm-4">
+                     <label for="codigoProyecto">Fecha</label>
+					 <input type="date" th:field="*{fecGasto}" class="form-control" id="fechaGasto" disabled>
+                  </div>
+                  <div class="col-sm-12 col-md-6 col-lg-4 mb-4 mb-sm-4">
+                    <label for="presupuesto">Importe</label>
+                    <input type="number" step="any" th:field="*{impGasto}" class="form-control" id="Cantidad" placeholder="Cantidad" disabled>
+                  </div>
+                  <div class="col-sm-12 col-md-6 col-lg-4 mb-4 mb-sm-4">
+                    
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-12 col-md-6 col-lg-4 mb-4 mb-sm-4">
+                    <label for="totalHoras">Comentario</label>
+                    <textarea class="form-control" th:field="*{descComentario}" id="Comentario" rows="3" disabled></textarea>
+                  </div>
+                  <div class="col-sm-12 col-md-6 col-lg-4 mb-4 mb-sm-4">
+				  <label for="">Imagen</label>
+<!--                   	<img th:if="*{comprobante} != null" class="img-thumbnail rounded" style="max-height: 200px;" th:src="@{'/imagenGasto/' + ${recursoGasto.tipoGasto.codTipoGasto} + '/' + ${recursoGasto.codProyecto} + '/' + ${recursoGasto.codRecurso} +  '/' + ${recursoGasto.codCliente} +  '/' + ${recursoGasto.codEstatusProyecto}}"> -->
+                    <div id="preview">
+                    	<img th:if="*{comprobante} != null" class="img-thumbnail rounded" style="max-height: 200px;" th:src="@{'/imagenGasto/' + ${recursoGasto.codRecursoGasto} + '/' + ${recursoGasto.tipoGasto.codTipoGasto} + '/' + ${recursoGasto.codProyecto} + '/' + ${recursoGasto.codRecurso} +  '/' + ${recursoGasto.codCliente} +  '/' + ${recursoGasto.codEstatusProyecto}}" alt="imagen">
+                    </div>
+                  </div>
+                  <div class="col-sm-12 col-md-6 col-lg-4 mb-4 mb-sm-4">
+                  </div>
+                </div>
+                
+<!--                 <div class="form-group row"> -->
+<!--                    <div class="col-sm-5 mb-6 mb-sm-0"> -->
+<!--                       <br> -->
+<!--                        <a class="btn btn-primary" th:href="@{/misGastos/} + ${#authentication.getName()} " role="button">Regresar</a> -->
+<!--                    </div> -->
+<!--                    <div class="col-sm-3 mb-6 mb-sm-0"> -->
+<!--                       <br> -->
+                      
+<!--                    </div> -->
+<!--                    <div class="col-sm-4 mb-6 mb-sm-0"> -->
+<!--                       <br> -->
+                      
+<!--                    </div> -->
+<!--                 </div> -->
+              </form>
+            <!--form-->
+
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      <footer th:replace="layout/layout :: footer"></footer>
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button--> <div class="st-actionContainer right-bottom" id="btnFlash"> <div class="st-btn-container right-bottom" onclick="flashSurvey(); return false;"> <div class="st-button-main"><i class="fa fa-bolt" aria-hidden="true"></i></div> </div> </div>
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  <!-- ModalLogout -->
+  <footer th:replace="layout/layout :: modalLogout"></footer>
+  <!-- End ModalLogout -->
+  
+
+  <!-- Bootstrap core JavaScript-->
+  <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+  <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script th:src="@{/js/sb-admin-2.min.js}"></script>
+
+<!--   <script th:src="@{/js/recursoGastoAlta.js}"></script> -->
+  
+   <script th:src="@{/js/datosRecursoSesion.js}"></script>  
+
+</body>
+
+</html>
+

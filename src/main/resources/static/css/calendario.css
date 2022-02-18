@@ -1,0 +1,151 @@
+/* html body { */
+/* 	background: #dc304b */
+/* } */
+
+/* html body .page-hero h3 { */
+/* 	font-size: 3rem; */
+/* 	font-weight: bold; */
+/* 	text-shadow: -1px -1px 1px #460000, 2px 2px 1px #ff4965; */
+/* 	text-transform: uppercase; */
+/* 	color: #bd122d */
+/* } */
+
+.page-hero h3 {
+	font-size: 3rem;
+	font-weight: bold;
+	text-shadow: -1px -1px 1px #460000, 2px 2px 1px #ff4965;
+	text-transform: uppercase;
+	color: #bd122d
+}
+
+/* html body .page-hero p { */
+.page-hero p {
+	color: #f1acb7
+}
+
+/* html body .card { */
+.card {
+	border-radius: 15px;
+	overflow: hidden
+}
+
+
+/* html body .card-header { */
+.card-header-cal {
+	background: #1c1c31;
+	color: #fff;
+	font-size: 12px;
+}
+
+/* html body .card-header .prevMonth { */
+.card-header-cal .prevMonth {
+	cursor: pointer
+}
+
+/* html body .card-header .nextMonth { */
+.card-header-cal .nextMonth {
+	cursor: pointer
+}
+
+/* html body .card-body { */
+/* .card-body { */
+/* 	background: #f1acb7 */
+/* } */
+
+/* html body .card-body .days span { */
+.card-body .days span {
+/* 	background: #e27586; */
+	background: #1c1c31;
+	color: #fff;
+	border-radius: 50%;
+	display: inline-block;
+	height: 35px;
+	width: 35px;
+	line-height: 35px;
+	cursor: pointer;
+	font-size: 10px;
+}
+
+/* html body .card-body .days span:hover { */
+.card-body .days span:hover {
+/* 	background: #f7899a */
+	background: #1c1c31;
+}
+
+/* html body .card-body .dates span { */
+.card-body .dates span {
+/* 	background: #f4bdc6; */
+	background: #c02c57;
+/* 	color: #000; */
+	color: #ffffff;
+	border-radius: 50%;
+	display: inline-block;
+	height: 35px;
+	width: 35px;
+	line-height: 35px;
+	cursor: pointer;
+	font-size: 10px;
+}
+
+/* html body .card-body .dates span.active, html body .card-body .dates span:hover */
+.card-body .dates span.active, .card-body .dates span:hover
+	{
+	background: #ffeef0;
+	color: #000
+}
+
+/* html body .card-body .dates span.ntMonth { */
+.card-body .dates span.ntMonth {
+	color: #938e8e;
+	background: #c0c0c0
+/* 	background: #ffd8de */
+}
+
+/* html body .card-body .dates span.ntMonth:hover { */
+.card-body .dates span.ntMonth:hover {
+	background: #ffeef0;
+	color: #000
+}
+
+.card#event .card-header .close {
+	color: #fff;
+	opacity: 1
+}
+
+.card#event .card-body .events-today {
+	height: 210px;
+	overflow-x: hidden
+}
+
+.card#event .card-body .events-input .data-invalid {
+/* 	border-color: red */
+	border-color: #7422b6
+}
+
+.card#event .card-body .events-input .error {
+	font-size: 12px;
+	color: #7422b6;
+	position: absolute;
+	top: 100%
+}
+
+@media ( max-width : 767px) {
+	.pa-sm {
+		position: absolute
+	}
+	.card-body .days span {
+		height: 38px;
+		width: 38px;
+		line-height: 38px;
+		font-size: .8rem
+	}
+	.card-body .dates span {
+		height: 38px;
+		width: 38px;
+		line-height: 38px;
+		font-size: .8rem
+	}
+	.card#event .card-body .events-today {
+		height: 188px
+	}
+} /*# sourceMappingURL=style.css.map */

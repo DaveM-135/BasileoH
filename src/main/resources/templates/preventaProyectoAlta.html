@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="layout/layout::head"></head> 
+
+<body id="page-top">
+<input id="authGetName" type="hidden" th:value="${#authentication.getName()}"></input>
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul th:replace="layout/layout::menu"> </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+      
+      	<header th:replace="layout/layout :: header"></header>
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading
+          <div class="d-sm-flex align-items-center justify-content-between mb-1">
+            <h1 class="h3 mb-0 text-gray-800"><span class="tituloA">Registrar proyecto</span>
+            </h1>
+          </div>-->
+          <h1 class="h3 mb-2 text-gray-800">Registrar proyecto</h1>
+          <a type="button" th:href="@{/listaProyectosTodo}" th:text="'&laquo; regresar'"></a>
+            <!--form-->
+              <form class="user" th:action="@{/preventaProyectoCI}" th:Object="${proyecto}" method="post">
+<!--                 <p class="tituloC">Lo primero, elige a un cliente o registra un cliente nuevo.</p> -->
+                <div class="form-group row">
+                  <div class="col-sm-5 mb-3 mb-sm-0">
+                  <div class="form-check form-check-inline">
+                  <label>Estatus: </label>
+                  </div>
+                  
+                    <div class="form-check form-check-inline">
+                      <input th:field="*{codEstatusProyecto}" class="form-check-input" type="radio" name="inlineRadioOptions" id="preventa" value="1">
+                      <label class="form-check-label" for="preventa">Preventa</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input th:field="*{codEstatusProyecto}"  class="form-check-input" type="radio" name="inlineRadioOptions" id="proyecto" value="2" data-toggle="modal" data-target="#modalPreventaAProyecto" disabled >
+                      <label class="form-check-label" for="proyecto">Proyecto</label>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                  </div>
+                  <div class="col-sm-4"> 
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-3 mb-3 mb-sm-0">
+                      <label for="cliente">Cliente</label>
+                  </div>
+                  <div class="col-sm-5">
+                    <select  th:field="*{codCliente}" class="form-control" id="cliente">
+                        <option th:each="cliente : ${clientes}" th:value="${cliente.codCliente}" th:text="${cliente.descCliente}" th:selected="false"/>
+                    </select>
+                  </div>
+                  <div class="col-sm-4"> 
+                    <a th:href="@{/formCliente}" target="_blank" role="button">+ Agregar nuevo cliente <i class="fas fa-external-link-alt"></i></a>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-3 mb-3 mb-sm-0">
+                      <label for="areaComercial">&Aacute;rea</label>
+                  </div>
+                  <div class="col-sm-5">
+                    <select th:field="*{codAreaComercial}" class="form-control " id="areaComercial">
+                        <option th:each="areaComercial : ${areasComerciales}" th:value="${areaComercial.codAreaComercial}" th:text="${areaComercial.descAreaComercial}" th:selected="false"/>
+                      </select>
+                  </div>
+                  <div class="col-sm-4">
+                  </div>
+                </div>
+                <div class="card shadow mb-4">
+                	<div class="card-header py-3">
+                		<h6 class="m-0 font-weight-bold text-primary">Completa la informaci&oacute;n del proyecto</h6>
+                	</div>
+                	<div class="card-body">
+                		<div class="form-group row">
+                  <div class="col-sm-4 mb-3 mb-sm-0">
+                     <label for="nombreProyecto">Nombre del proyecto</label>
+                    <input type="text" th:field="*{descProyecto}" class="form-control" id="nombreProyecto" oninvalid="setCustomValidity('Campo invÃ¡lido')" onchange="try{setCustomValidity('')}catch(e){}" maxlength="35" required>
+                    <br>
+                    <label for="codigoProyecto">C&oacute;digo de proyecto</label>
+                    <input th:field="*{descCodigoProyecto}" type="text" class="form-control" id="codigoProyecto" oninvalid="setCustomValidity('Campo inv&aacute;lido')" onchange="try{setCustomValidity('')}catch(e){}" maxlength="100" readonly="readonly" required>
+                  </div>
+                  <div class="col-sm-4 mb-3 mb-sm-0">
+                    <label for="nombreCortoProyecto">Nombre corto del proyecto</label> 
+					<input type="text" th:field="*{descCortaProyecto}" class="form-control" id="nombreCortoProyecto" oninvalid="setCustomValidity('Campo inválido')" onchange="try{setCustomValidity('')}catch(e){}" maxlength="20" required>
+                  </div>
+                  <div class="col-sm-4 mb-3 mb-sm-0">
+                  	<label for="descripcionProyecto">Descripci&oacute;n </label>
+                  	<br>
+                  	<textarea th:field="*{descProyectoTexto}" class="form-control" rows="5" id="descripcionProyecto" maxlength="500" required></textarea>
+                  </div>
+                  <div class="col-sm-4" id="fi">
+                    <label for="fechaInicio">Fecha inicio</label>
+                    <input th:field="*{fecIncioProyecto}" type="date" class="form-control" id="fechaInicio">
+                  </div>
+                  <div class="col-sm-4" id="ff">
+                    <label for="fechaFin">Fecha fin</label>
+                    <input th:field="*{fecFinProyecto}" type="date" class="form-control" id="fechaFin">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-4" id="pr">
+                  <label for="riesgo">Porcentaje de riesgo</label>
+                  <div class="input-group">
+                    	<div class="input-group-prepend">
+							<span class="input-group-text">%</span>
+						</div>
+						<input th:field="*{valPorcentajeRiesgo}" type="number" class="form-control" id="riesgo">
+						</div>
+                  </div>
+                </div>
+                <div class="form-group row">
+<!--                   <div class="col-sm-4 mb-3 mb-sm-0"> -->
+<!--                      <label for="tipoFacturacion">Tipo de proyecto</label> -->
+<!--                      <select th:field="*{codTipoProyecto}" class="form-control " id="tipoProyecto"> -->
+<!--                         <option th:each="tipoProyecto : ${tiposProyecto}" th:value="${tipoProyecto.codTipoProyecto}" th:text="${tipoProyecto.descTipoProyecto}" th:selected="false"/> -->
+<!--                       </select> -->
+<!--                   </div> -->
+				<div class="col-sm-4">
+                    <label for="presupuesto">Presupuesto (MXN)</label>
+                    <div class="input-group">
+                    	<div class="input-group-prepend">
+							<span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+						</div>
+                    <input th:field="*{impPresupuesto}" type="text" maxlength="15" onkeypress="return event.charCode >= 46 && event.charCode <= 57" class="form-control" id="presupuesto" oninvalid="setCustomValidity('Presupuesto inv&aacute;lido')" onchange="try{setCustomValidity('')}catch(e){}" step="any">
+                    </div>
+                    <small class="form-text text-danger" th:if="${#fields.hasErrors('impPresupuesto')}" th:errors="*{impPresupuesto}"></small>
+                  </div>
+				  <div class="col-sm-4 mb-3 mb-sm-0" id="tp">
+                  	<label for="tipoFacturacion">Tipo de facturacion</label>
+                     <select th:field="*{codTipoFacturacion}" class="form-control " id="tipoFacturacion">
+                        <option th:each="tipoFacturacion : ${tiposFacturacion}" th:value="${tipoFacturacion.codTipoFacturacion}" th:text="${tipoFacturacion.descTipoFacturacion}" th:selected="false"/>
+                      </select>
+                  </div>
+                  <div class="col-sm-4" id="thv">
+                    <label for="totalHoras">Total de horas vendidas</label>
+                    <input th:field="*{valTotalHorasVendidas}" type="text" maxlength="10" onkeypress="return event.charCode >= 46 && event.charCode <= 57" class="form-control" id="totalHoras">
+                  </div>
+                  <div class="col-sm-4" id="thp">
+                    <label for="thorasProyecto">Total de horas proyecto</label>
+                    <input th:field="*{valTotalHorasProyecto}" type="text" maxlength="10" onkeypress="return event.charCode >= 46 && event.charCode <= 57" class="form-control" id="thorasProyecto" disabled>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  
+                  <div class="col-sm-4" id="pp">
+                    <label for="precio">Precio del proyecto</label>
+                    <input th:field="*{impPrecioPropuesta}" type="text" maxlength="10" onkeypress="return event.charCode >= 46 && event.charCode <= 57" class="form-control" id="precio">
+                  </div>
+                  <div class="col-sm-4" id="cp">
+                    <label for="costoProyecto">Costo de proyecto</label>
+                    <div class="input-group">
+                    	<div class="input-group-prepend">
+							<span class="input-group-text">$</span>
+						</div>
+                    <input th:field="*{impCostoProyecto}" type="text" maxlength="10" onkeypress="return event.charCode >= 46 && event.charCode <= 57" class="form-control" id="costoProyecto" disabled>
+                  	</div>
+                  </div>
+                </div>
+                <div class="form-group row">
+                	<div class="col-sm-4 mb-3 mb-sm-0">
+                      <label for="clasificacion">Clasificaci&oacute;n del proyecto</label>
+                      <select th:field="*{codClasificacionProyecto}" class="form-control " id="clasificacionProyecto">
+                        	<option th:each="clasificacionProyecto : ${clasificacionesProyecto}" th:value="${clasificacionProyecto.codClasificacionProyecto}" th:text="${clasificacionProyecto.descClasificacion}" th:selected="false"/>
+                      </select>
+                  	</div>
+                  	<div class="col-sm-4">
+                    	<label for="clasificacion">L&iacute;der de proyecto</label>
+                    	<div class="input-group">
+                    		<div class="input-group-prepend">
+                    			<span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                    		</div>
+                    		<select th:field="*{codRecursoLider}" class="form-control " id="liderProyecto">
+		                        <option th:each="recurso : ${recursosLider}" th:value="${recurso.codRecurso}" th:text="${recurso.descRecurso}" th:selected="false"/>
+		                    </select>
+                    	</div>
+                  	</div>
+                  	<div class="col-sm-4">
+                    	<label for="aprobador">Aprobador de proyecto</label>
+                    	<div class="input-group">
+                    		<div class="input-group-prepend">
+                    			<span class="input-group-text"><i class="fas fa-user-check"></i></span>
+                    		</div>
+                    		<select th:field="*{codRecursoAprobador}" class="form-control " id="aprobadorProyecto">
+	                        	<option th:each="recurso : ${recursosAprobador}" th:value="${recurso.codRecurso}" th:text="${recurso.descRecurso}" th:selected="false"/>
+	                      	</select>
+                    	</div>
+                  	</div>
+                </div>
+                	</div>
+                </div>
+                
+                 <div class="form-group row">
+                  <div class="col-sm-4 mb-3 mb-sm-0">
+                  	 <input type="submit" value="Guardar" class="btn btn-primary"/>
+                  </div>
+                  </div>
+            </form>
+            <!--form-->
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      <footer th:replace="layout/layout :: footer"></footer> 
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button--> <div class="st-actionContainer right-bottom" id="btnFlash"> <div class="st-btn-container right-bottom" onclick="flashSurvey(); return false;"> <div class="st-button-main"><i class="fa fa-bolt" aria-hidden="true"></i></div> </div> </div>
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+	<!-- ModalLogout -->
+	<footer th:replace="layout/layout :: modalLogout"></footer>
+	<!-- End ModalLogout -->
+
+  <!-- Modal Preventa-->
+  <div class="modal fade" id="modalPreventaAProyecto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Cambio de preventa a proyecto</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">X</span>
+          </button>
+        </div>
+        <div class="modal-body">Cambiar&aacute;s el estatus de la preventa a proyecto, esta operaci&oacute;n no se podr&aacute; recuperar. &iquest;Est&aacute;s de acuerdo?</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal" id="cancelarProyecto" >Cancelar</button>
+          <a class="btn btn-primary" data-dismiss="modal" href="#" id="aceptarProyecto">Aceptar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="js/sb-admin-2.min.js"></script>
+
+  <!-- Page level plugins -->
+  <script src="vendor/chart.js/Chart.min.js"></script>
+
+  <!-- Page level custom scripts -->
+  <script src="js/demo/chart-area-demo.js"></script>
+  <script src="js/demo/chart-pie-demo.js"></script>
+  <script src="js/preventaProyectoAlta.js"></script>
+  <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+  <script src="js/multiselect.js"></script>
+
+  <script th:src="@{/js/datosRecursoSesion.js}"></script>
+
+</body>
+
+</html>

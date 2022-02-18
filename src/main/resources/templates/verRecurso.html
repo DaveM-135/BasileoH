@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="layout/layout::head"></head>
+
+<body id="page-top">
+	<input id="authGetName" type="hidden"
+		th:value="${#authentication.getName()}"></input>
+
+	<!-- Page Wrapper -->
+	<div id="wrapper">
+
+		<!-- Sidebar -->
+		<ul th:replace="layout/layout::menu">
+		</ul>
+		<!-- End of Sidebar -->
+
+		<!-- Content Wrapper -->
+		<div id="content-wrapper" class="d-flex flex-column">
+
+			<!-- Main Content -->
+			<div id="content">
+
+				<header th:replace="layout/layout :: header"></header>
+
+				<!-- Begin Page Content -->
+				<div th:if="${#authentication.getName()} == ${recurso.descCorreoElectronico} OR ${listAdminRh.contains(#authentication.getName())}" class="container-fluid">
+					<!-- Page Heading -->
+					<h1 class="h3 mb-2 text-gray-800">Informaci&oacute;n del
+						recurso</h1>
+					<a sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_RH')"
+						th:href="@{'/listarRecursos'}"
+						th:text="'&laquo; regresar al listado de recursos'"></a>
+
+					<div class="card shadow mb-4">
+						<div class="collapse show">
+							<div class="card-body">
+								<div class="row">
+
+									<div class="col-md-3">
+										<div class="profile-img">
+											<img th:if="${recurso.foto} != null"
+												th:src="@{'/fotoRecursoPerfil/' + ${recurso.codRecurso}}"
+												alt="${recurso.descRecurso}"
+												class="img-profile imgPrevCircleRecurso mx-auto mb-3">
+										</div>
+										<div class="profile-work"
+											style="color: #495057; font-size: 12px; font-weight: 600">
+											<p style="font-size: 12px; font-weight: 700">Informaci&oacute;n</p>
+
+											<i class="fa fa-user mr-2"></i><span
+												th:text="${recurso.descRecurso} + ' ' + ${recurso.descApellidoPaterno}"
+												class="mb-1"></span><br> <i
+												class="fas fa-id-badge mr-2"></i><span class="mb-1">[[${recurso.puesto.descPuesto}]]</span><br>
+											<i class="fa fa-envelope mr-2"></i><span class="mb-1">[[${recurso.descCorreoElectronico}]]</span><br>
+											<i class="fa fa-envelope mr-2"></i><span class="mb-1">[[${recurso.descCorreoPersonal}]]</span><br>
+											<i class="fa fa-phone mr-2"></i><span class="mb-1">[[${recurso.descTelCelular}]]</span><br>
+
+										</div>
+									</div>
+
+									<div class="col-md-9">
+										<div class="profile-head">
+											<div class="d-flex justify-content-between">
+												<h5
+													th:text="${recurso.descRecurso} + ' ' + ${recurso.descApellidoPaterno} + ' ' + ${recurso.descApellidoMaterno}">
+												</h5>
+												<div id="divBtnEditar">
+													<input id="iEditar" type="button" class="profile-edit-btn"
+														onclick="functionEditar();" value="Editar" />
+												</div>
+												<div id="divBtnGuardar">
+													<input id="iGuardar" type="submit" class="profile-edit-btn"
+														onclick="functionGuardar();" value="Guardar" />
+												</div>
+											</div>
+<!-- 											<h6 style="font-size: 12px;" th:text="${recurso.puesto.descPuesto}"></h6> --> 
+												<a style="font-size: 12px;" data-toggle="modal" href="#modalMetasCompetencias" th:text="${perfil.descPerfil} + ' - Ver metas y competencias'"></a>
+											<p class="proile-rating">
+												Evaluaci&oacute;n Q: <span>8/10</span>
+											</p>
+
+											<ul class="nav nav-tabs" id="myTab"
+												style="padding: 0px; margin: 0px;" role="tablist">
+
+												<li class="nav-item"><a class="nav-link active"
+													id="datos-generales-tab" data-toggle="tab"
+													href="#datos-generales" aria-controls="datos-generales"
+													role="tab" aria-selected="true">Datos generales</a></li>
+												<li class="nav-item"><a class="nav-link"
+													id="datos-empresa-tab" data-toggle="tab"
+													href="#datos-empresa" role="tab"
+													aria-controls="datos-empresa" aria-selected="true">Datos
+														empresa</a></li>
+												<li class="nav-item"><a class="nav-link"
+													id="trayectoria-tab" data-toggle="tab" href="#trayectoria"
+													role="tab" aria-controls="trayectoria" aria-selected="true">Trayectoria</a>
+												</li>
+												<li class="nav-item"><a class="nav-link"
+													id="expediente-digital-tab" data-toggle="tab"
+													href="#expediente-digital" role="tab"
+													aria-controls="expediente-digital" aria-selected="true">Expediente
+														digital</a></li>
+
+											</ul>
+										</div>
+
+
+										<div class="tab-content profile-tab" id="myTabContent">
+											<!-- 												<form id="formDatosGenerales" action="#" th:action="@{/guardaActualizaRecurso}" th:object="${recurso}" method="post"> -->
+											<div class="tab-pane fade show active" id="datos-generales"
+												role="tabpanel" aria-labelledby="datos-generales-tab">
+												<br>
+
+												<form id="formDatosGenerales"
+													th:action="@{/guardaActualizaRecurso}"
+													th:object="${recurso}" method="post">
+
+													<fieldset class="border p-2">
+														<legend class="w-auto dg-campo">&nbsp;GENERALES&nbsp;</legend>
+														<div class="row">
+															<div
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">Nombre: </span> <input
+																	class="form-control dg-info dg-edit" type="text"
+																	placeholder="Sin informaci&oacute;n"
+																	th:field="*{descRecurso}" />
+															</div>
+															<div
+																class="col-xl-2 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">Ap. Materno: </span> <input
+																	class="form-control dg-info dg-edit" type="text"
+																	placeholder="Sin informaci&oacute;n"
+																	th:field="*{descApellidoPaterno}" />
+															</div>
+															<div
+																class="col-xl-2 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">Ap. Paterno: </span> <input
+																	class="form-control dg-info dg-edit" type="text"
+																	placeholder="Sin informaci&oacute;n"
+																	th:field="*{descApellidoMaterno}" />
+															</div>
+															<div
+																class="col-xl-2 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">Tel: </span> <input
+																	class="form-control dg-info dg-edit" type="text"
+																	placeholder="Sin informaci&oacute;n"
+																	th:field="*{descTelCelular}" />
+															</div>
+															<div
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">Correo personal: </span> <input
+																	class="form-control dg-info dg-edit" type="email"
+																	placeholder="Sin informaci&oacute;n"
+																	th:field="*{descCorreoPersonal}" />
+															</div>
+															<div
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">Nacimiento: </span> <input
+																	class="form-control dg-info dg-edit" type="date"
+																	placeholder="Sin informaci&oacute;n"
+																	th:field="*{fecNacimiento}" />
+															</div>
+															<div
+																class="col-xl-1 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">Genero: </span> <select
+																	id="selectGenero" class="form-control dg-info dg-edit"
+																	style="padding: 0;"
+																	onchange="hideByGenero(this.value);"
+																	th:field="*{descGenero}">
+																	<option th:value="'M'" th:text="M"></option>
+																	<option th:value="'F'" th:text="F"></option>
+																</select>
+															</div>
+															<div
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">RFC: </span> <input
+																	class="form-control dg-info dg-edit" type="text"
+																	placeholder="Sin informaci&oacute;n"
+																	th:field="*{descRfc}" />
+															</div>
+															<div
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">CURP: </span> <input
+																	class="form-control dg-info dg-edit" type="text"
+																	placeholder="Sin informaci&oacute;n"
+																	th:field="*{descCurp}" />
+															</div>
+															<div
+																class="col-xl-2 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">NSS: </span> <input
+																	class="form-control dg-info dg-edit" type="text"
+																	placeholder="Sin informaci&oacute;n"
+																	th:field="*{descNss}" />
+															</div>
+
+															<div
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">Estado civil: </span> <select
+																	class="form-control dg-info dg-edit"
+																	style="padding: 0;" th:field="*{codEstadoCivil}">
+																	<option th:each="estadoCivil : ${listaEstadoCivil}"
+																		th:value="${estadoCivil.codEstadoCivil}"
+																		th:text="${estadoCivil.descEstadoCivil}"></option>
+																</select>
+															</div>
+															<div
+																class="col-xl-2 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">No. hijos: </span> <input
+																	class="form-control dg-info dg-edit" type="number"
+																	max="10" min="0" step="1"
+																	placeholder="Sin informaci&oacute;n"
+																	th:field="*{valNumeroHijos}" />
+															</div>
+														</div>
+													</fieldset>
+
+													<fieldset class="border p-2">
+														<legend class="w-auto dg-campo">&nbsp;DIRECCI&Oacute;N&nbsp;</legend>
+														<div class="row">
+															<div
+																class="col-xl-4 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">Calle: </span> <input
+																	class="form-control dg-info dg-edit" type="text"
+																	placeholder="Sin informaci&oacute;n"
+																	th:field="*{dirCalle}" />
+															</div>
+															<div
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">No. ext: </span> <input
+																	class="form-control dg-info dg-edit" type="text"
+																	placeholder="Sin informaci&oacute;n"
+																	th:field="*{dirNumeroExt}" />
+															</div>
+															<div
+																class="col-xl-2 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">No. int: </span> <input
+																	class="form-control dg-info dg-edit" type="text"
+																	placeholder="Sin informaci&oacute;n"
+																	th:field="*{dirNumeroInt}" />
+															</div>
+
+															<div
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">Colonia: </span> <input
+																	class="form-control dg-info dg-edit" type="text"
+																	placeholder="Sin informaci&oacute;n"
+																	th:field="*{dirColonia}" />
+															</div>
+															<div
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">Municipio: </span> <input
+																	class="form-control dg-info dg-edit" type="text"
+																	placeholder="Sin informaci&oacute;n"
+																	th:field="*{dirAlcaldiaMunicipio}" />
+															</div>
+															<div
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">Estado: </span> <input
+																	class="form-control dg-info dg-edit" type="text"
+																	placeholder="Sin informaci&oacute;n"
+																	th:field="*{dirEstado}" />
+															</div>
+
+															<div
+																class="col-xl-2 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">CP: </span> <input
+																	class="form-control dg-info dg-edit" type="text"
+																	placeholder="Sin informaci&oacute;n"
+																	th:field="*{dirCp}" />
+															</div>
+														</div>
+													</fieldset>
+
+													<fieldset class="border p-2">
+														<legend class="w-auto dg-campo">&nbsp;BANCARIOS&nbsp;</legend>
+														<div class="row">
+															<div
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">Banco: </span> <input
+																	class="form-control dg-info dg-edit" type="text"
+																	placeholder="Sin informaci&oacute;n"
+																	th:field="*{descBancoNombre}" />
+															</div>
+															<div
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">Cuenta: </span> <input
+																	class="form-control dg-info dg-edit" type="text"
+																	placeholder="Sin informaci&oacute;n"
+																	th:field="*{descBancoNumeroCuenta}" />
+															</div>
+															<div
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">CLABE: </span> <input
+																	class="form-control dg-info dg-edit" type="text"
+																	placeholder="Sin informaci&oacute;n"
+																	th:field="*{descBancoClabe}" />
+															</div>
+														</div>
+													</fieldset>
+
+													<fieldset class="border p-2">
+														<legend class="w-auto dg-campo">&nbsp;SALUD&nbsp;</legend>
+														<div class="row">
+															<div
+																class="col-xl-2 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">Tipo de Sangre: </span> <select
+																	class="form-control dg-info dg-edit"
+																	style="padding: 0;" th:field="*{codTipoSangre}">
+																	<option th:each="tipoSangre : ${listaTipoSangre}"
+																		th:value="${tipoSangre.codTipoSangre}"
+																		th:text="${tipoSangre.descTipoSangre}"></option>
+																</select>
+															</div>
+															<div
+																class="col-xl-2 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">Cirugias: </span> <select
+																	class="form-control dg-info dg-edit"
+																	style="padding: 0;" th:field="*{descMedicosCirugias}">
+																	<option th:value="'Si'" th:text="Si"></option>
+																	<option th:value="'No'" th:text="No"></option>
+																</select>
+															</div>
+															<div id="divEmbarazos"
+																class="col-xl-2 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">Embarazos: </span> <select
+																	class="form-control dg-info dg-edit"
+																	style="padding: 0;" th:field="*{descMedicosEmbarazos}">
+																	<option th:value="'Si'" th:text="Si"></option>
+																	<option th:value="'No'" th:text="No"></option>
+																</select>
+															</div>
+															<br>
+															<div
+																class="col-xl-2 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">Alergias: </span> <select
+																	id="selectAlergias"
+																	class="form-control dg-info dg-edit"
+																	style="padding: 0;" th:field="*{valMedicosAlergias}">
+																	<option th:value="'Si'" th:text="Si"></option>
+																	<option th:value="'No'" th:text="No"></option>
+																</select>
+															</div>
+															<div
+																class="col-xl-2 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">Enfermedades: </span> <select
+																	id="selectEnfermedades"
+																	class="form-control dg-info dg-edit"
+																	style="padding: 0; " th:field="*{valMedicosEnfermedades}">
+																	<option th:value="'Si'" th:text="Si"></option>
+																	<option th:value="'No'" th:text="No"></option>
+																</select>
+															</div>
+															<div id="divAlergias"
+																class="col-xl-12 col-sm-12 col-md-12 col-lg-12 form-group">
+																<span class="dg-campo">Detalle de alergias: </span>
+																<textarea class="form-control dg-info dg-edit"
+																	placeholder="Sin informaci&oacute;n"
+																	th:field="*{descMedicosAlergias}"></textarea>
+															</div>
+															<div id="divEnfermedades"
+																class="col-xl-12 col-sm-12 col-md-12 col-lg-12 form-group">
+																<span class="dg-campo">Detalle de enfermedades: </span>
+																<textarea class="form-control dg-info dg-edit"
+																	placeholder="Sin informaci&oacute;n"
+																	th:field="*{descMedicosEnfermedades}"></textarea>
+															</div>
+														</div>
+													</fieldset>
+													<fieldset class="border p-2">
+														<legend class="w-auto dg-campo">&nbsp;ESCOLARIDAD&nbsp;</legend>
+														<div id="divEscolaridad">
+															<div th:fragment="fragmentEscolaridad">
+																<div class="row" style="font-size: 14px;"
+																	th:each="recursoEscolaridad : ${listaEscolaridad}">
+																	<div class="col-md-11"
+																		th:text="${recursoEscolaridad.descInstitucionAcademica} + ' - ' + ${recursoEscolaridad.gradoEscolar.descGradoEscolaridad} + ' en ' + ${recursoEscolaridad.descCarrera} + ' del ' + ${recursoEscolaridad.fecInicio} + ' al ' + ${recursoEscolaridad.fecFin} + ' (' + ${recursoEscolaridad.etapaEscolar.descEtapaEscolar} + ')' + ' ' + ${recursoEscolaridad.descCedulaProfesional}">
+																	</div>
+																	<div class="col-md-1">
+																		<i class="fas fa-edit dg-edit-escolar"
+																			style="cursor: pointer;"
+																			th:id="${recursoEscolaridad.codRecursoEscolaridad}"
+																			onclick="editEscolaridad(this.id);"></i> <i
+																			class="fas fa-trash-alt dg-edit-escolar"
+																			style="cursor: pointer;"
+																			th:id="${recursoEscolaridad.codRecursoEscolaridad}"
+																			onclick="borrarEscolaridad(this.id);"></i>
+																	</div>
+																</div>
+															</div>
+														</div>
+														&nbsp;<i class="fa fa-plus dg-campo dg-edit-escolar"
+															data-toggle="modal" data-target="#nuevaEscolaridadModal"
+															aria-hidden="true" style="cursor: pointer;"></i><span
+															data-toggle="modal" data-target="#nuevaEscolaridadModal"
+															style="cursor: pointer;" class="dg-campo dg-edit-escolar">&nbsp;Agregar</span>
+													</fieldset>
+													<!-- Cierre de bloque fomulario para con datos editable -->
+													<br>
+												</form>
+												<!-- Inicia bloque de contactos de emergencia -->
+												<div id="divContactoEmergencia">
+													<div th:fragment="fragmentContactoEmergencia"
+														class="card mb-3 cardCE">
+														<div class="card-header" style="color: #898796;">
+															<div class="d-flex justify-content-between">
+																<span>Contactos de emergencia</span> <i
+																	class="fa fa-plus" style="cursor: pointer;"
+																	aria-hidden="true" data-toggle="modal"
+																	data-target="#nuevaContactoEmergenciaModal"></i>
+															</div>
+														</div>
+														<div class="card-body text-secondary">
+
+															<div id="carouselContactoEmergenciaIndicators"
+																class="carousel slide" data-ride="carousel">
+
+																<ol class="carousel-indicators">
+																	<li
+																		th:each="contactoEmergencia, iterator : ${listaContactoEmergencia}"
+																		th:class="${iterator.index == 0} ? 'active' : '' "
+																		data-target="#carouselExampleIndicators"
+																		th:data-slide-to="${iterator.index}" class=""></li>
+																	<!-- 														    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li> -->
+																</ol>
+
+																<div class="carousel-inner">
+																	<div class="carousel-item"
+																		th:each="contactoEmergencia, iterator : ${listaContactoEmergencia}"
+																		th:classappend="${iterator.index == 0} ? 'active' : '' ">
+																		<div class="card p-3">
+																			<div class="d-flex align-items-center">
+
+																				<div class=" w-100">
+																					<h6 class="mb-0 mt-0"
+																						th:text="${contactoEmergencia.descNombreContacto}"></h6>
+																					<span style="font-size: 10px;"
+																						th:text="${contactoEmergencia.parentesco.descParentesco}"></span>
+																					&nbsp;<i
+																						th:if="${contactoEmergencia.valDependienteEconomico == 1}"
+																						style="color: green;"
+																						class="fas fa-hand-holding-usd"></i>
+																					<div style="margin: 10px 0px;">
+																						<i class="fa fa-phone mr-2"></i><span
+																							style="font-size: small;"
+																							th:text="${contactoEmergencia.descTelContactoEmergencia}"></span>
+																					</div>
+																					<div
+																						class="button mt-2 d-flex flex-row align-items-center">
+																						<button
+																							class="btn btn-sm btn-outline-primary w-100"
+																							th:id="${contactoEmergencia.codContactoEmergencia}"
+																							onclick="editarContactoEmergencia(this.id);">Editar</button>
+																						<button class="btn btn-sm btn-primary w-100 ml-2"
+																							th:id="${contactoEmergencia.codContactoEmergencia}"
+																							onclick="borrarContactoEmergencia(this.id);">Borrar</button>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+
+																<a class="carousel-control-prev"
+																	href="#carouselContactoEmergenciaIndicators"
+																	role="button" data-slide="prev"> <span
+																	class="carousel-control-prev-icon" aria-hidden="true"></span>
+																	<span class="sr-only">Previous</span>
+																</a> <a class="carousel-control-next"
+																	href="#carouselContactoEmergenciaIndicators"
+																	role="button" data-slide="next"> <span
+																	class="carousel-control-next-icon" aria-hidden="true"></span>
+																	<span class="sr-only">Next</span>
+																</a>
+
+															</div>
+
+														</div>
+													</div>
+												</div>
+												<!-- Termina bloque de contactos de emergencia -->
+											</div>
+											<div class="tab-pane fade show" id="datos-empresa"
+												role="tabpanel" aria-labelledby="datos-empresa-tab">
+												<br />
+												<form id="formDatosEmpresa"
+													th:action="@{/guardaActualizaRecurso}"
+													th:object="${recurso}" method="post">
+													<fieldset class="border p-2">
+														<div class="row">
+															<div id="emailEmpresa"
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">E-mail empresa: </span> <input
+																	type="text" placeholder="Sin informaci&oacute;n"
+																	class="form-control dg-info dg-edit"
+																	th:field="${recurso.descCorreoElectronico}" />
+															</div>
+															<div id="telEmpresa"
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">Tel. empresa: </span> <input
+																	type="text" placeholder="Sin informaci&oacute;n"
+																	class="form-control dg-info dg-edit"
+																	th:field="${recurso.descTelEmpresa}" />
+															</div>
+															<div id="Ext"
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">Ext.: </span> <input type="text"
+																	placeholder="Sin informaci&oacute;n"
+																	class="form-control dg-info dg-edit"
+																	th:field="${recurso.descTelExt}" />
+															</div>
+															<div id="fecIngreso"
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">Fec. Ingreso: </span> <input
+																	type="date" class="form-control dg-info dg-edit"
+																	th:field="${recurso.fecIngresoEmpresa}" />
+															</div>
+														</div>
+														<div class="row">
+															<div id="area"
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">&Aacute;rea: </span> <select
+																	th:field="${recurso.codAreaRecurso}"
+																	class="form-control dg-info dg-edit"
+																	style="padding: 0;">
+																	<option th:each="areaRecursoLista : ${areaRecursoList}"
+																		th:value="${areaRecursoLista.codConsultor}"
+																		th:text="${areaRecursoLista.descConsultor}"></option>
+																</select>
+															</div>
+															<div id="activo1"
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group"
+																th:if="${recurso.valActivo == 1}">
+																<span class="dg-campo">Activo: </span> <select
+																	th:field="${recurso.valActivo}"
+																	class="form-control dg-info dg-edit"
+																	style="padding: 0;">
+																	<option value="0">No</option>
+																	<option value="1">S&iacute;</option>
+																</select>
+															</div>
+															<div id="activo0"
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group"
+																th:if="${recurso.valActivo == 0}">
+																<span class="dg-campo">Activo: </span> <select
+																	th:field="${recurso.valActivo}"
+																	class="form-control dg-info dg-edit"
+																	style="padding: 0;">
+																	<option value="0">No</option>
+																	<option value="1">S&iacute;</option>
+																</select>
+															</div>
+															<div id="responsable1"
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group"
+																th:if="${recurso.valResponsable == 1}">
+																<span class="dg-campo">Es &iacute;der: </span> <select
+																	th:field="${recurso.valResponsable}"
+																	class="form-control dg-info dg-edit"
+																	style="padding: 0;">
+																	<option value="0">No</option>
+																	<option value="1">S&iacute;</option>
+																</select>
+															</div>
+															<div id="responsable0"
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group"
+																th:if="${recurso.valResponsable == 0}">
+																<span class="dg-campo">Es &iacute;der: </span> <select
+																	th:field="${recurso.valResponsable}"
+																	class="form-control dg-info dg-edit"
+																	style="padding: 0;">
+																	<option value="0">No</option>
+																	<option value="1">S&iacute;</option>
+																</select>
+															</div>
+															<div id="aprobador1"
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group"
+																th:if="${recurso.valAprobador == 1}">
+																<span class="dg-campo">Es aprobador: </span> <select
+																	th:field="${recurso.valAprobador}"
+																	class="form-control dg-info dg-edit"
+																	style="padding: 0;">
+																	<option value="0">No</option>
+																	<option value="1">S&iacute;</option>
+																</select>
+															</div>
+															<div id="aprobador0"
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group"
+																th:if="${recurso.valAprobador == 0}">
+																<span class="dg-campo">Es aprobador: </span> <select
+																	th:field="${recurso.valAprobador}"
+																	class="form-control dg-info dg-edit"
+																	style="padding: 0;">
+																	<option value="0">No</option>
+																	<option value="1">S&iacute;</option>
+																</select>
+															</div>
+														</div>
+														<div class="row"
+															sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_RH')">
+															<div id="fecSalida"
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">Fec. Salida: </span> <input
+																	type="date" class="form-control dg-info dg-edit"
+																	th:field="${recurso.fecSalidaEmpresa}"
+																	disabled="disabled" />
+															</div>
+															<div id="motivo"
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">Motivo: </span>
+																<textarea placeholder="Sin informaci&oacute;n"
+																	class="form-control dg-info dg-edit"
+																	th:field="${recurso.descMotivoSalida}"></textarea>
+															</div>
+														</div>
+														<div class="row">
+															<div id="puesto"
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">Puesto: </span> <select
+																	th:field="${recurso.codPuesto}"
+																	class="form-control dg-info dg-edit"
+																	style="padding: 0;">
+																	<option th:each="puestoLista : ${puestoList}"
+																		th:value="${puestoLista.codPuesto}"
+																		th:text="${puestoLista.descPuesto}"></option>
+																</select>
+															</div>
+															<div id="jornada"
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">Jornada: </span> <select
+																	th:field="${recurso.codJornada}"
+																	class="form-control dg-info dg-edit"
+																	style="padding: 0;">
+																	<option th:each="jornadaLista : ${jornadaList}"
+																		th:value="${jornadaLista.codJornada}"
+																		th:text="${jornadaLista.descJornada}"></option>
+																</select>
+															</div>
+															<div id="tipoRecurso"
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">Tipo recurso: </span> <select
+																	th:field="${recurso.codTipoRecurso}"
+																	class="form-control dg-info dg-edit"
+																	style="padding: 0;">
+																	<option th:each="tipoRecursoLista : ${tipoRecursoList}"
+																		th:value="${tipoRecursoLista.codTipoRecurso}"
+																		th:text="${tipoRecursoLista.descTipoRecurso}"></option>
+																</select>
+															</div>
+															<div id="proveedor"
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">Proveedor: </span> <select
+																	th:field="${recurso.codProveedor}"
+																	class="form-control dg-info dg-edit"
+																	style="padding: 0;">
+																	<option th:each="proveedorLista : ${proveedorList}"
+																		th:value="${proveedorLista.codProveedor}"
+																		th:text="${proveedorLista.descProveedor}"></option>
+																</select>
+															</div>
+															<div id="perfil"
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">Perfil: </span> <select
+																	th:field="${recurso.codPerfil}"
+																	class="form-control dg-info dg-edit"
+																	style="padding: 0;">
+																	<option
+																		th:each="perfilRecursoLista : ${perfilRecursoList}"
+																		th:value="${perfilRecursoLista.codPerfil}"
+																		th:text="${perfilRecursoLista.descPerfil}"></option>
+																</select>
+															</div>
+															<div id="costoMinimo"
+																sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_RH')"
+																class="col-xl-3 col-sm-4 col-md-4 col-lg-3 form-group">
+																<span class="dg-campo">Costo m&iacute;nimo: </span> <input
+																	type="number" step="0.10"
+																	class="form-control dg-info dg-edit"
+																	th:field="${recurso.valCostoMinimo}" placeholder="$" />
+															</div>
+														</div>
+													</fieldset>
+												</form>
+												<br />
+												<!-- Inicia bloque herramientas -->
+												<div id="divHerramientas">
+													<div th:fragment="fragmentHerramientas"
+														class="card mb-3 cardHR">
+														<div class="card-header" style="color: #898796;">
+															<div class="d-flex justify-content-between">
+																<span>Herramientas</span> <i class="fa fa-plus"
+																	style="cursor: pointer;" aria-hidden="true"
+																	onclick="abrirFormHerramienta();"
+																	sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_RH')"></i>
+															</div>
+														</div>
+														<div class="card-body text-secondary">
+
+															<div id="carouselHerramientaIndicators"
+																class="carousel slide" data-ride="carousel">
+
+																<ol class="carousel-indicators">
+																	<li
+																		th:each="herramienta, iterator : ${listaHerramientas}"
+																		th:class="${iterator.index == 0} ? 'active' : '' "
+																		data-target="#carouselExampleIndicators"
+																		th:data-slide-to="${iterator.index}" class=""></li>
+																	<!-- 														    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li> -->
+																</ol>
+
+																<div class="carousel-inner">
+																	<div class="carousel-item"
+																		th:each="herramienta, iterator : ${listaHerramientas}"
+																		th:classappend="${iterator.index == 0} ? 'active' : '' ">
+																		<div class="card p-3">
+																			<div class="d-flex align-items-center">
+																				<div class=" w-100">
+																					<h6 class="mb-0 mt-0"
+																						th:text="${herramienta.Equipo.descHerramienta}+ ' ' +${herramienta.Equipo.descModelo}"></h6>
+																					<span style="font-size: 10px;"
+																						th:text="${herramienta.Equipo.descSistemaOperativo}"></span>
+																					&nbsp;
+																					<div class="d-flex justify-content-between"
+																						style="margin: 10px 0px;">
+																						<span style="font-size: small;">S/N:
+																							[[${herramienta.Equipo.descNumSerie}]]</span> <small><a
+																							th:if="${herramienta.responsiva} != null"
+																							th:href="'/herramienta/responsiva?rh=' + ${herramienta.codHerramientaRecurso}"
+																							target="_blank">Responsiva</a></small>
+																					</div>
+																					<div style="margin: 10px 0px;">
+																						<small><span>[[${herramienta.descObservaciones}]]</span></small>
+																					</div>
+																					<div
+																						class="button mt-2 d-flex flex-row align-items-center">
+																						<button
+																							class="btn btn-sm btn-outline-primary w-100"
+																							th:id="${herramienta.codHerramientaRecurso}"
+																							onclick="editarHerramienta(this.id);">Editar</button>
+																						<button class="btn btn-sm btn-primary w-100 ml-2"
+																							sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_RH')"
+																							th:id="${herramienta.codHerramientaRecurso}"
+																							onclick="borrarHerramienta(this.id);">Borrar</button>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+
+																<a class="carousel-control-prev"
+																	href="#carouselHerramientaIndicators" role="button"
+																	data-slide="prev"> <span
+																	class="carousel-control-prev-icon" aria-hidden="true"></span>
+																	<span class="sr-only">Previous</span>
+																</a> <a class="carousel-control-next"
+																	href="#carouselHerramientaIndicators" role="button"
+																	data-slide="next"> <span
+																	class="carousel-control-next-icon" aria-hidden="true"></span>
+																	<span class="sr-only">Next</span>
+																</a>
+
+															</div>
+
+														</div>
+													</div>
+												</div>
+											</div>
+											<!-- Termina bloque de herramientas -->
+
+
+											<!-- INICIA bloque de TRAYECTORIA -->
+											<div class="tab-pane fade show" id="trayectoria"
+												role="tabpanel" aria-labelledby="trayectoria-tab">
+												<div
+													th:replace="layout/trayectoria.html :: fragmentTrayectoria">
+
+												</div>
+											</div>
+											<!-- TERMINA bloque de TRAYECTORIA -->
+
+											<!-- INICIA bloque de EXPEDIENTE DIGITAL-->
+											<div class="tab-pane fade show" id="expediente-digital"
+												role="tabpanel" aria-labelledby="expediente-digital-tab">
+												<!-- 												<div th:replace="layout/expedienteDigital.html :: fragmentExpedienteDigital"> -->
+
+												<!-- 												</div> -->
+											</div>
+											<!-- TERMINA bloque de EXPEDIENTE DIGITAL-->
+
+
+										</div>
+
+									</div>
+									<!-- Cierre de bloque fomulario para con datos editable -->
+								</div>
+								<!-- End of Main Content -->
+
+
+								<!-- Modal Crear Escolaridad -->
+								<div class="modal fade" id="nuevaEscolaridadModal" tabindex="-1"
+									role="dialog" aria-labelledby="nuevaEscolaridadModalLabel"
+									aria-hidden="true">
+									<div class="modal-dialog" role="document">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h6 class="modal-title" id="nuevaEscolaridadModalLabel">Escolaridad</h6>
+												<button class="close" type="button" data-dismiss="modal"
+													aria-label="Close">
+													<span aria-hidden="true">&times;</span>
+												</button>
+											</div>
+											<div class="modal-body" style="font-size: 14px;">
+												<!-- 						<form th:object="${herramienta}" method="post"> -->
+												<div class="row">
+													<div class="form-group col-12 col-md-12">
+														<label class="col-form-label">Instituci&oacute;n
+															acad&eacute;mica*</label> <input type="text"
+															id="institucionAcademica" class="form-control"
+															maxlength="40"> <small
+															id="validInstitucionAcademica"
+															class="form-text text-danger">Dato requerido</small>
+													</div>
+												</div>
+
+												<div class="row">
+													<div class="form-group col-12 col-md-12">
+														<label class="col-form-label">Carrera*</label> <input
+															type="text" id="carrera" class="form-control"
+															maxlength="50"> <small id="validCarrera"
+															class="form-text text-danger">Dato requerido</small>
+													</div>
+												</div>
+
+												<div class="row">
+													<div class="form-group col-6 col-md-6">
+														<label class="col-form-label">Grado escolar*</label> <select
+															class="form-control" id="gradoEscolar">
+															<option th:each="gradoEscolar : ${listaGradoEscolar}"
+																th:value="${gradoEscolar.codGradoEscolaridad}"
+																th:text="${gradoEscolar.descGradoEscolaridad}">
+															</option>
+														</select>
+													</div>
+
+													<div class="form-group col-6 col-md-6">
+														<label class="col-form-label">Etapa escolar*</label> <select
+															class="form-control" id="etapaEscolar">
+															<option th:each="etapaEscolar : ${listaEtapaEscolar}"
+																th:value="${etapaEscolar.codEtapaEscolar}"
+																th:text="${etapaEscolar.descEtapaEscolar}"></option>
+														</select>
+													</div>
+												</div>
+
+												<div class="row">
+													<div class="form-group col-12 col-md-12">
+														<label class="col-form-label">Cedula profesional</label> <input
+															type="text" id="cedulaProfesional" class="form-control"
+															maxlength="20" />
+													</div>
+												</div>
+
+												<div class="row">
+													<div class="form-group col-6 col-md-6">
+														<label class="col-form-label">Fecha de inicio*</label> <input
+															class="form-control" id="fecInicioEscolaridad"
+															type="month" min="1950-01" max="2099-12"
+															pattern="[0-9]{4}-[0-9]{2}"> <small
+															id="validFecInicio" class="form-text text-danger">Dato
+															requerido</small>
+													</div>
+
+													<div class="form-group col-6 col-md-6">
+														<label class="col-form-label">Fecha de fin*</label> <input
+															class="form-control" id="fecFinEscolaridad" type="month"
+															min="1950-01" max="2099-12" pattern="[0-9]{4}-[0-9]{2}">
+														<small id="validFecFin" class="form-text text-danger">Dato
+															requerido</small>
+													</div>
+												</div>
+												<input type="hidden" id="codRecurso"
+													th:value="${recurso.codRecurso}" /> <input type="hidden"
+													id="codRecursoEscolaridad" value="" />
+
+												<!-- 							</form> -->
+											</div>
+											<div class="modal-footer">
+												<button class="btn btn-secondary"
+													onclick="resetFormEscolaridad();" type="button"
+													data-dismiss="modal">Cancelar</button>
+												<button type="submit" onclick="registraEscolaridad();"
+													class="btn btn-primary">Aceptar</button>
+											</div>
+
+										</div>
+									</div>
+								</div>
+
+								<!-- Modal Crear ContactoEmergencia -->
+								<div class="modal fade" id="nuevaContactoEmergenciaModal"
+									tabindex="-1" role="dialog"
+									aria-labelledby="nuevaEContactoEmergenciaModalLabel"
+									aria-hidden="true">
+									<div class="modal-dialog" role="document">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h6 class="modal-title"
+													id="nuevaContactoEmergenciaModalLabel">Contacto de
+													emergencia</h6>
+												<button class="close" type="button" data-dismiss="modal"
+													aria-label="Close">
+													<span aria-hidden="true">&times;</span>
+												</button>
+											</div>
+											<div class="modal-body" style="font-size: 14px;">
+												<div class="row">
+													<div class="form-group col-12 col-md-12">
+														<label class="col-form-label">Nombre del contacto*</label>
+														<input type="text" id="nombreContactoEmergencia"
+															class="form-control" maxlength="60"> <small
+															id="validNombreContactoEmergencia"
+															class="form-text text-danger">Dato requerido</small>
+													</div>
+												</div>
+
+												<div class="row">
+													<div class="form-group col-6 col-md-6">
+														<label class="col-form-label">Telefono del
+															contacto*</label> <input type="text"
+															id="telefonoContactoEmergencia" class="form-control"
+															maxlength="12"
+															onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
+														<small id="validTelefonoContactoEmergencia"
+															class="form-text text-danger">Dato requerido</small>
+													</div>
+
+													<div class="form-group col-6 col-md-6">
+														<label class="col-form-label">Parentesco*</label> <select
+															class="form-control" id="parentescoContactoEmergencia">
+															<option th:each="parentesco : ${listaParentesco}"
+																th:value="${parentesco.codParentesco}"
+																th:text="${parentesco.descParentesco}"></option>
+														</select>
+													</div>
+												</div>
+
+												<div class="row">
+													<div class="col-6 col-md-6">
+														<div class="form-check">
+															<input class="form-check-input" type="checkbox" value=""
+																id="esDependiente"> <label
+																class="form-check-label" for="esDependiente"> Es
+																dependiente economico </label>
+														</div>
+													</div>
+												</div>
+												<input type="hidden" id="codContactoEmergencia" value="" />
+											</div>
+											<div class="modal-footer">
+												<button class="btn btn-secondary"
+													onclick="resetFormContactoEmergencia();" type="button"
+													data-dismiss="modal">Cancelar</button>
+												<button type="submit"
+													onclick="registraContactoEmergencia();"
+													class="btn btn-primary">Aceptar</button>
+											</div>
+
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- INICIO Modal Asignar Herramienta -->
+							<div id="recursoHerramientaModal"></div>
+							<!-- FIN Modal Asignar Herramienta -->
+
+							<div id="recursoTrayectoriaProyectoModal"></div>
+
+							<div id="recursoTrayectoriaCapacitacionModal"></div>
+
+							<div id="recursoTrayectoriaNivelModal"></div>
+
+							<div id="recursoExpedienteDigitalModal"></div>
+							
+							<div class="modal" id="modalMetasCompetencias" tabindex="-1" role="dialog">
+							  <div class="modal-dialog modal-lg" role="document">
+							    <div class="modal-content">
+							      <div class="modal-header">
+							        <h5 class="modal-title" th:text="${perfil.descPerfil}"></h5>
+							        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							          <span aria-hidden="true">&times;</span>
+							        </button>
+							      </div>
+							      <div class="modal-body">
+							      <ul class="nav nav-tabs" id="myTab" role="tablist">
+							      		<li class="nav-item"><a class="nav-link active"
+											id="funciones-tab" data-toggle="tab" href="#funciones" role="tab"
+											aria-controls="funciones" aria-selected="true">Funciones</a></li>
+										<li class="nav-item"><a class="nav-link"
+											id="metas-tab" data-toggle="tab" href="#metas" role="tab"
+											aria-controls="metas" aria-selected="true">Metas</a></li>
+										<li class="nav-item"><a class="nav-link" id="competencias-tab"
+											data-toggle="tab" href="#competencias" role="tab"
+											aria-controls="competencias" aria-selected="false">Competencias</a></li>
+									</ul>
+									<div class="tab-content" id="myTabContent" style="background-color: #ffffff;">
+										<div class="tab-pane fade show active" id="funciones" role="tabpanel" aria-labelledby="funciones-tab">
+											<ol style="list-style-type: inherit; padding-top: 10px;">
+											  <li th:each="funcion : ${#strings.arraySplit(perfil.descFunciones, '.')}">
+											  	<div>
+											  		<span style="font-size: 14px; font-weight: 500;" th:text="${funcion}"></span>
+											  	</div>
+											  </li>
+											</ol>
+										</div>
+										<div class="tab-pane fade" id="metas" role="tabpanel" aria-labelledby="metas-tab">
+											<ul class="list-group list-group-flush">
+											  <li class="list-group-item" th:each="metas : ${perfil.metasPerfiles}">
+											  	<div>
+											  		<span style="font-size: 14px; font-weight: 700;" th:text="${metas.meta.descMeta}"></span>
+											  		<span style="font-size: 12px; font-weight: 400; font-style: oblique;" th:text="'(' + ${metas.valPorcentaje} + '%)'"></span>
+											  		<br>
+								  					<span style="font-size: 14px; font-weight: 400;" th:text="${metas.meta.descDefinicion}"></span>
+											  	</div>
+											  </li>
+											  <li class="list-group-item">
+											  	<div class="d-flex justify-content-end">
+											  		<span style="font-size: 14px; font-weight: 700; font-style:inherit;" th:text="'TOTAL: '"></span>
+											  		<span style="font-size: 12px; font-weight: 400; font-style: oblique;" th:text="'100%'"></span>
+											  	</div>
+											  </li>
+											</ul>
+											
+										</div>
+										<div class="tab-pane fade" id="competencias" role="tabpanel" aria-labelledby="competencias-tab">
+											<ul class="list-group list-group-flush">
+											  <li class="list-group-item" th:each="competencias : ${perfil.competenciasPerfiles}">
+											  	<div>
+											  		<span style="font-size: 14px; font-weight: 700;" th:text="${competencias.competencia.descCompetencias} + ' :'"></span>
+											  		<span style="font-size: 13px; font-weight: 400;" th:text="${competencias.competencia.descDefinicion} "></span>
+											  		<br>
+											  		<span style="font-size: 14px; font-weight: 700;" th:text="'Competencia a cumplir: '"></span>
+											  		<span style="font-size: 13px; font-weight: 400;" th:text="${competencias.descDefinicion}"></span>
+											  	</div>
+											  </li>
+											</ul>
+										</div>
+									</div>
+							      </div>
+							      <div class="modal-footer">
+							        <button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+							      </div>
+							    </div>
+							  </div>
+							</div>
+
+							<!-- Footer -->
+							<footer th:replace="layout/layout :: footer"></footer>
+							<!-- End of Footer -->
+
+
+						</div>
+						<!-- End of Content Wrapper -->
+
+					</div>
+					<!-- End of Page Wrapper -->
+				</div>
+				
+				<div th:unless="${#authentication.getName()} == ${recurso.descCorreoElectronico} OR ${listAdminRh.contains(#authentication.getName())}">
+					<div style="text-align: center;">
+						<img style="width: 30%; border-radius: 20px;"
+							th:src="@{/img/img-accessDenied.png}">
+						<p style="font-size: 14px; color: red; font-stretch: 500;">Acceso denegado</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Scroll to Top Button-->
+					<div class="st-actionContainer right-bottom" id="btnFlash">
+						<div class="st-btn-container right-bottom"
+							onclick="flashSurvey(); return false;">
+							<div class="st-button-main">
+								<i class="fa fa-bolt" aria-hidden="true"></i>
+							</div>
+						</div>
+					</div>
+					<a class="scroll-to-top rounded" href="#page-top"> <i
+						class="fas fa-angle-up"></i>
+					</a>
+
+					<!-- ModalLogout -->
+					<footer th:replace="layout/layout :: modalLogout"></footer>
+					<!-- End ModalLogout -->
+
+					<!-- Bootstrap core JavaScript-->
+					<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+					<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+					<!-- Core plugin JavaScript-->
+					<script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+					<!-- Custom scripts for all pages-->
+					<script th:src="@{/js/sb-admin-2.min.js}"></script>
+
+					<!-- Page level plugins -->
+					<script th:src="@{/vendor/datatables/jquery.dataTables.min.js}"></script>
+					<script th:src="@{/vendor/datatables/dataTables.bootstrap4.min.js}"></script>
+					<script th:src="@{/js/select2.min.js}"></script>
+					
+<!-- 					<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script> -->
+
+					<!-- Page level custom scripts -->
+					<script type="text/javascript" sec:authorize="hasAnyRole('ROLE_USER', 'ROLE_APROB')">
+					$(document).ready(function(){
+						
+						
+						
+						$("#formDatosEmpresa .row div input").removeClass("dg-edit");
+						$("#formDatosEmpresa .row div select").removeClass("dg-edit");
+						
+						$('.select2Multiple').select2();
+						
+					});
+					</script>
+					<script th:src="@{/js/demo/datatables-demo.js}"></script>
+					<script th:src="@{/js/datosRecursoSesion.js}"></script>
+					<script th:src="@{/js/datosGenerales.js}"></script>
+					<script th:src="@{/js/datosEmpresa.js}"></script>
+					<script th:src="@{/js/trayectoria.js}"></script>
+					<script th:src="@{/js/expedienteDigital.js}"></script>
+</body>
+
+</html>

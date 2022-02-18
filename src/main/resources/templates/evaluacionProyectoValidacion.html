@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="layout/layout::head"></head>
+
+<body id="page-top">
+  <input id="authGetName" type="hidden" th:value="${#authentication.getName()}"></input>
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul th:replace="layout/layout::menu"> </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+        <header th:replace="layout/layout :: header"></header>
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+        
+        <input id="codProyecto" type="hidden" th:value="${proyecto.codProyecto}"/>
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-1">
+            <h4 class="text-gray-800" th:text="'Seguimiento de evaluaci&oacute;n del proyecto ' + ${proyecto.descProyecto}"></h4>
+            
+          </div>
+          <div class="form-group">
+          	<h6 class="text-gray-800">Descripci&oacute;n del proyecto: </h6>
+          	<h6 th:text ="${proyecto.descProyectoTexto}"></h6>
+          </div>
+          <a type="button" th:href="@{/listaProyectosTodo}" th:text="'&laquo; regresar'"></a>
+          <br>
+          <a th:if="${proyecto.valEvaluacion!=2 && proyecto.fecCierreEvaluacion==null}" style="font-size: 12px;" th:href="@{/evaluacionProyecto/}+${proyecto.codProyecto}" class="badge badge-info mb-2" ><i class="fas fa-tasks"></i> Asignar conceptos</a>
+          <a th:if="${proyecto.valEvaluacion!=2 && proyecto.fecCierreEvaluacion==null}" style="font-size: 12px;" href="#modalEvaluador" data-toggle="modal" class="badge badge-success mb-2" ><i class="fas fa-user-check"></i> Asignar evaluador</a>
+          <!-- DataTales Example -->
+          <div class="card shadow mb-4">
+            <div class="card-body" id="contenidoTabla">
+              <div class="table-responsive fz-12">
+                <table class="table" id="dataTable" width="100%" cellspacing="0">
+	                 <thead>
+	                   <tr>
+	                      <th>Etapa</th>
+	                      <th>Concepto</th>
+	                      <th>Comentario <i class="far fa-edit"></i></th>
+	                      <th>Evidencia <i class="far fa-edit"></i></th>
+	                      <th>Evaluaci&oacute;n</th>
+	                      <th th:if="${proyecto.valEvaluacion!=2}">Opciones</th>
+                    	</tr>
+	                 </thead>
+	                 <tbody>
+	                 	<tr th:each="detalleEvaluacion : ${listaDetalleEvaluacion}">
+							<td style="vertical-align: middle;" th:text="${detalleEvaluacion.concepto.etapa.descEtapa}"></td>
+							<td style="vertical-align: middle;" th:inline="text">[[${detalleEvaluacion.concepto.descConcepto}]] 
+								<i th:if="${detalleEvaluacion.codEvaluacion == 1 and detalleEvaluacion.calificacion == 0}" style="color:green;" class="fas fa-check-circle"></i>
+								<i th:if="${detalleEvaluacion.codEvaluacion == 2 and detalleEvaluacion.calificacion == 0}" style="color:yellow;" class="fas fa-check-circle"></i>
+								<i th:if="${detalleEvaluacion.codEvaluacion == 3 and detalleEvaluacion.calificacion == 0}" style="color:red;" class="fas fa-check-circle"></i>
+								<i th:if="${detalleEvaluacion.codEvaluacion == null and detalleEvaluacion.calificacion != 0}" style="color:green;" class="fas fa-check-circle"></i>
+								
+							</td>
+							<td style="vertical-align: middle;">
+								<textarea class="form-control" style="resize:none; font-size: 12px; padding: 5px; border: none; border-color: transparent;" maxlength="500" rows="3" th:id="'coment_'+${detalleEvaluacion.concepto.codConcepto}" placeholder="Sin comentario" th:inline="text">[[${detalleEvaluacion.descComentario}]]</textarea>
+							</td>
+							<td style="vertical-align: middle;">
+								<textarea class="form-control" style="resize:none; font-size: 12px; padding: 5px; border: none; border-color: transparent;" maxlength="500" rows="3" th:id="'ruta_'+${detalleEvaluacion.concepto.codConcepto}"  placeholder="Sin evidencia" th:inline="text">[[${detalleEvaluacion.ruta}]]</textarea>
+								<a th:if="${detalleEvaluacion.ruta != null}" th:href="${detalleEvaluacion.ruta}" target="_blank" class="badge badge-light"><i class="fa fa-link"></i> abrir</a>
+<!-- 								<a href="${detalleEvaluacion.ruta}" target="_blank" class="badge badge-light"><i class="fa fa-link"></i> abrir</a> -->
+							</td>
+							<td style="vertical-align: middle;">
+								<select th:if="${detalleEvaluacion.concepto.codConcepto != 7016 and detalleEvaluacion.codEvaluacion != null}" disabled="disabled"  th:id="'eval_' + ${detalleEvaluacion.concepto.codConcepto}" class="custom-select" style="font-size: 12px; padding: 5px;">
+									<option th:each="evaluacion : ${listaEvaluacion}" th:text="${evaluacion.descEvaluacion}" th:value="${evaluacion.codEvaluacion}" th:selected="${detalleEvaluacion.codEvaluacion==evaluacion.codEvaluacion}"></option>
+								</select>
+								<input th:if="${detalleEvaluacion.concepto.codConcepto == 7016 and detalleEvaluacion.calificacion != 0}" th:id="'evalEncuesta_' + ${detalleEvaluacion.concepto.codConcepto}" type="number" disabled="disabled" style="font-size: 12px; padding: 5px;" class="form-control" th:value="${detalleEvaluacion.calificacion}"> 
+								<span th:if="${detalleEvaluacion.codEvaluacion == null and detalleEvaluacion.calificacion == 0}"  style="font-size: 12px;" th:text="'Sin evaluaci&oacute;n'"></span>
+                    		</td>
+                    		<td th:if="${proyecto.valEvaluacion!=2}" style="vertical-align:middle;">
+                    			<a style="font-size: 10px;" th:id="'save_'+${detalleEvaluacion.concepto.codConcepto}" href="#" class="badge badge-success" onclick="actualizar(this.id); return false;"><i class="fas fa-save"></i> Guardar</a>
+                    			<div th:id="'wait_'+${detalleEvaluacion.concepto.codConcepto}" class="spinner-grow text-muted"></div>
+                    		</td>
+						</tr>
+	                 </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      <footer th:replace="layout/layout :: footer"></footer>
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+  
+  <div class="modal fade" id="modalEvaluador" tabindex="-1" role="dialog" aria-labelledby="modalEvaluadorLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" id="modalEvaluadorLabel">Evaluador</h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+		    <label style="font-size: 14px;" for="controlSelectEvaluador">Selecciona un recurso para realizar la evaluaci&oacute;n:</label>
+		    	<select id="listRecursos" class="custom-select" style="font-size: 12px;" >
+					<option th:each="recurso : ${listaRecursos}" th:text="${recurso.descRecurso} + ' ' + ${recurso.descApellidoPaterno}" th:value="${recurso.codRecurso}"></option>
+				</select>
+  		</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" onclick="enviarMail(); return false;">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  <!-- Scroll to Top Button--> <div class="st-actionContainer right-bottom" id="btnFlash"> <div class="st-btn-container right-bottom" onclick="flashSurvey(); return false;"> <div class="st-button-main"><i class="fa fa-bolt" aria-hidden="true"></i></div> </div> </div>
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+	  <!-- ModalLogout -->
+      <footer th:replace="layout/layout :: modalLogout"></footer>
+      <!-- End ModalLogout -->
+      
+  <!-- Bootstrap core JavaScript-->
+  <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+  <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script th:src="@{/js/sb-admin-2.min.js}"></script>
+
+  <!-- Page level plugins -->
+  <script th:src="@{/vendor/datatables/jquery.dataTables.min.js}"></script>
+  <script th:src="@{/vendor/datatables/dataTables.bootstrap4.min.js}"></script>
+
+  <!-- Page level custom scripts -->
+<!--   <script th:src="@{/js/demo/datatables-demo.js}"></script> -->
+  
+  <script th:src="@{/js/datosRecursoSesion.js}"></script>
+  <script type="text/javascript">
+  $(document).ready(function() {
+	  $(".text-muted").hide();
+	  
+	  	$('#dataTable').DataTable( {
+	  	    language: {
+	  	    	sProcessing:     "Procesando...",
+	  	        sLengthMenu:     "Mostrar _MENU_ registros",
+	  	        sZeroRecords:    "No se encontraron resultados",
+	  	        sEmptyTable:     "Ning\u00FAn concepto disponible para el proyecto",
+	  	        sInfo:           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+	  	        sInfoEmpty:      "Mostrando registros del 0 al 0 de un total de 0 registros",
+	  	        sInfoFiltered:   "(filtrado de un total de _MAX_ registros)",
+	  	        sInfoPostFix:    "",
+	  	        sSearch:         "Buscar:",
+	  	        sUrl:            "",
+	  	        sInfoThousands:  ",",
+	  	        sLoadingRecords: "Cargando...",
+	  	        oPaginate: {
+	  	            sFirst:    "Primero",
+	  	            sLast:     "Último",
+	  	            sNext:     "Siguiente",
+	  	            sPrevious: "Anterior"
+	  	        },
+	  	        oAria: {
+	  	            sSortAscending:  ": Activar para ordenar la columna de manera ascendente",
+	  	            sSortDescending: ": Activar para ordenar la columna de manera descendente"
+	  	        },
+	  	        buttons: {
+	  	            copy: "Copiar",
+	  	            colvis: "Visibilidad"
+	  	        }
+	  	    },
+	  	  "columns": [
+	  		{ "width": "15%" },
+	  		{ "width": "15%" },
+	  		{ "width": "25%" },
+	  		{ "width": "25%" },
+	  		{ "width": "15%" },
+	  	  	{ "width": "5%" }
+	  	  	  ]
+	  	} );
+  });
+  function actualizar(id){
+	  var idConcepto = id.substring(5);
+	  $("#save_"+idConcepto).hide();
+	  $("#wait_"+idConcepto).show();
+	  var comentario = $("#coment_"+idConcepto).val();
+	  var ruta = $("#ruta_"+idConcepto).val();
+	  $.ajax({
+			url: "/guardaComplementoConcepto",
+			data: {codProyecto:$("#codProyecto").val(),
+				   codConcepto:idConcepto,
+				   comentario:comentario,
+				   ruta:ruta},
+			success: function(result){
+				$("#save_"+idConcepto).show();
+				$("#wait_"+idConcepto).hide();
+			}
+		});
+  }
+  
+  function enviarMail(){
+	  var idRecurso = $("#listRecursos").val();
+	  $.ajax({
+			url: "/enviaMailEvaluador",
+			data: {idRecurso:idRecurso,
+				codProyecto:$("#codProyecto").val()},
+			success: function(result){
+				$('#modalEvaluador').modal('hide');
+			}
+		});
+  }
+
+  
+  </script>
+  
+
+</body>
+
+</html>

@@ -1,0 +1,8 @@
+com.sophi.app
+com.sophi.app.controllers
+com.sophi.app.mail.config
+com.sophi.app.mail.dto
+com.sophi.app.mail.service
+com.sophi.app.models.dao
+com.sophi.app.models.entity
+com.sophi.app.models.service

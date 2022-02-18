@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Sophitech</title>
+  <link rel="icon" type="image/png" th:href="@{/img/icon.png}" sizes="16x16">
+
+  <!-- Custom fonts for this template-->
+  <link th:href="@{/vendor/fontawesome-free/css/all.min.css}" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+  <!-- Custom styles for this template-->
+  <link th:href="@{/css/sb-admin-2.css}" rel="stylesheet">
+
+</head>
+
+<body>
+
+	<div class="container">
+		<div class="row d-flex justify-content-between" style="padding: 30px 0;">
+			<div id="sophi_logo" style="padding-left: 20px;">
+				<a href="http://www.sophitech.mx/"><img
+					src="https://drive.google.com/uc?export=view&id=1PrbNbggW6stOReWUDTaN6mbjlTT7XSPA"
+					alt="Sophitech - The business intelligence experts"
+					style="width: 200px; border: 0; line-height: 100%; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic;"></a>
+			</div>
+			<div id="mstr_logo"  style="padding-right: 20px;">
+				<a href="https://www3.microstrategy.com/es"><img
+					src="https://drive.google.com/uc?export=view&id=1K59TfK_LSAZY14xDJHmLwfmT86GstsQq"
+					alt="MicroStrategy - Intelligence Everywhere"
+					style="width: 200px; border: 0; line-height: 100%; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic;"></a>
+			</div>
+		</div>
+		
+		<div>
+			<table style="width: 100%;">
+			<tbody>
+				<tr>
+				<!-- style="background-image: url('https://drive.google.com/uc?export=view&id=1OzDlcd-UApp0wstGtZiLE42EagbiHc7r');  -->
+					<td bgcolor="#c02c57" height="350" width="100%" 
+					style="background-image: url('https://drive.google.com/uc?export=view&id=1whqihMT4PxqeP_blVJjpc83oSrBbCVLr'); 
+					background-position: top left; background-repeat: no-repeat; background-size: cover; width: 100%; padding: 0px; margin: 0px;">
+				
+					<table style="width: 100%; color: #ffffff; font-size: 16px; font-weight: 400; line-height: 25px;">
+						<tbody>
+							<tr>
+								<td align="left" class="wrapper"
+									style="padding: 5px 20px;">
+									<div id="label">
+										<p
+											style="padding: 0; margin: 0; text-transform: uppercase; font-size: 14px;">
+											<em><strong>Sophitech Webinar Series</strong></em>
+										</p>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td align="left" class="wrapper"
+									style="padding: 5px 20px;">
+									<div id="wc-title">
+										<h1 style="line-height: 32px;">Revoluci&oacute;n anal&iacute;tica para retail</h1>
+									</div>
+									<div id="wc-date">
+										<p style="margin: 0; padding: 0;">20 de Abril | 12:00 P.M.
+											/ Evento virtual</p>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					
+					</td>
+				</tr>
+			</tbody>
+			</table> 
+		</div>
+	
+	    <div class="row d-flex justify-content-center">
+	
+			<div class="col-md-6 my-4">
+				<div style="padding: 5px 0 0 0;;"><i class="fas fa-map-marker-alt"></i><span> Evento virtual</span></div>
+				<div style="padding: 10px 0 20px 0;"><i class="far fa-clock"></i><span> 20 de Abril | 12:00 P.M</span></div>
+				
+				<p style="font-size:24px; font-weight: 200;">Revoluci&oacute;n anal&iacute;tica para retail</p>
+				<p style="font-weight: 100;">Asiste a este webinar para aprender c&oacute;mo las empresas de
+					retail l&iacute;deres en el mundo utilizan MicroStrategy para analizar y
+					gestionar productos, precios, inventarios, tiendas y la
+					productividad de su fuerza de ventas.</p>
+			</div>
+	              
+			<div class="col-md-5 card border-0 shadow-lg my-5">
+				<div class="card-body" style="padding: 30px 15px;">
+				<div th:if="${mensaje == null}">
+					<div>
+						<h5 class="text-gray-900 mb-2">Completa el formulario para registrarte al webinar.</h5>
+					</div>
+					<form style="margin-top: 25px;" th:action="@{/registroWebinar}" th:object="${registroWebinar}" method="post">
+						<div class="form-row">
+							<div class="col-md-6 form-group">
+								<input type="text" class="form-control form-control-input" th:field="*{descNombre}" placeholder="Nombre" required="required" maxlength="40">
+							</div>
+							<div class="col-md-6 form-group">
+								<input type="text" class="form-control form-control-input" th:field="*{descApellidos}" placeholder="Apellido(s)" required="required" maxlength="40">
+							</div>
+							<div class="col-md-6 form-group">
+								<input type="email" class="form-control form-control-input" th:field="*{descEmail}" placeholder="Dirección de Email" required="required" maxlength="60">
+							</div>
+							<div class="col-md-6 form-group">
+								<input type="tel" class="form-control form-control-input" th:field="*{descTelefono}" placeholder="Número de teléfono" minlength="8" maxlength="20">
+							</div>
+							<div class="col-md-6 form-group">
+								<input type="text" class="form-control form-control-input" th:field="*{descEmpresa}" placeholder="Empresa" required="required">
+							</div>
+							<div class="col-md-6 form-group">
+								<input type="text" class= "form-control form-control-input" th:field="*{descCargo}" placeholder="Cargo" required="required">
+							</div>
+							<div class="col-md-12 form-group">
+								<select class="form-control form-control-input" th:field="*{descPais}" required="required">
+									<option value="0" selected="selected" disabled="disabled">Pa&iacute;s...</option>
+									<option value="México">M&eacute;xico</option>
+									<option value="Argentina">Argentina</option>
+									<option value="Chile">Chile</option>
+									<option value="Colombia">Colombia</option>
+								</select>
+							</div>
+						</div>
+	        								
+	                    <input type="submit" class="btn btn-primary btn-user btn-block" value="Aceptar" />
+	                  </form>
+				
+				</div>
+				<div th:unless="${mensaje == null}" style="text-align: center;">
+					<div style="font-size:24px; font-weight: 200; font-size: 26px;">
+						<p th:text="${mensaje}"></p>
+					</div>
+					
+					<div style="font-size:24px; font-weight: 200; font-size: 40px;" > 
+						<i class="far fa-thumbs-up"></i>
+					</div>
+					
+				
+				</div>
+	               
+				</div>
+			</div>
+		</div>
+
+	</div>
+	
+	<!-- Footer -->
+	<footer th:replace="layout/layout :: footer"></footer>
+	<!-- End of Footer -->
+	
+
+  	<!-- Bootstrap core JavaScript-->
+	<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+	<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+	<!-- Core plugin JavaScript-->
+	<script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+	<!-- Custom scripts for all pages-->
+	<script th:src="@{/js/sb-admin-2.min.js}"></script>
+
+</body>
+
+</html>

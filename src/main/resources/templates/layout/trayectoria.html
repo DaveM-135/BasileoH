@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+
+	<div th:fragment="fragmentTrayectoria">
+		<!-- INICIA Estructura de las 3 secciones -->
+		<div class="row">
+			<div class="col-lg-8">
+				<div class="row p-2">
+					<div class="card cardTR">
+						<div class="card-header" style="color: #898796;">
+							<!--<div class="d-flex justify-content-between">
+								<span>Proyectos</span> <i class="fa fa-plus" style="cursor: pointer;" aria-hidden="true" onclick="openModalRegistrarTrayectoriaProyecto();"></i>
+							</div>-->
+						</div>
+						<div class="card-body text-secondary" style="padding: 0px;" id="cardTrayectoriaProyecto">
+							<div th:fragment="fragmentTrayectoriaProyecto" class="overflow">
+									<ul class="timeline">
+										<li th:each="trayectoriaProyecto : ${listaTrayectoriaProyectos}">
+											<div class="d-flex justify-content-between" style="font-size: 12px; color: gray;">
+												<span th:text="${trayectoriaProyecto.descProyecto} + ' - ' + ${trayectoriaProyecto.descCliente}"></span>
+												<span th:text="${#dates.format(trayectoriaProyecto.fecInicioParticipacion, 'dd-MM-yyyy')} + ' al ' + ${#dates.format(trayectoriaProyecto.fecFinParticipacion, 'dd-MM-yyyy')}"></span>
+											</div> 
+											<p style="font-size: 12px; color: gray; margin: 0px; font-weight: 300;" th:text="${trayectoriaProyecto.descActividades}"></p>
+											<div class="d-flex justify-content-between">
+												<div>
+													<small th:each="detalleConocimientoProyecto : ${trayectoriaProyecto.detalleConocimientosProyecto}"><span class="badge badge-pill badge-info"  th:text="${detalleConocimientoProyecto.conocimiento.descConocimiento}"></span>&nbsp;</small>
+												</div>
+												<!--<div style="font-size: 12px; font-weight:100;  color: gray;">
+													<i class="fas fa-edit dg-edit-escolar" th:id="${trayectoriaProyecto.codTrayectoriaProyecto}" onclick="editarTrayectoriaProyecto(this.id);" style="cursor: pointer;"></i>
+													<i class="fas fa-trash-alt dg-edit-escolar" th:id="${trayectoriaProyecto.codTrayectoriaProyecto}" onclick="borrarTrayectoriaProyecto(this.id);" style="cursor: pointer;"></i>
+												</div>-->
+											</div> 
+										</li>
+									</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row p-2" >
+					<div class="card cardTR">
+						<div class="card-header">
+							<div class="d-flex justify-content-between">
+								<span>Cursos / Certificaciones</span> <i class="fa fa-plus" style="cursor: pointer;" aria-hidden="true" onclick="openModalRegistrarTrayectoriaCapacitacion();"></i>
+							</div>
+						</div>
+						<div class="card-body text-secondary" style="padding: 0px;" id="cardTrayectoriaCapacitacion">
+						<div  th:fragment="fragmentTrayectoriaCapacitacion" class="overflow">
+			                <div class="tracking-list">
+			                    <div class="tracking-item" th:each="trayectoriaCapacitacion : ${listaTrayectoriaCapacitaciones}">
+			                		<div class="tracking-icon status">
+			                			<i th:if="${trayectoriaCapacitacion.descEstatus == '1'}" class='far fa-star' style="color:red;"></i>
+			                			<i th:if="${trayectoriaCapacitacion.descEstatus == '2'}" class='fas fa-star-half-alt' style="color:yellow;"></i>
+			                			<i th:if="${trayectoriaCapacitacion.descEstatus == '3'}" class='fas fa-star' style="color:green;"></i>
+			                		</div>
+			                		<div class="tracking-date">
+			                			<span th:text="${#dates.format(trayectoriaCapacitacion.fecInicio, 'dd-MM-yyyy')}"></span>
+			                			<span> al </span>
+			                			<span th:text="${#dates.format(trayectoriaCapacitacion.fecFin, 'dd-MM-yyyy')}"></span>
+			                		</div> 
+			                		<div class="tracking-content">
+			                			<span style="color:#858796; font-size: 12px; font-weight: 700;" th:text="${trayectoriaCapacitacion.capacitacion.descCapacitacion}"></span>
+			                			<span th:text="${trayectoriaCapacitacion.capacitacion.descDetalleCapacitacion}"></span>
+			                			<div class="d-flex justify-content-between">
+			                				<div>
+			                					<span style="color:#888;" th:text="${trayectoriaCapacitacion.capacitacion.valHrsCapacitacion} + 'hrs | ' + ${trayectoriaCapacitacion.capacitacion.descCategoria} + ' | ' + ${trayectoriaCapacitacion.capacitacion.descProveedor}"></span>
+			                					<a th:if="${trayectoriaCapacitacion.descDocumentoEvidencia} != null" th:href="'/capacitacion/evidencia?rtc=' + ${trayectoriaCapacitacion.codRecursoCapacitacion}" target="_blank">Evidencia</a> 
+			                				</div>
+			                				<div style="font-size: 12px; font-weight:100;  color: gray;">
+												<i class="fas fa-edit" th:id="${trayectoriaCapacitacion.codRecursoCapacitacion}" onclick="editarTrayectoriaCapacitacion(this.id);" style="cursor: pointer;"></i>
+												<i class="fas fa-trash-alt" th:id="${trayectoriaCapacitacion.codRecursoCapacitacion}" onclick="borrarTrayectoriaCapacitacion(this.id);" style="cursor: pointer;"></i>
+											</div>
+			                			</div>
+			                		</div>
+			            		</div>
+			        		</div>
+						</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-4">
+				<div class="row p-2">
+					<div class="card cardTR">
+						<div class="card-header">
+							<div class="d-flex justify-content-between">
+								<span>Nivel</span>
+							</div>
+						</div>
+						<div class="card-body text-secondary" style="padding-top: 0px;" id="cardTrayectoriaNivel">
+						<div th:fragment="fragmentTrayectoriaNivel">
+							<div class="row" th:each="nivel : ${listaTrayectoriaNivel}">
+							    <div class="col-12">
+							        <div class="progress_bar">
+							            <div class="pro-bar">
+							                <small class="progress_bar_title">[[${nivel.conocimiento.descConocimiento}]]
+							                    <i th:if ="${nivel.codNivelExperiencia} == 1" th:id="${nivel.codNivelTrayectoria}" onclick="formEvaluarNivel(this.id);" class="fa fa-check-square-o" style="cursor: pointer; color: #36b9cc;"></i>
+							                    <i th:if ="${nivel.codNivelExperiencia} != 1" th:id="${nivel.codNivelTrayectoria}" onclick="formEvaluarNivel(this.id);" class="fa fa-check-square-o" style="cursor: pointer; color: green;"></i>
+							                </small>
+							                <span th:if ="${nivel.codNivelExperiencia} == 1" class="progress-bar-inner" style="background-color: #36b9cc; width: 0%;" data-value="0" data-percentage-value="0"></span>
+							                <span th:if ="${nivel.codNivelExperiencia} == 2" class="progress-bar-inner" th:style="'background-color: red; width: ' + ${nivel.porcentajeExperiencia} +'%;'" th:data-value="${nivel.porcentajeExperiencia}" th:data-percentage-value="${nivel.porcentajeExperiencia}"></span>
+							                <span th:if ="${nivel.codNivelExperiencia} == 3" class="progress-bar-inner" th:style="'background-color: yellow; width: ' + ${nivel.porcentajeExperiencia} +'%;'" th:data-value="${nivel.porcentajeExperiencia}" th:data-percentage-value="${nivel.porcentajeExperiencia}"></span>
+							                <span th:if ="${nivel.codNivelExperiencia} == 4" class="progress-bar-inner" th:style="'background-color: green; width: ' + ${nivel.porcentajeExperiencia} +'%;'" th:data-value="${nivel.porcentajeExperiencia}" th:data-percentage-value="${nivel.porcentajeExperiencia}"></span>
+							            </div>
+							        </div>
+								</div>
+							</div>
+							<div class="pro-bar">
+								<p>Referencia</p>
+								<svg width="25" height="25"><circle cx="12.5" cy="12.5" r="10" stroke="black" stroke-width="4" fill="red" /></svg>&nbsp;&nbsp;&nbsp;<span>B&aacute;sico</span><br />
+								<svg width="25" height="25"><circle cx="12.5" cy="12.5" r="10" stroke="black" stroke-width="4" fill="yellow" /></svg>&nbsp;&nbsp;&nbsp;<span>Intermedio</span><br />
+								<svg width="25" height="25"><circle cx="12.5" cy="12.5" r="10" stroke="black" stroke-width="4" fill="green" /></svg>&nbsp;&nbsp;&nbsp;<span>Avanzado</span><br />
+							</div>
+						</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- TERMINA Estructura de las 3 secciones -->
+	</div>
+		
+	<div th:fragment="fragmentModalTrayectoria">
+		<!-- INICIAL Modal Registrar proyecto -->
+		<div class="modal fade" id="registroProyectoModal" tabindex="-1" role="dialog" aria-labelledby="registroProyectoModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h6 class="modal-title" id="registroProyectoModalLabel">Proyectos</h6>
+						<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<form id="formularioTrayectoriaProyecto" action="#" th:action="@{/formTrayectoriaProyecto}" th:object="${trayectoriaProyecto}" method="post">
+						<div class="modal-body" style="font-size: 14px;">
+						
+							<div class="row">
+								<div class="form-group col-6 col-md-6">
+									<label class="col-form-label">Proyecto</label>
+									<input type="text" th:field="*{descProyecto}" class="form-control" maxlength="50" required="required">
+								</div>
+								<div class="form-group col-6 col-md-6">
+									<label class="col-form-label">Cliente</label>
+									<input type="text" th:field="*{descCliente}" class="form-control" maxlength="50" required="required">
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="form-group col-12 col-md-12">
+									<label class="col-form-label">Actividades</label>
+									<textarea type="text" th:field="*{descActividades}" class="form-control" maxlength="500"></textarea>
+								</div>
+							</div>
+	
+							<div class="row">
+								<div class="form-group col-6 col-md-6">
+									<label class="col-form-label">Inicio</label>
+									<input type="date" th:field="*{fecInicioParticipacion}" class="form-control" required="required">
+								</div>
+								
+								<div class="form-group col-6 col-md-6">
+									<label class="col-form-label">Fin</label>
+									<input type="date" th:field="*{fecFinParticipacion}" class="form-control" required="required">
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="form-group col-12 col-md-12">
+                    				<label class="col-form-label">Conocimientos</label>
+				                    <select style="width: 100%; border-color: gray;" class="js-example-basic-multiple form-control" name="conocimientos" multiple="multiple">
+										<option th:each="conocimiento : ${listConocimientos}"
+											th:value="${conocimiento.codConocimiento}"
+											th:text="${conocimiento.descConocimiento}"
+											th:selected="${listActualConocimientos.contains(conocimiento.codConocimiento)}">
+<!-- 											th:selected="${conocimiento.codConocimiento  == 1}"> -->
+										</option>
+				                    </select>
+                 				 </div>
+							</div>	
+
+
+
+						
+						
+						
+						
+						<script>
+							// Select2 Multiple
+							$('.js-example-basic-multiple').select2();
+						</script>
+						
+							<input type="hidden" th:field="*{codRecurso}"/>
+							<input type="hidden" th:field="*{codTrayectoriaProyecto}"/>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+							<button type="button" onclick="enviaDatos();" class="btn btn-primary">Aceptar</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!-- TERMINA Modal Registrar proyecto -->
+	</div>
+	
+	<div th:fragment="fragmentModalCapacitacion">
+		<!-- INICIAL Modal Registrar proyecto -->
+		<div class="modal fade" id="registroCapacitacionModal" tabindex="-1" role="dialog" aria-labelledby="registroCapacitacionModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h6 class="modal-title" id="registroCapacitacionModalLabel">Curso / Capacitaci&oacute;n</h6>
+						<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<form id="formularioTrayectoriaCapacitacion" th:action="@{/formTrayectoriaCapacitacion}" role="form" th:object="${recursoCapacitacion}" method="post" enctype="multipart/form-data">
+						<div class="modal-body" style="font-size: 14px;">
+						
+							<div class="row">
+								<div class="form-group col-12 col-md-12">
+									<label class="col-form-label">Curso / Capacitaci&oacute;n</label>
+									<select th:field="*{codCapacitacion}" class="form-control" >
+										<option th:each="capacitacion : ${listCapacitaciones}"
+												th:value="${capacitacion.codCapacitacion}"
+												th:text="${capacitacion.descCapacitacion}">
+										</option>
+									</select>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="form-group col-6 col-md-6">
+									<label class="col-form-label">Inicio</label>
+									<input type="date" th:field="*{fecInicio}" class="form-control" required="required">
+								</div>
+								
+								<div class="form-group col-6 col-md-6">
+									<label class="col-form-label">Fin</label>
+									<input type="date" th:field="*{fecFin}" class="form-control" required="required">
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="form-group col-6 col-md-6">
+									<label class="col-form-label">Estatus</label>
+									<select  th:field="*{descEstatus}" class="form-control" required="required">
+										<option value="1">Registrado</option>
+										<option value="2">En proceso</option>
+										<option value="3">Completado</option>
+									</select>
+								</div>
+								
+								<div id="divInputEvidencia" class="form-group col-6 col-md-6">
+                           			<label class="col-form-label">Evidencia</label>
+                               		<div class="custom-file">
+                                   		<input type="file" name="fotoEvidencia" id="fotoEvidencia" class="custom-file-input" accept="image/png, .jpeg, .jpg">
+                                   		<label class="custom-file-label"></label>
+                               		</div>
+                               		<small th:if="${descDocumentoEvidencia} != null" style="color: red;">Ya existe evidencia registrada</small>
+                          		</div>
+								<script>
+									
+									var estatus = $("#descEstatus").val();
+									if (estatus == 3){
+										$('#divInputEvidencia').show();
+									} else {
+										$('#divInputEvidencia').hide();
+									}
+									
+									$('#fotoEvidencia').on('change', function() {
+										var fileName = $(this).val().split('\\').pop();
+										$(this).next('.custom-file-label').html(fileName);
+									})
+									$('#descEstatus').on('change', function() {
+										var estatus = $(this).val();
+										console.log(estatus);
+										if (estatus == 3){
+											$('#divInputEvidencia').show();
+										} else {
+											$('#divInputEvidencia').hide();
+										}
+									})
+									
+								</script>
+							</div>
+							
+							<input type="hidden" th:field="*{codRecurso}"/>
+							<input type="hidden" th:field="*{codRecursoCapacitacion}"/>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+							<button onclick="submitFormCapacitacion();" id="btnSubmitFormCapacitacion" type="button" class="btn btn-primary">Aceptar</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!-- TERMINA Modal Registrar proyecto -->
+	</div>
+	
+	
+		<div th:fragment="fragmentModalEvaluarNivel">
+		<!-- INICIAL Modal Registrar evaluar Nivel -->
+		<div class="modal fade" id="registroEvaluarNivelModal" tabindex="-1" role="dialog" aria-labelledby="registroEvaluarNivelModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog modal-sm" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h6 class="modal-title" id="registroEvaluarNivelModalLabel">Evaluar [[${descripcionConocimiento}]]</h6>
+						<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<form id="formularioTrayectoriaNivel" th:action="@{/formTrayectoriaNivel}" role="form" th:object="${trayectoriaNivel}" method="post">
+						<div class="modal-body" style="font-size: 14px;">
+						
+							<div class="row">
+								<div class="form-group col-12 col-md-12">
+									<label class="col-form-label">Nivel</label>
+									<select th:field="*{codNivelExperiencia}" class="form-control" >
+										<option th:each="nivelExperiencia : ${listNivelesExperiencia}"
+												th:value="${nivelExperiencia.codNivelExperiencia}"
+												th:text="${nivelExperiencia.descNivelExperiencia}">
+										</option>
+									</select>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="form-group col-12 col-md-12">
+									<label class="col-form-label">Porcentaje</label>
+									<input type="number" max="100" min="0" step="5" maxlength="3" onkeypress="return false;" th:field="*{porcentajeExperiencia}" class="form-control" required="required">
+								</div>
+							</div>
+							
+							<input type="hidden" th:field="*{codNivelTrayectoria}"/>
+							<input type="hidden" th:field="*{codRecurso}"/>
+							<input type="hidden" th:field="*{codConocimiento}"/>
+						</div>
+						<script type="text/javascript">
+							$('#codNivelExperiencia').on('change', function() {
+								var val = $(this).val();
+								if(val == 1){
+									$("#porcentajeExperiencia").val('0');
+								}
+							});
+						</script>
+						<div class="modal-footer">
+							<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+							<button onclick="submitFormNivel();" id="btnSubmitFormNivel" type="button" class="btn btn-primary">Aceptar</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!-- TERMINA Modal Evaluar Nivel -->
+	</div>
+
+
+</body>
+</html>

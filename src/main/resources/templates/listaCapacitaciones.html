@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="layout/layout::head"></head>
+
+<body id="page-top">
+	<input id="authGetName" type="hidden" th:value="${#authentication.getName()}"></input>
+
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul th:replace="layout/layout::menu"> </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+        <header th:replace="layout/layout :: header"></header>
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_RH')">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-1">
+            <h1 class="h3 mb-2 text-gray-800">Cursos / Capacitaciones</h1>
+            <button type="button" class="btn btn-primary" onclick="registrarCapacitacion();">
+              <i class="fas fa-plus fa-sm text-white-50"></i> Nuevo 
+            </button>
+          </div>
+          <!-- DataTales Example -->
+          <div class="card shadow mb-4">
+            <div class="card-body">
+              <div class="table-responsive fz-12">
+                <table class="table" id="dataTable" width="100%" cellspacing="0" style="font-size: 12px;">
+                  <thead>
+                    <tr>
+                      <th>Nombre</th>
+                      <th>Duraci&oacute;n</th>
+                      <th>Enlace</th>
+                      <th>Proveedor</th>
+                      <th>Categor&iacute;a</th>
+                      <th>Solicitado</th>
+                      <th>Opciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+					<tr th:each="capacitacion : ${listaCapacitaciones}">
+						<td th:text="${capacitacion.descCapacitacion}" style="cursor: help;" data-toggle="tooltip" data-placement="auto" th:title="${capacitacion.descDetalleCapacitacion}"></td>
+						<td th:text="${capacitacion.valHrsCapacitacion} + ' hrs'"></td>
+						<td><a th:href="${capacitacion.descUbicacionEnlace}" target="_blank"><i class="fas fa-external-link-alt"></i> ir</a></td>
+						<td th:text="${capacitacion.descProveedor}"></td>
+						<td th:text="${capacitacion.descCategoria}"></td>
+						<td th:text="${capacitacion.descSolicitado}"></td>
+						<td>
+							<span th:id="${capacitacion.codCapacitacion}" style="cursor:pointer;" class="badge badge-success" onclick="editarCapacitacion(this.id);">Editar  <i class="far fa-edit"></i></span>
+							<span th:if="${capacitacion.valBorrar} == 1" th:id="${capacitacion.codCapacitacion}" style="cursor:pointer;" class="badge badge-danger" onclick="eliminarCapacitacion(this.id);">Eliminar  <i class="far fa-trash-alt"></i></span>
+                    	</td>
+					</tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!-- /.container-fluid -->
+        
+        
+        <div sec:authorize="hasAnyRole('ROLE_APROB','ROLE_USER')">
+			<div style="text-align: center;">
+				<img style="width: 30%; border-radius: 20px;" th:src="@{/img/img-accessDenied.png}">
+				<p style="font-size: 14px; color: red; font-stretch: 500;">Acceso denegado</p>
+			</div>
+		</div>
+        
+        
+		<!-- Formulario de captura y edicion -->
+        <div id="divCapacitacionesModal" >
+		<div th:fragment="fragmentModalCapacitaciones">
+		<div class="modal fade" id="registroCapacitacionesModal" tabindex="-1" role="dialog" aria-labelledby="registroCapacitacionesModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h6 class="modal-title" id="registroCapacitacionesModalLabel">Curso / Capacitaci&oacute;n</h6>
+						<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<form id="formularioCapacitaciones" th:action="@{/formCapacitaciones}" role="form" th:object="${capacitacion}" method="post">
+						<div class="modal-body" style="font-size: 14px;">
+						
+						<div class="row">
+							<div class="form-group col-12 col-md-12">
+								<label class="col-form-label">Nombre</label>
+								<input type="text" th:field="*{descCapacitacion}" class="form-control" maxlength="50" required="required">
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-12 col-md-12">
+								<label class="col-form-label">Descripci&oacute;n</label>
+								<textarea th:field="*{descDetalleCapacitacion}" class="form-control" required="required"></textarea>
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-12 col-md-12">
+								<label class="col-form-label">Enlace</label>
+								<input type="text" th:field="*{descUbicacionEnlace}" class="form-control" required="required">
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-6 col-md-6">
+								<label class="col-form-label">Proveedor</label>
+								<input type="text" th:field="*{descProveedor}" class="form-control" maxlength="50" required="required">
+							</div>
+							<div class="form-group col-6 col-md-6">
+								<label class="col-form-label">Categoria</label>
+								<input type="text" th:field="*{descCategoria}" class="form-control" maxlength="50" required="required">
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-6 col-md-6">
+								<label class="col-form-label">Duraci&oacute;n (hrs)</label>
+								<input type="number" onkeypress="return event.charCode >= 46 && event.charCode <= 57"  min="0" th:field="*{valHrsCapacitacion}" class="form-control" maxlength="50" required="required">
+							</div>
+							<div class="form-group col-6 col-md-6">
+								<label class="col-form-label">Solicitado por</label>
+								<select th:field="*{descSolicitado}" class="form-control">
+									<option value="Sophitech">Sophitech</option>
+									<option value="Recurso">Recurso</option>
+									<option value="Cliente">Cliente</option>
+								</select>
+							</div>
+							
+							<input type="hidden" th:field="*{codCapacitacion}"/>
+						</div>
+						
+						<div class="modal-footer">
+							<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+							<button  id="btnSubmitFormCapacitaciones" type="submit" class="btn btn-primary">Aceptar</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		</div>
+        </div>
+        <!-- Formulario de captura y edicion -->
+
+      </div>
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      <footer th:replace="layout/layout :: footer"></footer>
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button--> 
+  <div class="st-actionContainer right-bottom" id="btnFlash"> <div class="st-btn-container right-bottom" onclick="flashSurvey(); return false;"> <div class="st-button-main"><i class="fa fa-bolt" aria-hidden="true"></i></div> </div> </div>
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+	  <!-- ModalLogout -->
+      <footer th:replace="layout/layout :: modalLogout"></footer>
+      <!-- End ModalLogout -->
+      
+  <!-- Bootstrap core JavaScript-->
+  <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+  <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script th:src="@{/js/sb-admin-2.min.js}"></script>
+
+  <!-- Page level plugins -->
+  <script th:src="@{/vendor/datatables/jquery.dataTables.min.js}"></script>
+  <script th:src="@{/vendor/datatables/dataTables.bootstrap4.min.js}"></script>
+
+  <!-- Page level custom scripts -->
+  <script th:src="@{/js/demo/datatables-demo.js}"></script>
+  
+  <script th:src="@{/js/datosRecursoSesion.js}"></script>
+  <script th:src="@{/js/capacitaciones.js}"></script>
+  
+  
+
+</body>
+
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="layout/layout::head"></head>
+
+<body id="page-top">
+	<input id="authGetName" type="hidden" th:value="${#authentication.getName()}"></input>
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul th:replace="layout/layout::menu"> </ul>
+    <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+            
+            	<header th:replace="layout/layout :: header"></header>
+
+                <div class="container-fluid">
+                
+	          		<a th:href="@{'/listaClientes'}" th:text="'&laquo; regresar'"></a>
+<!-- 	          		<a href="#" onclick="window.history.back(); return false;" th:text="'&laquo; regresar'"></a> -->
+	              	
+	              	<!-- Collapsable Card Datos personales -->
+					<div class="card shadow mb-4">
+						<div class="collapse show" id="collapseCardCliente">
+							<div class="card-body">
+								<div class="row">
+									<div class="col-md-6">
+			         					<ul class="list-group list-group-flush">
+											<li class="list-group-item"><h3 th:text="${cliente.descCliente}"></h3></li>
+											<li class="list-group-item">C&oacute;digo: <strong th:text="${cliente.descCodigoCliente}"></strong></li>
+											<!-- <li class="list-group-item">Nombre anterior: <strong th:text="${cliente.descClienteAnterior}"></strong></li> -->
+											<!-- <li class="list-group-item">Fecha de actualizaci&oacute;n de nombre: <strong th:text="${cliente.fecActualizacion}"></strong></li> -->
+											<li class="list-group-item">Grupo empresarial: <strong th:text="${cliente.descGrupoEmpresarial}"></strong></li>
+											<li class="list-group-item">RFC: <strong th:text="${cliente.descRFC}"></strong></li>
+											<li class="list-group-item">Direcci&oacute;n fiscal: <strong th:text="${cliente.descDireccionFiscal}"></strong></li>
+											<li class="list-group-item">Sector: <strong th:text="${cliente.sector.descSector}"></strong></li>
+											<li class="list-group-item">Tama&ntilde;o de la empresa: <strong th:text="${cliente.descRangoRecursos}"></strong></li>
+											<li class="list-group-item">Facturaci&oacute;n anual: <strong th:text="${cliente.impFacturacionAnual}"></strong></li>																						
+										</ul>
+			      					</div>
+			      					<div class="col-md-6" style="display: flex; align-items: center;">
+			         					<img class="img-fluid" th:src="@{/img/img-cliente-detalle.png}" width="100%">
+			      					</div>
+		 						</div>
+	                		</div>
+	            		</div>
+	            	</div>
+	            	
+	            	<div class="card shadow mb-4">
+						<div class="collapse show" id="collapseCardCliente">
+							<div class="card-body">
+								<div class="container">
+									<div class="row">
+										<div class="col-8">
+											<h3 class="h3 text-gray-800">Contactos</h3>
+										</div>
+										<div class="col-4">
+											<div class="d-sm-flex align-items-center justify-content-between mb-1" style="float: right">
+								      			<a th:href="@{/newContacto/} + ${cliente.codCliente}" class="btn btn-primary">
+								      				<i class="fas fa-plus fa-sm text-white-50"></i> Nuevo
+								      			</a>
+									        </div>
+										</div>
+									</div>
+								</div>
+								<div class="col" id="contenidoTabla">
+			         					
+			      				</div>
+			      				<input id="filterCliente" type="hidden" th:value="${cliente.codCliente}">
+			      				<input id="codigoContacto" type="hidden"></input>
+	                		</div>
+	            		</div>
+	            	</div>
+				</div>
+				<!--Modal Eliminar -->
+                <div id="eliminarRegistro" class="modal fade" data-backdrop="static" data-keyboard="false"
+                    tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabel">Eliminar contacto</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                &iquest;Est&aacute; seguro que desea eliminar este contacto?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                <a href="#!" class="btn btn-primary" onclick="eliminarRegistro();">Eliminar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>			
+			</div>
+            <!-- Footer -->
+            <footer th:replace="layout/layout :: footer"></footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button--> <div class="st-actionContainer right-bottom" id="btnFlash"> <div class="st-btn-container right-bottom" onclick="flashSurvey(); return false;"> <div class="st-button-main"><i class="fa fa-bolt" aria-hidden="true"></i></div> </div> </div>
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- ModalLogout -->
+      <footer th:replace="layout/layout :: modalLogout"></footer>
+      <!-- End ModalLogout -->
+
+    <!-- Bootstrap core JavaScript-->
+    <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+    <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script th:src="@{/js/sb-admin-2.min.js}"></script>
+
+	<script th:src="@{/js/datosRecursoSesion.js}"></script>
+	<script th:src="@{/js/mostrarContactosCliente.js}"></script>
+	<script th:src="@{/js/eliminarContacto.js}"></script>
+	<script th:src="@{/js/phone.js}"></script>
+
+</body>
+
+</html>

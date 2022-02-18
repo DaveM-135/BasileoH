@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+
+	<div th:fragment="accesoDenegado">
+		
+		<div style="text-align: center;">
+			<img style="width: 30%; border-radius: 20px;" th:src="@{/img/img-accessDenied.png}">
+			<p style="font-size: 14px; color: red; font-stretch: 500;">Acceso denegado</p>
+		</div>
+	</div>
+
+	<div class="col-sm-12" th:fragment="listaRecursosVacaciones">
+		<h1 class="h3 mb-2 text-gray-800">Control vacaciones</h1>
+		<div class="card shadow mb-4">
+			<div class="card-body">
+				<div class="table-responsive fz-12">
+					<table class="table" id="dataTable" width="100%" cellspacing="0">
+						<thead>
+							<tr>
+								<th>Recurso</th>
+								<th>D&iacute;as acumulados</th>
+								<th>D&iacute;as recuperados</th>
+								<th>D&iacute;as contrato</th>
+								<th>Total</th>
+								<th>Aprobados</th>
+								<th>Disponibles</th>
+								<th>Opciones</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="recurso: ${listadoRecursos}">
+<!-- 								<td th:text="${recurso.nombreRecurso}"></td> -->
+								<td class="refDetalle"><a th:text="${recurso.nombreRecurso}" th:id="${recurso.codRecurso}" href="#" onclick="detalleVacaciones(this.id); return false;"></a></td>
+								<td><input type="text" maxlength="2" class="form-control inputControlVacaciones" onkeypress="return event.charCode >= 48 && event.charCode <= 57" onkeyup="notificaAcumulado(this.id)" th:id="'valAcumulado_'+${recurso.codRecurso}" th:value="${recurso.valAcumulado}"></td>
+								<td><input type="text" maxlength="2" class="form-control inputControlVacaciones" onkeypress="return event.charCode >= 48 && event.charCode <= 57" onkeyup="notificaRecuperado(this.id)" th:id="'valRecuperado_'+${recurso.codRecurso}" th:value="${recurso.valRecuperado}"></td>
+								<td><input type="text" maxlength="2" class="form-control inputControlVacaciones" onkeypress="return event.charCode >= 48 && event.charCode <= 57" onkeyup="notificaContrato(this.id)" th:id="'valContrato_'+${recurso.codRecurso}" th:value="${recurso.valContrato}"></td>
+								<td th:id= "'valTotal_'+${recurso.codRecurso}" th:text="${recurso.valTotal}"></td>
+								<td th:id= "'valAprobado_'+${recurso.codRecurso}" th:text="${recurso.valAprobado}"></td>
+								<td th:id= "'valDisponible_'+${recurso.codRecurso}" th:text="${recurso.valDisponibles}"></td>
+								<td><span class="badge badge-pill badge-secondary" th:id="'btnActualizar_'+${recurso.codRecurso}">Actualizado</span></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<script type="text/javascript" charset="UTF-8">
+				$('#dataTable').DataTable( {
+			  	    language: {
+			  	    	sProcessing:     "Procesando...",
+			  	        sLengthMenu:     "Mostrar _MENU_ recursos",
+			  	        sZeroRecords:    "No se encontraron resultados",
+			  	        sEmptyTable:     "Ning\u00FAn dato disponible en esta tabla",
+			  	        sInfo:           "Mostrando recursos del _START_ al _END_ de un total de _TOTAL_ recursos",
+			  	        sInfoEmpty:      "Mostrando recursos del 0 al 0 de un total de 0 registros",
+			  	        sInfoFiltered:   "(filtrado de un total de _MAX_ registros)",
+			  	        sInfoPostFix:    "",
+			  	        sSearch:         "Buscar:",
+			  	        sUrl:            "",
+			  	        sInfoThousands:  ",",
+			  	        sLoadingRecords: "Cargando...",
+			  	        oPaginate: {
+			  	            sFirst:    "Primero",
+			  	            sLast:     "Último",
+			  	            sNext:     "Siguiente",
+			  	            sPrevious: "Anterior"
+			  	        },
+			  	        oAria: {
+			  	            sSortAscending:  ": Activar para ordenar la columna de manera ascendente",
+			  	            sSortDescending: ": Activar para ordenar la columna de manera descendente"
+			  	        },
+			  	        buttons: {
+			  	            copy: "Copiar",
+			  	            colvis: "Visibilidad"
+			  	        }
+			  	    }
+			  	});
+				</script>
+			</div>
+		</div>
+	</div>
+
+
+</body>
+</html>

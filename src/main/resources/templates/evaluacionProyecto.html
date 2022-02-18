@@ -1,0 +1,170 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="layout/layout::head"></head> 
+
+<body id="page-top">
+<input id="authGetName" type="hidden" th:value="${#authentication.getName()}"></input>
+<input id="codLid" type="hidden" th:value="${codLider}"></input>
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul th:replace="layout/layout::menu"> </ul>
+    <!-- End of Sidebar -->
+    
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+        <header th:replace="layout/layout :: header"></header>
+        
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+        
+		  <input id="codProyecto" type="hidden" th:value="${proyecto.codProyecto}"/>
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-1">
+            <h4 class="text-gray-800" th:text="'Asignaci&oacute;n de conceptos al proyecto ' + ${proyecto.descProyecto}"></h4>
+            
+          </div>
+          <div class="form-group">
+          	<h6 class="text-gray-800">Descripci&oacute;n del proyecto: </h6>
+          	<h6 th:text ="${proyecto.descProyectoTexto}"></h6>
+          </div>
+          <a type="button" th:href="@{/evaluacionProyectoValidacion/}+${proyecto.codProyecto}" th:text="'&laquo; regresar'" ></a>
+			
+			  <div class="card shadow mb-1" th:each="etapa : ${etapas}">
+                <!-- Card Header - Accordion -->
+                <a th:href="'#etapa_'+${etapa.codEtapa}" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" th:aria-controls="'etapa_'+${etapa.codEtapa}">
+                  <h6 class="m-0 font-weight-bold text-primary" th:text="${etapa.descEtapa}"></h6>
+                </a>
+                <!-- Card Content - Collapse -->
+                <div class="collapse" th:id="'etapa_'+${etapa.codEtapa}" >
+                  <div class="card-body">
+                  	<div class="form-group" th:each="concepto : ${etapa.conceptos}">
+                      <div class="custom-control custom-checkbox small">
+                        <input type="checkbox"class="custom-control-input" th:id="'concepto_' + ${concepto.codConcepto}">
+                        <label  class="custom-control-label" th:for="'concepto_' + ${concepto.codConcepto}" th:text="${concepto.descConcepto}"></label>
+                        <a th:if="${concepto.rutaTemplate != null && concepto.rutaTemplate != 'Formato Libre' && concepto.rutaTemplate != 'Formato Legal'}" th:href="${concepto.rutaTemplate}" target="_blank" class="badge badge-light"><i class="fa fa-link"></i> formato</a>
+                        <label th:if="${concepto.rutaTemplate == 'Formato Libre' || concepto.rutaTemplate == 'Formato Legal'}" class="badge badge-light">formato libre</label>
+<!--                         <i class="fa fa-file-alt" aria-hidden="true" style="padding-left: 5px;"></i> -->
+                      </div>
+                    </div>
+                    <a href="#" class="btn btn-primary " th:id="'acep_'+${etapa.codEtapa}" onclick="guardar(this.id); return false;">
+                    <span class="icon text-white-50">
+                      <i class="fas fa-check"></i>
+                    </span>
+                    <span class="text">Aplicar</span>
+                     
+                  </a>
+                  	<div th:id="'wait_'+${etapa.codEtapa}" class="spinner-grow text-muted"></div>
+                  </div>
+                </div>
+              </div>
+			
+			
+			
+
+
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      <footer th:replace="layout/layout :: footer"></footer>
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button--> <div class="st-actionContainer right-bottom" id="btnFlash"> <div class="st-btn-container right-bottom" onclick="flashSurvey(); return false;"> <div class="st-button-main"><i class="fa fa-bolt" aria-hidden="true"></i></div> </div> </div>
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+	<!-- ModalLogout -->
+	<footer th:replace="layout/layout :: modalLogout"></footer>
+	<!-- End ModalLogout -->
+
+	<!-- Bootstrap core JavaScript-->
+  <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+  <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script th:src="@{/js/sb-admin-2.min.js}"></script>
+
+  <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+  
+   <script th:src="@{/js/preventaProyectoListaTodo.js}"></script>
+  
+  <script th:src="@{/js/datosRecursoSesion.js}"></script>
+  
+  <script type="text/javascript">
+  $(document).ready(function() {
+	  $(".text-muted").hide();
+	  getConceptosActivos($("#codProyecto").val());
+  });
+  function getConceptosActivos(codProyecto){
+	  
+	  $.ajax({
+			url: "/conceptosActivos",
+			data: {codProyecto:codProyecto},
+			success: function(result){
+				result.forEach(ids);
+				function ids(value, index,array){
+					$('#concepto_'+ value).prop('checked', true);
+				}
+			}
+		});
+  }
+  
+  
+  function guardar(id){
+	  var idEtapa = id.substring(5);
+	  $("#acep_"+idEtapa).hide();
+	  $("#wait_"+idEtapa).show();
+	  var conceptosSelected = [];
+	  var conceptosUnselected = [];
+// 	  document.getElementById("id").disabled = true;
+	  var divEtapa = 'etapa_'+ idEtapa
+	  $('#'+divEtapa+' input:checked').each(function() {
+		  var idConcepto = $(this).attr('id').substring(9)
+	      conceptosSelected.push(idConcepto);
+	  });
+	  $('#'+divEtapa+' input:not(:checked)').each(function() {
+		  var idConceptoNot = $(this).attr('id').substring(9)
+	      conceptosUnselected.push(idConceptoNot);
+	  });
+	  
+	  console.log(conceptosUnselected);
+	  
+	  $.ajax({
+			url: "/guardaAsignacionConceptosProyecto",
+			data: {codProyecto:$("#codProyecto").val(),
+				   conceptos:JSON.stringify(conceptosSelected),
+				   conceptosNot:JSON.stringify(conceptosUnselected)},
+			success: function(result){
+				 $("#wait_"+idEtapa).hide();
+				 $("#acep_"+idEtapa).show();
+			}
+		});
+  }
+ 
+  </script>
+
+</body>
+
+</html>

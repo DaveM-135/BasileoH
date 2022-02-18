@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+
+			<div th:fragment="listaForecast" >
+				<div class="table-responsive fz-12">
+	                <table class="table" id="dataTable" width="100%" cellspacing="0">
+		                 <thead>
+		                   <tr>
+		                   	  <th>Proyecto</th>
+		                      <th>Clasificaci&oacute;n</th>
+<!-- 	                          <th>Mes</th> -->
+	                          <th>Horas</th>
+	                          <th>Fecha inicio</th>
+	                          <th>Fecha fin</th>
+	                          <th>Opciones</th>
+		                   </tr>
+		                 </thead>
+		                 <tbody>
+		                 	<tr th:each="forecast : ${listaForecast}">
+		                 		<td th:text="${forecast.proyecto.descProyecto}"></td>
+		                 		<td th:text="${forecast.clasificacionForecast.descClasificacion} + ' - ' + ${forecast.clasificacionForecast.descClasificacionPresupuesto}"></td>
+<!-- 		                 		<td  th:text="${#strings.substring(forecast.mesHabil.codMes,4,6)} + '/' + ${#strings.substring(forecast.mesHabil.codMes,0,4)}"></td> -->
+		                 		<td th:text="${forecast.valHoras}"></td>
+		                 		<td th:text="${#dates.format(forecast.fecInicioActividad,'dd/MM/yyyy')}"></td>
+		                 		<td th:text="${#dates.format(forecast.fecFinActividad,'dd/MM/yyyy')}"></td>
+		                 		<td class="columnEliminar">
+		                 			<a href="#" class="badge badge-info btnEditarRegistro"  th:id="'est_'+${forecast.codForecast}"  onclick="editarForecast(this.id); return false;">Editar <i class="far fa-edit"></i></a>
+									<a href="#" class="badge badge-danger btnEliminarRegistro"  th:id="'fst_'+${forecast.codForecast}"  onclick="borrarForecast(this.id); return false;">Eliminar <i class="far fa-trash-alt"></i></a>
+                            		<span class="badge badge-secondary btnEliminarRegistroDisable">N/A</span>
+                            	</td>
+	<!--                             <td> -->
+	<!--                             	<a href="#" th:id="'ver_'+${solicitud.codSolicitud}" onclick="verDetalleSolicitud(this.id); return false;"  class="badge badge-info">Ver <i class="far fa-calendar"></i></a> -->
+	<!--                             	<a th:if="${solicitud.fecAprobacion == null and solicitud.fecRechazo == null and solicitud.fecCancelacion == null}" href="#" class="badge badge-danger"  th:id="'can_'+${solicitud.codSolicitud}"  onclick="cancelarSolicitud(this.id); return false;">Cancelar <i class="far fa-calendar-times"></i></a> -->
+	<!--                             </td> -->
+							</tr>
+		                 </tbody>
+	                </table>
+	              </div>
+				<script type="text/javascript" charset="UTF-8">
+				$('#dataTable').DataTable( {
+			  	    language: {
+			  	    	sProcessing:     "Procesando...",
+			  	        sLengthMenu:     "Mostrar _MENU_ registros",
+			  	        sZeroRecords:    "No se encontraron resultados",
+			  	        sEmptyTable:     "Ning\u00FAn dato disponible en esta tabla",
+			  	        sInfo:           "Mostrando recursos del _START_ al _END_ de un total de _TOTAL_ registros",
+			  	        sInfoEmpty:      "Mostrando recursos del 0 al 0 de un total de 0 registros",
+			  	        sInfoFiltered:   "(filtrado de un total de _MAX_ registros)",
+			  	        sInfoPostFix:    "",
+			  	        sSearch:         "Buscar:",
+			  	        sUrl:            "",
+			  	        sInfoThousands:  ",",
+			  	        sLoadingRecords: "Cargando...",
+			  	        oPaginate: {
+			  	            sFirst:    "Primero",
+			  	            sLast:     "Último",
+			  	            sNext:     "Siguiente",
+			  	            sPrevious: "Anterior"
+			  	        },
+			  	        oAria: {
+			  	            sSortAscending:  ": Activar para ordenar la columna de manera ascendente",
+			  	            sSortDescending: ": Activar para ordenar la columna de manera descendente"
+			  	        },
+			  	        buttons: {
+			  	            copy: "Copiar",
+			  	            colvis: "Visibilidad"
+			  	        }
+			  	    }
+			  	});
+				
+				$(".btnEliminarRegistroDisable").hide();
+				$(".btnEditarRegistroDisable").hide();
+				</script>
+			</div>
+			
+			
+			<div th:fragment="listaForecastRecurso" >
+				<div class="table-responsive-lg fz-12">
+	                <table class="table" id="dataTable" width="100%" cellspacing="0">
+		                 <thead>
+		                   <tr>
+		                   	  <th>Mes</th>
+		                   	  <th>Proyecto</th>
+		                      <th>Clasificaci&oacute;n</th>
+<!-- 	                          <th>Mes</th> -->
+	                          <th>Horas</th>
+	                          <th>Inicio</th>
+	                          <th>Fin</th>
+	                          <th>Opciones</th>
+		                   </tr>
+		                 </thead>
+		                 <tbody>
+		                 	<tr th:each="forecast : ${listaForecast}">
+		                 		<td  th:text="${#strings.substring(forecast.mesHabil.codMes,4,6)} + '/' + ${#strings.substring(forecast.mesHabil.codMes,0,4)}"></td>
+		                 		<td th:text="${forecast.proyecto.descProyecto}"></td>
+		                 		<td th:text="${forecast.clasificacionForecast.descClasificacion} + ' - ' + ${forecast.clasificacionForecast.descClasificacionPresupuesto}"></td>
+<!-- 		                 		<td  th:text="${#strings.substring(forecast.mesHabil.codMes,4,6)} + '/' + ${#strings.substring(forecast.mesHabil.codMes,0,4)}"></td> -->
+		                 		<td th:text="${forecast.valHoras}"></td>
+		                 		<td th:text="${#dates.format(forecast.fecInicioActividad,'dd/MM/yyyy')}"></td>
+		                 		<td th:text="${#dates.format(forecast.fecFinActividad,'dd/MM/yyyy')}"></td>
+		                 		<td class="columnEliminar">
+	                            	<a href="#" class="badge badge-info btnEditarRegistro"  th:id="'est_'+${forecast.codForecast}"  onclick="editarForecast(this.id); return false;">Editar <i class="far fa-edit"></i></a>
+									<a href="#" class="badge badge-danger btnEliminarRegistro"  th:id="'fst_'+${forecast.codForecast}"  onclick="borrarForecast(this.id); return false;">Eliminar <i class="far fa-trash-alt"></i></a>
+                            	</td>
+							</tr>
+		                 </tbody>
+	                </table>
+	              </div>
+	              
+	              <div class="d-flex justify-content-between mt-2">
+					<a  id="btnNuevoRegistro" data-toggle="modal" href="#modalNuevoForecast" onclick="resetDatos(); return false;" class="btn btn-primary">
+						<i class="fas fa-plus fa-sm text-white-50"></i> Nuevo registro
+					</a>
+					<a id="btnCerrarModal" href="#" onclick="location.reload();" class="btn btn-secondary">Cerrar y actualizar</a>
+				  </div>
+				  
+				    <div class="modal fade" id="modalNuevoForecast" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="modalNuevoForecastLabel" aria-hidden="true">
+						<div class="modal-dialog modal-" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h6 class="modal-title" id="modalNuevoForecastLabel">Registro forecast</h6>
+									<button type="button" class="close" onclick="cerrarModalFormulario(); return false;" aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+				 				</div>
+								<div class="modal-body">
+									<div id="divRegistroForecast">
+										<!-- FORM FORECAST -->
+											<input id="codForecast" type="hidden" value=""></input>
+										
+											<div class="row">
+												<div class="form-group col-sm-12">
+													<label>Proyecto</label> 
+													<select class="custom-select" id="selectProyecto">
+											  							<option th:each="proy : ${proyectos}" 
+											  							th:value="${proy.key}" th:text="${proy.value}">
+											  							</option>
+																</select>
+													
+												</div>
+											</div>
+											<div class="row">
+												<div class="form-group col-sm-6">
+													<label>Clasificaci&oacute;n</label>
+													
+													<select class="custom-select"
+														id="selectClasificacionPresupuesto">
+														<option
+															th:each="presupuesto : ${listaClasificacionPresupuesto}"
+															th:value="${presupuesto}" th:text="${presupuesto}">
+														</option>
+													</select>
+											</div>
+												<div class="form-group col-sm-6">
+													<label>Descripci&oacute;n</label>
+													<div id="descClasificacion">
+														<select class="custom-select" id="selectClasificacion">
+															<option th:each="clasificacion : ${listaClasificacion}"
+																th:value="${clasificacion.codClasificacionForecast}"
+																th:text="${clasificacion.descClasificacionPresupuesto}"></option>
+														</select>
+													</div>
+											</div>
+											</div>
+				
+											<div class="row">
+												<div class="form-group col-sm-6">
+													<label>Inicio de actividad</label> <input type="date"
+														class="form-control" 
+														id="inicioActividad">
+													<small id="errorInicioActividad" class="form-text text-danger"></small>
+												</div>
+												<div class="form-group col-sm-6">
+													<label>Fin de actividad</label> <input type="date"
+														class="form-control"
+														id="finActividad">
+													<small id="errorFinActividad" class="form-text text-danger"></small>
+												</div>
+											</div>
+											<div class="row">
+												<div class="form-group col-sm-6">
+													<label>Horas planeadas</label> <input type="number" step="0.5" min="0.5" 
+														class="form-control" 
+														id="horasPlaneadas" onkeypress="return event.charCode >= 46 && event.charCode <= 57" >
+													<small id="errorHorasPlaneadas" class="form-text text-danger"></small>
+												</div>
+												<div class="form-group col-sm-6">
+													<label>Periodo</label> 
+													<select class="custom-select" id="selectMesHabil" onchange="definePeriodos(); return false;">
+															<option th:each="periodo : ${listaMesesHabiles}" 
+																th:value="${periodo.codMes}" 
+																th:text="${#strings.substring(periodo.codMes,4,6)} + ' / ' + ${#strings.substring(periodo.codMes,0,4)}" >
+																</option>
+														</select>
+												</div>
+											</div>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" onclick="cerrarModalFormulario(); return false;">Cancelar</button>
+									<button type="button" class="btn btn-primary" onclick="enviarFormForecast(); return false;">Aceptar</button>
+								</div>
+				    		</div>
+				  		</div>
+					</div>
+				<script type="text/javascript" charset="UTF-8">
+				$('#dataTable').DataTable( {
+			  	    language: {
+			  	    	sProcessing:     "Procesando...",
+			  	        sLengthMenu:     "Mostrar _MENU_ registros",
+			  	        sZeroRecords:    "No se encontraron resultados",
+			  	        sEmptyTable:     "Ning\u00FAn dato disponible en esta tabla",
+			  	        sInfo:           "Mostrando recursos del _START_ al _END_ de un total de _TOTAL_ registros",
+			  	        sInfoEmpty:      "Mostrando recursos del 0 al 0 de un total de 0 registros",
+			  	        sInfoFiltered:   "(filtrado de un total de _MAX_ registros)",
+			  	        sInfoPostFix:    "",
+			  	        sSearch:         "Buscar:",
+			  	        sUrl:            "",
+			  	        sInfoThousands:  ",",
+			  	        sLoadingRecords: "Cargando...",
+			  	        oPaginate: {
+			  	            sFirst:    "Primero",
+			  	            sLast:     "Último",
+			  	            sNext:     "Siguiente",
+			  	            sPrevious: "Anterior"
+			  	        },
+			  	        oAria: {
+			  	            sSortAscending:  ": Activar para ordenar la columna de manera ascendente",
+			  	            sSortDescending: ": Activar para ordenar la columna de manera descendente"
+			  	        },
+			  	        buttons: {
+			  	            copy: "Copiar",
+			  	            colvis: "Visibilidad"
+			  	        }
+			  	    },"searching": false,
+				  	  "paging": false
+			  	});
+				 
+				$("#selectClasificacionPresupuesto").on(
+						"change",
+						function() {
+							var clasificacion = encodeURIComponent($(this).val());
+							var url = "/actualizaClasificacion/"+clasificacion;
+							$("#descClasificacion").load(url);
+						});
+				</script>
+			</div>
+
+			<div th:fragment="clasifpresupuesto">
+				<select class="custom-select" id="selectClasificacion">
+					<option th:each="clasificacion : ${listaClasificacion}"
+						th:value="${clasificacion.codClasificacionForecast}"
+						th:text="${clasificacion.descClasificacionPresupuesto}"></option>
+				</select>
+			</div>
+			
+			
+			<div th:fragment="tablaMailForecast" class="card shadow mb-3">
+            <div class="card-body" id="contenidoTabla">
+				<div class="table-responsive fz-12">
+	                <table class="table" width="100%" cellspacing="0">
+		                 <thead>
+		                   <tr>
+		                   	  <th>Recurso</th>
+		                      <th th:text="${listaPeriodos[0].nombreMes}"></th>
+		                      <th th:text="${listaPeriodos[1].nombreMes}"></th>
+		                      <th th:text="${listaPeriodos[2].nombreMes}"></th>
+		                   </tr>
+		                 </thead>
+		                 <tbody>
+		                 	<tr th:each="recurso : ${listaRecursosConsultores}">
+		                 		<td> <a href="#" th:id="'fst_'+${recurso.codRecurso}" onclick="detalleForecast(this.id); return false;" th:text="${recurso.descRecurso} + ' ' + ${recurso.descApellidoPaterno}"></a></td>
+<!-- 		                 		<td th:text="${recurso.totalHorasForecast}"></td> -->
+                            	<td>
+									<div th:if="(${recurso.totalHorasForecast[0]}*100/${listaPeriodos[0].totalHorasHabiles}) < 85" class="progress"> 
+										<div class="progress-bar bg-danger" role="progressbar" th:text="${recurso.totalHorasForecast[0]}*1" 
+										th:style="'width:' + @{${recurso.totalHorasForecast[0]}*100/${listaPeriodos[0].totalHorasHabiles}} + '%;'"></div>
+									</div>
+									<div th:if="(${recurso.totalHorasForecast[0]}*100/${listaPeriodos[0].totalHorasHabiles}) >= 85 AND (${recurso.totalHorasForecast[0]}*100/${listaPeriodos[0].totalHorasHabiles}) < 100" 
+										class="progress"> 
+										<div class="progress-bar bg-warning" role="progressbar" th:text="${recurso.totalHorasForecast[0]}*1" 
+										th:style="'width:' + @{${recurso.totalHorasForecast[0]}*100/${listaPeriodos[0].totalHorasHabiles}} + '%;'"></div>
+									</div>
+									<div th:if="(${recurso.totalHorasForecast[0]}*100/${listaPeriodos[0].totalHorasHabiles}) >= 100" 
+										class="progress"> 
+										<div class="progress-bar bg-success" role="progressbar" th:text="${recurso.totalHorasForecast[0]}*1" 
+										th:style="'width:' + @{${recurso.totalHorasForecast[0]}*100/${listaPeriodos[0].totalHorasHabiles}} + '%;'"></div>
+									</div>
+								</td>
+								<td>
+									<div th:if="(${recurso.totalHorasForecast[1]}*100/${listaPeriodos[1].totalHorasHabiles}) < 85" class="progress"> 
+										<div class="progress-bar bg-danger" role="progressbar" th:text="${recurso.totalHorasForecast[1]}*1" 
+										th:style="'width:' + @{${recurso.totalHorasForecast[1]}*100/${listaPeriodos[1].totalHorasHabiles}} + '%;'"></div>
+									</div>
+									<div th:if="(${recurso.totalHorasForecast[1]}*100/${listaPeriodos[1].totalHorasHabiles}) >= 85 AND (${recurso.totalHorasForecast[1]}*100/${listaPeriodos[1].totalHorasHabiles}) < 100" 
+										class="progress"> 
+										<div class="progress-bar bg-warning" role="progressbar" th:text="${recurso.totalHorasForecast[1]}*1" 
+										th:style="'width:' + @{${recurso.totalHorasForecast[1]}*100/${listaPeriodos[1].totalHorasHabiles}} + '%;'"></div>
+									</div>
+									<div th:if="(${recurso.totalHorasForecast[1]}*100/${listaPeriodos[1].totalHorasHabiles}) >= 100" 
+										class="progress"> 
+										<div class="progress-bar bg-success" role="progressbar" th:text="${recurso.totalHorasForecast[1]}*1" 
+										th:style="'width:' + @{${recurso.totalHorasForecast[1]}*100/${listaPeriodos[1].totalHorasHabiles}} + '%;'"></div>
+									</div>
+								</td>
+								<td>
+									<div th:if="(${recurso.totalHorasForecast[2]}*100/${listaPeriodos[2].totalHorasHabiles}) < 85" class="progress"> 
+										<div class="progress-bar bg-danger" role="progressbar" th:text="${recurso.totalHorasForecast[2]}*1" 
+										th:style="'width:' + @{${recurso.totalHorasForecast[2]}*100/${listaPeriodos[2].totalHorasHabiles}} + '%;'"></div>
+									</div>
+									<div th:if="(${recurso.totalHorasForecast[2]}*100/${listaPeriodos[2].totalHorasHabiles}) >= 85 AND (${recurso.totalHorasForecast[2]}*100/${listaPeriodos[2].totalHorasHabiles}) < 100" 
+										class="progress"> 
+										<div class="progress-bar bg-warning" role="progressbar" th:text="${recurso.totalHorasForecast[2]}*1" 
+										th:style="'width:' + @{${recurso.totalHorasForecast[2]}*100/${listaPeriodos[2].totalHorasHabiles}} + '%;'"></div>
+									</div>
+									<div th:if="(${recurso.totalHorasForecast[2]}*100/${listaPeriodos[2].totalHorasHabiles}) >= 100" 
+										class="progress"> 
+										<div class="progress-bar bg-success" role="progressbar" th:text="${recurso.totalHorasForecast[2]}*1" 
+										th:style="'width:' + @{${recurso.totalHorasForecast[2]}*100/${listaPeriodos[2].totalHorasHabiles}} + '%;'"></div>
+									</div>
+								</td>
+							</tr>
+		                 </tbody>
+	                </table>
+	              </div>
+			</div>
+		</div>
+
+
+
+
+</body>
+</html>

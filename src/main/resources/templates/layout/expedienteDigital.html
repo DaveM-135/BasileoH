@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+	<div class="col-sm-12" style="padding-top: 15px;" th:fragment="fragmentExpedienteDigital">
+		<div class="table-responsive fz-12">
+			<table class="table" id="dataTableExpediente" width="100%" cellspacing="0">
+				<thead>
+					<tr>
+						<th>No.</th>
+						<th>Documento</th>
+						<th>Opciones</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="documentacion: ${listaDocumentacion}">
+               			<td scope="row" th:text="${documentacion.codDocumento}"></td>
+						<td th:text="${documentacion.descDocumento}"></td>
+						
+						<td th:if="${listaExpedientesCargados.contains(documentacion.codDocumento)}">
+							<i style="color: orange;" class="fas fa-exclamation-circle" data-toggle="tooltip" data-placement="top" title="Pendiente de aprobaci&oacute;n"></i>
+							<a  th:href="'/expediente/ev?r=' + ${rec} + '&e=' + ${documentacion.codDocumento}" target="_blank"><i class="far fa-image"data-toggle="tooltip" data-placement="top" title="Ver archivo"></i></a>
+							<i class="fas fa-file-upload" th:id="${documentacion.codDocumento}" style="cursor: pointer;" onclick="editarArchivo(this.id);" data-toggle="tooltip" data-placement="top" title="Subir archivo"></i>
+							&nbsp;&nbsp;&nbsp;
+							<span  th:if="${!listaExpedientesAprobados.contains(documentacion.codDocumento)}" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_RH')" style="cursor: pointer;" th:id="'val_' + ${documentacion.codDocumento}" onclick="validarArchivo(this.id);" class="badge badge-pill badge-success">Aprobar</span>
+							<span  th:if="${!listaExpedientesAprobados.contains(documentacion.codDocumento)}" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_RH')" style="cursor: pointer;" th:id="'val_' + ${documentacion.codDocumento}" onclick="rechazarArchivo(this.id);" class="badge badge-pill badge-danger">Rechazar</span>
+							
+						</td>
+						
+						<td th:if="${listaExpedientesAprobados.contains(documentacion.codDocumento)}">
+							<i style="color: green;" class="fas fa-check-circle" data-toggle="tooltip" data-placement="top" title="Aprobado"></i>
+							<a th:href="'/expediente/ev?r=' + ${rec} + '&e=' + ${documentacion.codDocumento}" target="_blank"><i class="far fa-image"data-toggle="tooltip" data-placement="top" title="Ver archivo"></i></a>
+							<i class="fas fa-file-upload" th:id="${documentacion.codDocumento}" style="cursor: pointer;" onclick="editarArchivo(this.id);" data-toggle="tooltip" data-placement="top" title="Subir archivo"></i>
+						</td>
+						<td th:if="${listaExpedientesRechazados.contains(documentacion.codDocumento)}">
+							<i style="color: red;" class="fas fa-times-circle"  data-toggle="tooltip" data-placement="top" title="Rechazados"></i>
+							<a th:href="'/expediente/ev?r=' + ${rec} + '&e=' + ${documentacion.codDocumento}" target="_blank"><i class="far fa-image"data-toggle="tooltip" data-placement="top" title="Ver archivo"></i></a>
+							<i class="fas fa-file-upload" th:id="${documentacion.codDocumento}" style="cursor: pointer;" onclick="editarArchivo(this.id);" data-toggle="tooltip" data-placement="top" title="Subir archivo"></i>
+						</td>
+						<td th:if="${!listaExpedientesCargados.contains(documentacion.codDocumento) AND !listaExpedientesAprobados.contains(documentacion.codDocumento) AND !listaExpedientesRechazados.contains(documentacion.codDocumento)}">
+							<span th:id="${documentacion.codDocumento}" style="cursor: pointer;" onclick="cargarArchivo(this.id);"><i class="fas fa-file-upload"></i> Cargar archivo</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+	</div>
+	
+	
+	<div th:fragment="fragmentModalExpedienteDigital">
+		<!-- INICIAL Modal Expediente digital -->
+		<div class="modal fade" id="registroExpedienteModal" tabindex="-1" role="dialog" aria-labelledby="registroExpedienteDigitalModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h6 class="modal-title" id="registroEvaluarNivelModalLabel">[[${descripcionDocumento}]]</h6>
+						<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<form id="formularioExpedienteDigital" th:action="@{/formExpedienteDigital}" role="form" th:object="${expedienteDigital}" method="post">
+						<div class="modal-body" style="font-size: 14px;">
+						
+							<div id="divInputEvidencia" class="form-group col-12 col-md-12">
+                      			<label class="col-form-label">Archivo</label>
+                          		<div class="custom-file">
+                              		<input type="file" name="documentoExpediente" id="documentoExpediente" class="custom-file-input" accept="image/png, .jpeg, .jpg">
+                              		<label class="custom-file-label"></label>
+                          		</div>
+                     		</div>
+							
+							<input type="hidden" th:field="*{codRecursoExpediente}"/>
+							<input type="hidden" th:field="*{codDocumento}"/>
+							<input type="hidden" th:field="*{codRecurso}"/>
+						</div>
+						<script type="text/javascript">
+							
+							document.getElementById("documentoExpediente").onchange = function(e) {
+								var fileName = $(this).val().split('\\').pop();
+								$(this).next('.custom-file-label').html(fileName);
+								
+								
+								// Creamos el objeto de la clase FileReader
+								let reader = new FileReader();
+
+								// Leemos el archivo subido y se lo pasamos a nuestro fileReader
+								reader.readAsDataURL(e.target.files[0]);
+
+								// Le decimos que cuando este listo ejecute el código interno
+								reader.onload = function(){
+									let preview = document.getElementById('preview'),
+									image = document.createElement('img');
+
+									image.src = reader.result;
+									image.style.width = "90%";
+									image.style.height = "auto";
+								
+									preview.innerHTML = '';
+									preview.append(image);
+								};
+							}
+							
+						</script>
+						
+						<div id="preview" style = "padding: 0, 10px; text-align: center;">
+						
+						
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+							<button onclick="submitFormExpediente();" id="btnSubmitFormExpediente" type="button" class="btn btn-primary">Aceptar</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!-- TERMINA Modal Expediente digital -->
+	</div>
+	
+	
+
+
+
+
+
+
+
+</body>
+</html>

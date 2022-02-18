@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="layout/layout::head"></head>
+
+<body id="page-top">
+
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul th:replace="layout/layout::menu"> </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+        <!-- Topbar -->
+        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+          <!-- Sidebar Toggle (Topbar) -->
+          <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+            <i class="fa fa-bars"></i>
+          </button>
+
+          <!-- Topbar Search -->
+          <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+            <div class="input-group">
+              <input type="text" class="form-control bg-light border-0 small" placeholder="Buscar ..." aria-label="Search" aria-describedby="basic-addon2">
+              <div class="input-group-append">
+                <button class="btn btn-primary" type="button">
+                  <i class="fas fa-search fa-sm"></i>
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <!-- Topbar Navbar -->
+          <ul class="navbar-nav ml-auto">
+
+            <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+            <li class="nav-item dropdown no-arrow d-sm-none">
+              <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-search fa-fw"></i>
+              </a>
+              <!-- Dropdown - Messages -->
+              <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
+                <form class="form-inline mr-auto w-100 navbar-search">
+                  <div class="input-group">
+                    <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                      <button class="btn btn-primary" type="button">
+                        <i class="fas fa-search fa-sm"></i>
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </li>
+
+            <!-- Nav Item - Alerts -->
+            <li class="nav-item dropdown no-arrow mx-1">
+              <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-bell fa-fw"></i>
+                <!-- Counter - Alerts -->
+                <span class="badge badge-danger badge-counter">3+</span>
+              </a>
+              <!-- Dropdown - Alerts -->
+              <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
+                <h6 class="dropdown-header">
+                  Alerts Center
+                </h6>
+                <a class="dropdown-item d-flex align-items-center" href="#">
+                  <div class="mr-3">
+                    <div class="icon-circle bg-primary">
+                      <i class="fas fa-file-alt text-white"></i>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="small text-gray-500">December 12, 2019</div>
+                    <span class="font-weight-bold">A new monthly report is ready to download!</span>
+                  </div>
+                </a>
+                <a class="dropdown-item d-flex align-items-center" href="#">
+                  <div class="mr-3">
+                    <div class="icon-circle bg-success">
+                      <i class="fas fa-donate text-white"></i>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="small text-gray-500">December 7, 2019</div>
+                    $290.29 has been deposited into your account!
+                  </div>
+                </a>
+                <a class="dropdown-item d-flex align-items-center" href="#">
+                  <div class="mr-3">
+                    <div class="icon-circle bg-warning">
+                      <i class="fas fa-exclamation-triangle text-white"></i>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="small text-gray-500">December 2, 2019</div>
+                    Spending Alert: We've noticed unusually high spending for your account.
+                  </div>
+                </a>
+                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+              </div>
+            </li>
+
+            <!-- Nav Item - Messages -->
+            <li class="nav-item dropdown no-arrow mx-1">
+              <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-envelope fa-fw"></i>
+                <!-- Counter - Messages -->
+                <span class="badge badge-danger badge-counter">7</span>
+              </a>
+              <!-- Dropdown - Messages -->
+              <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="messagesDropdown">
+                <h6 class="dropdown-header">
+                  Message Center
+                </h6>
+                <a class="dropdown-item d-flex align-items-center" href="#">
+                  <div class="dropdown-list-image mr-3">
+                    <img class="rounded-circle" src="https://source.unsplash.com/fn_BT9fwg_E/60x60" alt="">
+                    <div class="status-indicator bg-success"></div>
+                  </div>
+                  <div class="font-weight-bold">
+                    <div class="text-truncate">Hi there! I am wondering if you can help me with a problem I've been having.</div>
+                    <div class="small text-gray-500">Emily Fowler · 58m</div>
+                  </div>
+                </a>
+                <a class="dropdown-item d-flex align-items-center" href="#">
+                  <div class="dropdown-list-image mr-3">
+                    <img class="rounded-circle" src="https://source.unsplash.com/AU4VPcFN4LE/60x60" alt="">
+                    <div class="status-indicator"></div>
+                  </div>
+                  <div>
+                    <div class="text-truncate">I have the photos that you ordered last month, how would you like them sent to you?</div>
+                    <div class="small text-gray-500">Jae Chun · 1d</div>
+                  </div>
+                </a>
+                <a class="dropdown-item d-flex align-items-center" href="#">
+                  <div class="dropdown-list-image mr-3">
+                    <img class="rounded-circle" src="https://source.unsplash.com/CS2uCrpNzJY/60x60" alt="">
+                    <div class="status-indicator bg-warning"></div>
+                  </div>
+                  <div>
+                    <div class="text-truncate">Last month's report looks great, I am very happy with the progress so far, keep up the good work!</div>
+                    <div class="small text-gray-500">Morgan Alvarez · 2d</div>
+                  </div>
+                </a>
+                <a class="dropdown-item d-flex align-items-center" href="#">
+                  <div class="dropdown-list-image mr-3">
+                    <img class="rounded-circle" src="https://source.unsplash.com/Mv9hjnEUHR4/60x60" alt="">
+                    <div class="status-indicator bg-success"></div>
+                  </div>
+                  <div>
+                    <div class="text-truncate">Am I a good boy? The reason I ask is because someone told me that people say this to all dogs, even if they aren't good...</div>
+                    <div class="small text-gray-500">Chicken the Dog · 2w</div>
+                  </div>
+                </a>
+                <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
+              </div>
+            </li>
+
+            <div class="topbar-divider d-none d-sm-block"></div>
+
+            <!-- Nav Item - User Information -->
+            <li class="nav-item dropdown no-arrow">
+              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Alexis Lopez</span>
+                <img class="img-profile rounded-circle" src="https://source.unsplash.com/QAB-WJcbgJk/60x60">
+              </a>
+              <!-- Dropdown - User Information -->
+              <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="#">
+                  <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Perfíl
+                </a>
+                <a class="dropdown-item" href="#">
+                  <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Configuraión
+                </a>
+                <a class="dropdown-item" href="#">
+                  <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Log de actividades
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Cerras sesión
+                </a>
+              </div>
+            </li>
+
+          </ul>
+
+        </nav>
+        <!-- End of Topbar -->
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-1">
+            <h1 class="h3 mb-0 text-gray-800"><span class="tituloA">Registrar preventa o proyecto</span></br><span class="tituloBN">Enhorabuena, tienes un nuevo proyecto que registrar</span></h1>
+          </div>
+
+            <!--form-->
+              <form class="user" th:action="@{/preventaProyectoUpdate}" th:Object="${proyecto}" method="post">
+                <p class="tituloC">Lo primero, elige a un cliente o registra un cliente nuevo.</p>
+                <div class="form-group row" th:if="${proyecto.proyectoId.codEstatusProyecto == 2}">
+                  <div class="col-sm-5 mb-3 mb-sm-0">
+                    <div class="form-check form-check-inline">
+                      <input th:field="*{proyectoId.codEstatusProyecto}" class="form-check-input" type="radio" name="inlineRadioOptions" id="preventa" value="1" disabled>
+                      <label class="form-check-label" for="preventa" >Preventa</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input th:field="*{proyectoId.codEstatusProyecto}"  class="form-check-input" type="radio" name="inlineRadioOptions" id="proyecto" value="2" checked>
+                      <label class="form-check-label" for="proyecto">Proyecto</label>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                  </div>
+                  <div class="col-sm-4"> 
+                  </div>
+                </div>
+                 <div class="form-group row" th:unless="${proyecto.proyectoId.codEstatusProyecto == 2}">
+                  <div class="col-sm-5 mb-3 mb-sm-0">
+                    <div class="form-check form-check-inline">
+                      <input th:field="*{proyectoId.codEstatusProyecto}" class="form-check-input" type="radio" name="inlineRadioOptions" id="preventa" value="1" checked>
+                      <label class="form-check-label" for="preventa" >Preventa</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input th:field="*{proyectoId.codEstatusProyecto}"  class="form-check-input" type="radio" name="inlineRadioOptions" id="proyecto" value="2" data-toggle="modal" data-target="#modalPreventaAProyecto">
+                      <label class="form-check-label" for="proyecto">Proyecto</label>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                  </div>
+                  <div class="col-sm-4"> 
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-3 mb-3 mb-sm-0">
+                      <label for="cliente">Cliente</label>
+                  </div>
+                  <div class="col-sm-5">
+                    <select  th:field="*{proyectoId.codCliente}" class="form-control" id="cliente">
+                        <option th:each="cliente : ${clientes}" th:value="${cliente.codCliente}" th:text="${cliente.descCliente}" th:selected="${cliente.codCliente==proyecto.proyectoId.codCliente}"/>
+                    </select>
+                  </div>
+                  <div class="col-sm-4"> 
+                    <a class="btn btn-primary" href="#" role="button">Agregar cliente <i class="fas fa-plus-circle fa-sm text-white-50"></i></a>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-3 mb-3 mb-sm-0">
+                      <label for="areaComercial">Área comercial</label>
+                  </div>
+                  <div class="col-sm-5">
+                    <select th:field="*{codAreaComercial}" class="form-control " id="areaComercial">
+                        <option th:each="areaComercial : ${areasComerciales}" th:value="${areaComercial.codAreaComercial}" th:text="${areaComercial.descAreaComercial}" th:selected="${areaComercial.codAreaComercial==proyecto.codAreaComercial}"/>
+                      </select>
+                  </div>
+                  <div class="col-sm-4">
+                  </div>
+                </div>
+                <p class="tituloC">Completa la información del proyecto.</p>
+                <div class="form-group row">
+                  <div class="col-sm-4 mb-3 mb-sm-0">
+                     <label for="nombreProyecto">Nombre del proyecto</label>
+                    <input type="text" th:field="*{descProyecto}" class="form-control" id="nombreProyecto" placeholder="Nombre de proyecto" required>
+                  </div>
+                  <div class="col-sm-4" id="fi">
+                    <label for="fechaInicio">Fecha inicio</label>
+                    <input th:field="*{fecIncioProyecto}" type="date" class="form-control" id="fechaInicio">
+                  </div>
+                  <div class="col-sm-4">
+                    <label for="fechaFin" id="ff">Fecha fin</label>
+                    <input th:field="*{fecFinProyecto}" type="date" class="form-control" id="fechaFin">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-4 mb-3 mb-sm-0">
+                     <label for="codigoProyecto">Código de proyecto</label>
+                    <input th:field="*{descCodigoProyecto}" type="text" class="form-control" id="codigoProyecto" placeholder="Código de proyecto" >
+                  </div>
+                  <div class="col-sm-4">
+                    <label for="presupuesto">Presupuesto</label>
+                    <input th:field="*{impPresupuesto}" type="text" maxlength="10" onkeypress="return event.charCode >= 46 && event.charCode <= 57" class="form-control" id="presupuesto" placeholder="Presupuesto">
+                  </div>
+                  <div class="col-sm-4" id="pr">
+                    <label for="riesgo">Porcentaje de riesgo</label>
+                    <input th:field="*{valPorcentajeRiesgo}" type="text" maxlength="10" onkeypress="return event.charCode >= 46 && event.charCode <= 57" class="form-control" id="riesgo" placeholder="Porcentaje %">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-4 mb-3 mb-sm-0">
+                     <label for="tipoFacturacion">Tipo de proyecto</label>
+                     <select th:field="*{codTipoProyecto}" class="form-control " id="tipoProyecto">
+                        <option th:each="tipoProyecto : ${tiposProyecto}" th:value="${tipoProyecto.codTipoProyecto}" th:text="${tipoProyecto.descTipoProyecto}" th:selected="${tipoProyecto.codTipoProyecto==proyecto.codTipoProyecto}"/>
+                      </select>
+                  </div>
+                  <div class="col-sm-4">
+                    <label for="totalHoras">Total de horas vendidas</label>
+                    <input th:field="*{valTotalHorasVendidas}" type="text" maxlength="10" onkeypress="return event.charCode >= 46 && event.charCode <= 57" class="form-control" id="totalHoras" placeholder="Total de horas vendidas">
+                  </div>
+                  <div class="col-sm-4" id="thp">
+                    <label for="thorasProyecto">Total de horas proyecto</label>
+                    <input th:field="*{valTotalHorasProyecto}" type="text" maxlength="10" onkeypress="return event.charCode >= 46 && event.charCode <= 57" class="form-control" id="thorasProyecto" placeholder="Total de horas proyecto" disabled>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-4 mb-3 mb-sm-0">
+                  	<label for="tipoFacturacion">Tipo de facturacion</label>
+                     <select th:field="*{codTipoFacturacion}" class="form-control " id="tipoFacturacion">
+                        <option th:each="tipoFacturacion : ${tiposFacturacion}" th:value="${tipoFacturacion.codTipoFacturacion}" th:text="${tipoFacturacion.descTipoFacturacion}" th:selected="${tipoFacturacion.codTipoFacturacion==proyecto.codTipoFacturacion}"/>
+                      </select>
+                  </div>
+                  <div class="col-sm-4">
+                    <label for="precio">Precio del proyecto</label>
+                    <input th:field="*{impPrecioPropuesta}" type="text" maxlength="10" onkeypress="return event.charCode >= 46 && event.charCode <= 57" class="form-control" id="precio" placeholder="Precio del proyecto">
+                  </div>
+                  <div class="col-sm-4" id="cp">
+                    <label for="costoProyecto">Costo de proyecto</label>
+                    <div class="input-group">
+                    	<div class="input-group-prepend">
+							<span class="input-group-text">$</span>
+						</div>
+                    <input th:field="*{impCostoProyecto}" type="text" maxlength="10" onkeypress="return event.charCode >= 46 && event.charCode <= 57" class="form-control" id="costoProyecto" placeholder="Costo de proyecto" disabled>
+                  	</div>
+                  </div>
+                </div>
+                
+                <div class="form-group row">
+                  <input th:field="*{proyectoId.codProyecto}" id="codProyecto" name="codProyecto" type="hidden"  th:value="${proyecto.proyectoId.codProyecto}">
+             	<input th:field="*{proyectoId.codCliente}" id="codCliente" name="codCliente" type="hidden"  th:value="${proyecto.proyectoId.codCliente}">
+             	<input id="proyectoId.codEstatusProyecto" name="codEstatusProyecto" type="hidden"  th:value="${proyecto.proyectoId.codEstatusProyecto}">
+              <!-- Aux -->
+<!--                <input th:field="*{proyectoId.codProyectoAux}" id="codProyectoAux" name="codProyecto" type="hidden"  th:value="${proyecto.proyectoId.codProyecto}"> -->
+<!--              	<input th:field="*{proyectoId.codClienteAux}" id="codClienteAux" name="codCliente" type="hidden"  th:value="${proyecto.proyectoId.codCliente}"> -->
+<!--              	<input th:field="*{proyectoId.codEstatusProyectoAux}" name="codEstatusProyectoAux" type="hidden"  th:value="${proyecto.proyectoId.codEstatusProyecto}"> -->
+               
+                  <div class="col-sm-4 mb-3 mb-sm-0">
+                     <label for="contacto">Contacto del proyecto</label>
+                     <select class="form-control " id="contacto">
+                        <option th:each="contacto : ${contactos}" th:value="${contacto.codContacto}" th:text="${contacto.descContacto}" th:selected="${contacto.codContacto==codCon}"/>
+                      </select>
+                  </div>
+                  <div class="col-sm-8">
+                    <label class="comentario">En caso de no encontrarlo puedes agregarlo aquí</label><br>
+                    <a class="btn btn-primary" href="#" role="button">Agregar contacto <i class="fas fa-plus-circle fa-sm text-white-50"></i></a>
+                  </div>
+                </div>
+                 <p class="tituloC">Información complementaria.</p>
+                <div class="form-group row">
+                  <div class="col-sm-4 mb-3 mb-sm-0">
+                      <label for="clasificacion">Clasificación del proyecto</label>
+                  </div>
+                  <div class="col-sm-4">
+                    <select th:field="*{codClasificacionProyecto}" class="form-control " id="clasificacionProyecto">
+                        <option th:each="clasificacionProyecto : ${clasificacionesProyecto}" th:value="${clasificacionProyecto.codClasificacionProyecto}" th:text="${clasificacionProyecto.descClasificacion}" th:selected="${clasificacionProyecto.codClasificacionProyecto==proyecto.codClasificacionProyecto}"/>
+                      </select>
+                  </div>
+                  <div class="col-sm-4"> 
+                       <a class="btn btn-primary" href="#" role="button">Cargar planificación</a>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-sm-4 mb-3 mb-sm-0">
+                      <label for="ecnologia">Tecnología</label>
+                  </div>
+                  <div class="col-sm-4">
+                    <input type="text" th:value="${textoTec}" class="form-control" id="tecnologia" placeholder="Tecnología">
+                  </div>
+                  <div class="col-sm-4"> 
+                     <a class="btn btn-primary" href="#" data-toggle="modal" data-target="#modalTecnologia" role="button"><i class="fas fa-plus-circle fa-sm text-white-50"></i></a>
+                  </div>
+                </div>
+                <div class="form-group row">
+                   <div class="col-sm-5 mb-6 mb-sm-0">
+                      <br>
+                      <a class="btn btn-primary" href="#" role="button">Detalles de infraestructura</a>
+                   </div>
+                   <div class="col-sm-3 mb-6 mb-sm-0">
+                      <br>
+                     
+                   </div>
+                   <div class="col-sm-4 mb-6 mb-sm-0">
+                      <br>
+                     <input type="submit" value="Guardar" class="btn btn-primary"/>
+                     <a class="btn btn-primary" href="#" role="button" id="BtnGuardarTodo">G Prueba</a>
+                   </div>
+                </div>
+              </form>
+            <!--form-->
+
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      <footer class="sticky-footer bg-white">
+        <div class="container my-auto">
+          <div class="copyright text-center my-auto">
+            <span>Copyright &copy; Sophitech S.A. de C.V.</span>
+          </div>
+        </div>
+      </footer>
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button--> <div class="st-actionContainer right-bottom" id="btnFlash"> <div class="st-btn-container right-bottom" onclick="flashSurvey(); return false;"> <div class="st-button-main"><i class="fa fa-bolt" aria-hidden="true"></i></div> </div> </div>
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+	<!-- ModalLogout -->
+	<footer th:replace="layout/layout :: modalLogout"></footer>
+	<!-- End ModalLogout -->
+
+  <!-- Modal Preventa-->
+  <div class="modal fade" id="modalPreventaAProyecto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Cambio de preventa a proyecto</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Cambiaras el estatus de la preventa a proyecto, esta operación no se podrá recuperar. ¿Estás de acuerdo?</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal" id="cancelarProyecto" >Cancelar</button>
+          <a class="btn btn-primary" data-dismiss="modal" href="" id="aceptarProyecto">Aceptar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Tecnologia -->
+  <div class="modal fade" id="modalTecnologia" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Tecnología del proyecto</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Por favor, agrega las tecnologías del proyecto
+  <div class="row">
+        <div class="col-md-5">
+          <select name="from" id="undo_redo" class="form-control" size="13" multiple="multiple">
+            <option th:each="tecnologia : ${tecnologias}" th:value="${tecnologia.codDetalleInfraestructura}" th:text="${tecnologia.descDetalle}"/>
+          </select>
+        </div>
+        
+        <div class="col-md-2">
+          <button type="button" id="undo_redo_undo" class="btn btn-primary btn-block" >Deshacer</button>
+          <button type="button" id="undo_redo_rightAll" class="btn btn-primary btn-block" ><i class="fa fa-angle-double-right"></i></button>
+          <button type="button" id="undo_redo_rightSelected" class="btn btn-primary btn-block" ><i class="fa fa-angle-right"></i></button>
+          <button type="button" id="undo_redo_leftSelected" class="btn btn-primary btn-block" ><i class="fa fa-angle-left"></i></button>
+          <button type="button" id="undo_redo_leftAll" class="btn btn-primary btn-block" ><i class="fa fa-angle-double-left"></i></button>
+          <button type="button" id="undo_redo_redo" class="btn btn-primary btn-block">Rehacer</button>
+        </div>
+        
+        <div class="col-md-5">
+          <select name="to" id="undo_redo_to" class="form-control" size="13" multiple="multiple">
+          	<option th:each="a : ${tecAcept}" th:value="${a.codDetalleInfraestructura}" th:text="${a.descDetalle}"/>
+          </select>
+        </div>
+  </div>
+   <br>
+  <br>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+          <a class="btn btn-primary" data-dismiss="modal" id="guardarInfra" href="">Aceptar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="../../../vendor/jquery/jquery.min.js"></script>
+  <script src="../../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="../../../vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="../../../js/sb-admin-2.min.js"></script>
+
+  <!-- Page level plugins -->
+  <script src="../../../vendor/chart.js/Chart.min.js"></script>
+
+  <!-- Page level custom scripts -->
+  <script src="../../../js/demo/chart-area-demo.js"></script>
+  <script src="../../../js/demo/chart-pie-demo.js"></script>
+  <script src="../../../js/preventaProyectoConsulta.js"></script>
+  <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="../../../js/multiselect.js"></script>
+
+</body>
+
+</html>

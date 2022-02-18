@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="layout/layout::head"></head>
+
+<body id="page-top">
+  <input id="authGetName" type="hidden" th:value="${#authentication.getName()}"></input>
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul th:replace="layout/layout::menu"> </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+		<header th:replace="layout/layout :: header"></header>
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+		
+			<!-- Page Heading -->
+			<h1 class="h3 mb-1 text-gray-800">Gesti&oacute;n de encuestas flash</h1>
+			
+			
+			<!-- Content Row -->
+			<div class="row">
+				<!-- Border Left Utilities -->
+				<div class="col-lg-12" style="font-size: 14px;">
+					<div class="card mb-3 py-0 border-left-success" style="padding: 10px 20px;">
+					<div class="card-body">
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<div class="d-flex justify-content-between">
+										<label for="inputPreguntaFlashSemanal"
+											class="col-form-label">Encuesta lunes a jueves:</label>
+										<div class="custom-control custom-switch"
+											style="margin-top: 7px;">
+											<input type="checkbox" class="custom-control-input chkActivo" th:id="'act_' + ${preguntaFlashSemanal.codPreguntaClima}" th:checked="${preguntaFlashSemanal.valActivo}">
+											<label class="custom-control-label" th:for="'act_' + ${preguntaFlashSemanal.codPreguntaClima}">Activa</label>
+										</div>
+									</div>
+									<textarea style="font-size: 14px;" maxlength="200"
+										class="form-control" id="inputPreguntaFlashSemanal"
+										th:text="${preguntaFlashSemanal.descPreguntaClima}"></textarea>
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-form-label">Posibles respuestas:</label>
+									<br>
+									<div id="divRespFlashSemanal" style="display: inline">
+										<img
+											th:each="respSeleccionada: ${respuestasPreguntaFlashSemanal}"
+											class="img_emoji_resultado respuestasSemanales"
+											th:src="${respSeleccionada.valImagenRespuesta}"
+											th:id="${'respSemanal_' + respSeleccionada.valRespuesta}">
+									</div>
+									<i class="fas fa-caret-right"></i> <a href="#"
+										id="btnConfigFlashSemanal"
+										class="badge badge-info add_answer">Config <i
+										class="fas fa-cogs"></i></a>
+								</div>
+							</div>
+						</div>
+						<div style="margin-top: 12px;" class="row">
+							<button type="button" class="btn btn-primary" onclick="actualizaPreguntaFlashSemanal();" id="btnActualizarFlashSemanal" disabled>Actualizar</button>
+  						</div>
+                	</div>
+					</div>
+				</div>
+			</div>
+			
+			
+			<!-- Content Row -->
+			<div class="row">
+				<!-- Border Left Utilities -->
+				<div class="col-lg-12" style="font-size: 14px;">
+					<div class="card mb-3 py-0 border-left-success" style="padding: 10px 20px;">
+						<div class="card-body">
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="form-group">
+										<div class="d-flex justify-content-between">
+											<label for="inputPreguntaFlash" class="col-form-label">Encuesta viernes:</label>
+											<div class="custom-control custom-switch" style="margin-top: 7px;">
+											  <input type="checkbox" class="custom-control-input chkActivo" th:id="'act_' + ${preguntaFlash.codPreguntaClima}" th:checked=${preguntaFlash.valActivo}>
+											  <label class="custom-control-label" th:for="'act_' + ${preguntaFlash.codPreguntaClima}">Activa</label>
+											</div>
+										</div>
+										<textarea style="font-size: 14px;" maxlength="200" class="form-control" id="inputPreguntaFlash" th:text="${preguntaFlash.descPreguntaClima}"></textarea>
+		  							</div>
+		  						</div>
+		 						<div class="col-sm-6">
+		 							<div class="form-group">
+		  								<label class="col-form-label">Posibles respuestas:</label>
+		  								<br>
+			  							<div id="divRespFlashViernes" style="display: inline">
+			  								<img  th:each="respSeleccionada: ${respuestasPreguntaFlash}" class="img_emoji_resultado respuestasViernes" th:src="${respSeleccionada.valImagenRespuesta}" th:id="${'respViernes_' + respSeleccionada.valRespuesta}">
+			  							</div>
+		  								<i class="fas fa-caret-right"></i>
+		  								<a href="#" id="btnConfigFlashViernes" class="badge badge-info add_answer">Config <i class="fas fa-cogs"></i></a>
+		  							</div>
+		  						</div>
+	  						</div>
+  							<div style="margin-top: 12px;" class="form-group row">
+  								<button type="button" class="btn btn-primary" onclick="actualizaPreguntaFlashViernes();" id="btnActualizarFlash" disabled>Actualizar</button>
+  							</div>
+	                	</div>
+					</div>
+				</div>
+			</div>	
+			
+			
+
+        </div>
+        <!-- /.container-fluid -->
+        
+      </div>
+      <!-- End of Main Content -->
+
+       <!-- Footer -->
+      <footer th:replace="layout/layout :: footer"></footer>
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+  
+  
+  <!-- Modal -->
+<div class="modal fade" id="modalRespuestasViernes" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Cat&aacute;logo de respuestas</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+		<div class="row">
+			<div class="col-3" th:each="respuestaFlash: ${catRespuestas}">
+				<div class="form-check">
+					<input class="form-check-input respVChk" type="checkbox"
+						th:value="${respuestaFlash.codRespuesta}"
+						th:id="${'respVCheck_' + respuestaFlash.codRespuesta}">
+					<img th:id="${'imgVResp_' + respuestaFlash.codRespuesta}"
+						class="img_emoji_resultado"
+						th:for="${'resp_' + respuestaFlash.codRespuesta}"
+						th:src="${respuestaFlash.rutaImagen}">
+				</div>
+			</div>
+		</div>
+	  </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button id="btnRespuestasViernes" type="button" class="btn btn-primary">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- Modal -->
+<div class="modal fade" id="modalRespuestasSemanal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Cat&aacute;logo de respuestas</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+		<div class="row">
+			<div class="col-3" th:each="respuestaFlash: ${catRespuestas}">
+				<div class="form-check">
+					<input class="form-check-input respSChk" type="checkbox"
+						th:value="${respuestaFlash.codRespuesta}"
+						th:id="${'respSCheck_' + respuestaFlash.codRespuesta}">
+					<img th:id="${'imgSResp_' + respuestaFlash.codRespuesta}"
+						class="img_emoji_resultado"
+						th:for="${'resp_' + respuestaFlash.codRespuesta}"
+						th:src="${respuestaFlash.rutaImagen}">
+				</div>
+			</div>
+		</div>
+	  </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button id="btnRespuestasSemanal" type="button" class="btn btn-primary">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal HTML -->
+<div id="modalOK" class="modal fade">
+	<div class="modal-dialog modal-confirm modal-sm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<div class="icon-box">
+<!-- 					<i class="material-icons">&#xE876;</i> -->
+					<i class="far fa-thumbs-up"></i>
+				</div>				
+				<h4 class="modal-title w-100">Listo!</h4>	
+			</div>
+			<div class="modal-body">
+				<p class="text-center">Se ha activado la encuesta correctamente.</p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-success btn-block" data-dismiss="modal">OK</button>
+			</div>
+		</div>
+	</div>
+</div>  
+
+<!-- Modal HTML -->
+<div id="modalNOK" class="modal fade">
+	<div class="modal-dialog modal-confirm modal-sm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<div class="icon-box">
+<!-- 					<i class="material-icons">&#xE876;</i> -->
+					<i class="far fa-thumbs-down"></i>
+				</div>				
+				<h4 class="modal-title w-100">Listo!</h4>	
+			</div>
+			<div class="modal-body">
+				<p class="text-center">Se ha desactivado la encuesta correctamente.</p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-success btn-block" data-dismiss="modal">OK</button>
+			</div>
+		</div>
+	</div>
+</div>  
+  
+
+  <!-- Scroll to Top Button--> <div class="st-actionContainer right-bottom" id="btnFlash"> <div class="st-btn-container right-bottom" onclick="flashSurvey(); return false;"> <div class="st-button-main"><i class="fa fa-bolt" aria-hidden="true"></i></div> </div> </div>
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+	  <!-- ModalLogout -->
+      <footer th:replace="layout/layout :: modalLogout"></footer>
+      <!-- End ModalLogout -->
+
+  <!-- Bootstrap core JavaScript-->
+  <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+  <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+ 
+  <!-- Core plugin JavaScript-->
+  <script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script th:src="@{/js/sb-admin-2.min.js}"></script>
+  
+  <script th:src="@{/js/datosRecursoSesion.js}"></script>
+  
+  <script type="text/javascript">
+  $(document).ready(function() {
+  	$("#inputPreguntaFlash").on('change keydown paste input', function(){
+  		$("#btnActualizarFlash").prop( "disabled", false );
+	});
+  	
+  	$("#btnConfigFlashViernes").on('click', function(){
+  		$('.respVChk').prop('checked', false);
+  		$('.respuestasViernes').each(function() {
+    		var id = this.id.substring(12);
+    		$("#respVCheck_"+id).prop('checked', true);
+		});
+  		$('#modalRespuestasViernes').modal('toggle');
+	});
+  	
+  	$("#btnConfigFlashSemanal").on('click', function(){
+  		$('.respSChk').prop('checked', false);
+  		$('.respuestasSemanales').each(function() {
+  			var id = this.id.substring(12);
+  			$("#respSCheck_"+id).prop('checked', true);
+		});
+  		$('#modalRespuestasSemanal').modal('toggle');
+	});
+  	
+  	$("#btnRespuestasSemanal").on('click', function(){
+  		actualizaRespuestasSemanal();
+  	});
+  	
+  	$("#btnRespuestasViernes").on('click', function(){
+  		actualizaRespuestasViernes();
+  	});
+  	
+  	$(".chkActivo").on('click', function(){
+  		var activo = $(this).is(":checked");
+  		var id= $(this).attr('id').substring(4);
+  		if (activo){
+  			if (confirm('\xbfActivar la encuesta?')) {
+  				$.ajax({
+	  			    url: '/activarEncuestaFlash',
+	  			    type: 'GET',
+	  			    data: { idEncuesta: id,
+	  			    		valActivo: activo},
+	  			    success: function(result){
+	  		        	if(result == '1'){
+	  		        		$("#modalOK").modal("toggle");
+	  		        	}
+	  		    	}
+	  			}); 
+	  		} else {
+	  			$(this).prop('checked', false);
+	  		}
+  		} else {
+	  		if (confirm('\xbfDesactivar la encuesta?')) {
+	  			$.ajax({
+	  				url: '/activarEncuestaFlash',
+	  			    type: 'GET',
+	  			    data: { idEncuesta: id,
+	  			    		valActivo: activo} ,
+	  			    success: function(result) {
+	  		        	if(result == '1'){
+	  		        		$("#modalNOK").modal("toggle");
+	  		        	} 
+	  		    	}
+	  			}); 
+	  		} else {
+	  			$(this).prop('checked', true);
+	  		}
+  		}
+  	});
+  	
+  	
+  });
+  
+  function actualizaRespuestasSemanal(){
+	  $("#divRespFlashSemanal").html("");
+	  $('.respSChk:checkbox:checked').each(function() {
+		  var cod = this.id.substring(11);
+		  var img = '<img class="img_emoji_resultado respuestasSemanales" id="respSemanal_' + cod + '" src="' + $("#imgSResp_" + cod).attr('src') + '">';  
+		  $("#divRespFlashSemanal").append(img);
+	  });
+	  $('#modalRespuestasSemanal').modal('toggle');
+	  $("#btnActualizarFlashSemanal").prop( "disabled", false );
+  }
+  
+  function actualizaRespuestasViernes(){
+	  $("#divRespFlashViernes").html("");
+	  $('.respVChk:checkbox:checked').each(function() {
+		  var cod = this.id.substring(11);
+		  var img = '<img class="img_emoji_resultado respuestasViernes" id="respViernes_' + cod + '" src="' + $("#imgVResp_" + cod).attr('src') + '">';  
+		  $("#divRespFlashViernes").append(img);
+	  });
+	  $('#modalRespuestasViernes').modal('toggle');
+	  $("#btnActualizarFlash").prop( "disabled", false );
+  }
+  
+  function actualizaPreguntaFlashViernes(){
+	  var pregunta = $("#inputPreguntaFlash").val();
+	  var respuestas = "";
+	  $('.respuestasViernes').each(function() {
+  		var id = this.id.substring(12);
+  		respuestas += id +","
+	  });
+	  
+	  if(pregunta.length > 0){
+		  $.ajax({
+				url: '/guardaPreguntaFlash',
+				data: { pregunta: pregunta,
+					respuestas:respuestas},
+				success: function(succ){
+					$("#btnActualizarFlash").prop( "disabled", true );
+				}
+			})  
+	  } else {
+		  $("#btnActualizarFlash").prop( "disabled", true );
+	  }
+  }
+  
+  function actualizaPreguntaFlashSemanal(){
+	  var pregunta = $("#inputPreguntaFlashSemanal").val();
+	  var respuestas = "";
+	  $('.respuestasSemanales').each(function() {
+  		var id = this.id.substring(12);
+  		respuestas += id +","
+	  });
+	  
+	  if(pregunta.length > 0){
+		  $.ajax({
+				url: '/guardaPreguntaFlashSemanal',
+				data: { pregunta: pregunta,
+					respuestas:respuestas},
+				success: function(succ){
+					$("#btnActualizarFlashSemanal").prop( "disabled", true );
+				}
+			})  
+	  } else {
+		  $("#btnActualizarFlashSemanal").prop( "disabled", true );
+	  }
+  }
+  
+  
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"com.sophi.app"},{"l":"com.sophi.app.controllers"},{"l":"com.sophi.app.mail.config"},{"l":"com.sophi.app.mail.dto"},{"l":"com.sophi.app.mail.service"},{"l":"com.sophi.app.models.dao"},{"l":"com.sophi.app.models.entity"},{"l":"com.sophi.app.models.service"}]

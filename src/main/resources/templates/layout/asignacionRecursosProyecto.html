@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	
+	<div th:fragment="asignacionRecursoProyecto">
+		<div class="modal-header">
+			<h4 th:text="'Asignar recursos al proyecto ' + ${nombreProyecto}" class="modal-title"></h4>
+			<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">x</span>
+			</button>
+		</div>
+		<div class="modal-body" style="font-size: 14px;">
+			<input type="hidden" th:name="codProyecto" th:value="${codProyecto}"/>
+				
+			<div class="row">
+				<div class="col-sm-5 col-sm-offset-1">
+					<div>
+						<h5>Recursos</h5>
+						<select class="form-control" id="select1" size="10">
+           					<option th:each="recurso : ${recursoList}" th:value="${recurso.codRecurso}" th:text="${recurso.descRecurso} + ' ' + ${recurso.descApellidoPaterno} "/>
+         				</select>
+					</div>
+				</div>
+
+				<div class="col-md-2 v-center" style="min-height: 200px; display: flex; justify-content: center; flex-flow: column wrap;">
+					<button title="Asignar" class="btn btn-primary btn-block add">
+						<i class="fa fa-angle-right"></i>
+					</button>
+					<button title="Quitar" class="btn btn-primary btn-block remove">
+						<i class="fa fa-angle-left"></i>
+					</button>
+				</div>
+
+				<div class="col-sm-5">
+					<div>
+						<h5>Asignados</h5>
+						<select class="form-control" id="select2" size="10">
+							<option th:each="recurso : ${recursoListAsignados}" th:value="${recurso.codRecurso}" th:text="${recurso.descRecurso} + ' ' + ${recurso.descApellidoPaterno} "/>
+						</select> 
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+			<button class="btn btn-primary"  id="aceptarAsignacionBtn" onclick="enviarAsignacionRecurso(); return false;"><span id="aceptarAsignacionBtnName">Aceptar</span></button>
+		</div>
+		<script type="text/javascript">
+		$(document).ready(function() {
+			
+			$('.add').click(function(){
+				return !$('#select1 option:selected').remove().appendTo('#select2'); 
+			});
+
+			$('.remove').click(function(){
+				return !$('#select2 option:selected').remove().appendTo('#select1'); 
+			});
+			
+			$('#select1 option').dblclick(function(){
+				return !$('#select1 option:selected').remove().appendTo('#select2');
+			});
+			
+			$('#select2 option').dblclick(function(){
+				return !$('#select2 option:selected').remove().appendTo('#select1');
+			});
+			
+		});
+		</script>
+	</div>
+
+</body>
+</html>

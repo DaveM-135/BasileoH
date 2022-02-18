@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="layout/layout::head"></head>
+
+<body id="page-top">
+  <input id="authGetName" type="hidden" th:value="${#authentication.getName()}"></input>
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul th:replace="layout/layout::menu"> </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+        <header th:replace="layout/layout :: header"></header>
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+        
+        <input id="codRecurso" type="hidden" th:value="${codRecurso}"></input>
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-1">
+			<h1 class="h3 text-gray-800">Mis Vacaciones</h1>
+			<a th:href="@{'/solicitudVacaciones/'} + ${codRecurso}" class="btn btn-primary">
+				<i class="fas fa-plus fa-sm text-white-50"></i> Nueva solicitud
+			</a>
+          </div>
+          
+			<!-- Content Row -->
+			<div class="row">
+	            <!-- Earnings (Monthly) Card Example -->
+	            <div class="col-xl-4 col-md-4 mb-4">
+	              <div class="card border-left-success  shadow h-100 py-2">
+	                <div class="card-body">
+	                  <div class="row no-gutters align-items-center">
+	                    <div class="col mr-2">
+	                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Dias disponibles para vacaciones</div>
+	                      <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${recursoVacaciones.valDisponibles}"></div>
+	                    </div>
+	                    <div class="col-auto">
+	                      <i class="fas fa-plane fa-2x text-gray-300"></i>
+	                    </div>
+	                  </div>
+	                </div>
+	              </div>
+	            </div>
+	
+	            <!-- Earnings (Monthly) Card Example -->
+	            <div class="col-xl-4 col-md-4 mb-4">
+	              <div class="card border-left-warning shadow h-100 py-2">
+	                <div class="card-body">
+	                  <div class="row no-gutters align-items-center">
+	                    <div class="col mr-2">
+	                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1" th:text="'Dias totales del ' + ${recursoVacaciones.valPeriodo}"></div>
+	                      <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${recursoVacaciones.valTotal}"></div>
+	                    </div>
+	                    <div class="col-auto">
+	                      <i class="far fa-calendar-alt fa-2x text-gray-300"></i>
+	                    </div>
+	                  </div>
+	                </div>
+	              </div>
+	            </div>
+	
+	
+	            <!-- Pending Requests Card Example -->
+	            <div class="col-xl-4 col-md-4 mb-4">
+	              <div class="card border-left-warning shadow h-100 py-2">
+	                <div class="card-body">
+	                  <div class="row no-gutters align-items-center">
+	                    <div class="col mr-2">
+	                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1" th:text="'Dias aprobados del periodo ' + ${recursoVacaciones.valPeriodo}" ></div>
+	                      <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${recursoVacaciones.valAprobado}"></div>
+	                    </div>
+	                    <div class="col-auto">
+	                      <i class="far fa-calendar-check fa-2x text-gray-300"></i>
+	                    </div>
+	                  </div>
+	                </div>
+	              </div>
+	            </div>
+	          </div>
+          
+          
+          
+
+          <!-- DataTales Example -->
+          <div th:fragment="listaDetalleVacaciones" class="card shadow mb-4">
+            <div class="card-body" id="contenidoTabla">
+              <div class="table-responsive fz-12">
+                <table class="table" id="dataTable" width="100%" cellspacing="0">
+	                 <thead>
+	                   <tr>
+	                   	  <th># Solicitud</th>
+	                      <th>Fecha de solicitud</th>
+                          <th>Dias solicitados</th>
+                          <th>Periodo</th>
+                          <th>Estatus</th>
+                          <th>Opciones</th>
+	                   </tr>
+	                 </thead>
+	                 <tbody>
+	                 	<tr th:each="solicitud: ${listaSolicitudes}">
+	                 		<td th:text="${solicitud.contador}"></td>
+	                 		<td th:text="${#dates.format(solicitud.fecSolicitud,'dd/MM/yyyy')}"></td>
+                            <td th:text="${solicitud.valDiasSolicitados}"></td>
+                            <td th:text="${solicitud.valPeriodo}"></td>
+                            <td>
+	                            <span th:if="${solicitud.fecAprobacion != null and solicitud.fecCancelacion == null}" class="badge badge-pill badge-success">Aprobada <i class="far fa-check-circle"></i></span>
+	                            <span th:if="${solicitud.fecRechazo != null}" class="badge badge-pill badge-danger">Rechazada <i class="far fa-times-circle"></i></span>
+	                            <span th:if="${solicitud.fecCancelacion != null and solicitud.fecAprobacion != null}" class="badge badge-pill badge-danger">Cancelada <i class="fas fa-times-circle"></i></span>
+	                            <span th:if="${solicitud.fecAprobacion == null and solicitud.fecRechazo == null and solicitud.fecCancelacion == null}" class="badge badge-pill badge-warning">Pendiente <i class="fas fa-hourglass-half"></i></span>
+                            </td>
+                            <td>
+                            	<a href="#" th:id="'ver_'+${solicitud.codSolicitud}" onclick="verDetalleSolicitud(this.id); return false;"  class="badge badge-info">Ver <i class="far fa-calendar"></i></a>
+<!--                             	<a th:href="@{/detalleSolicitud/} + ${solicitud.codSolicitud}" class="badge badge-success">Editar <i class="far fa-edit"></i></a> -->
+                            	<a th:if="${solicitud.fecAprobacion == null and solicitud.fecRechazo == null and solicitud.fecCancelacion == null}" href="#" class="badge badge-danger"  th:id="'can_'+${solicitud.codSolicitud}"  onclick="cancelarSolicitud(this.id); return false;">Cancelar <i class="far fa-calendar-times"></i></a>
+                            </td>
+						</tr>
+	                 </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      <footer th:replace="layout/layout :: footer"></footer>
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+  
+  
+  <div class="modal fade" id="modalDetalleSolicitud" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="modalDetalleSolicitudLabel" aria-hidden="true">
+		<div class="modal-dialog modal-sm" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h6 class="modal-title" id="modalDetalleSolicitudLabel">Detalle de la solicitud</h6>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+ 				</div>
+				<div class="modal-body" style="text-align: center;">
+					<i class="far fa-calendar-alt fa-2x text-gray-300"></i>
+					<div id="detalleSolicitud">
+						<!-- DETALLE DE VACACIONES -->
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Aceptar</button>
+<!-- 					<button type="button" class="btn btn-primary" onclick="enviarMailCalidad(); return false;">Aceptar</button> -->
+				</div>
+    		</div>
+  		</div>
+	</div>
+  
+  
+  
+  
+  
+  
+  
+
+  <!-- Scroll to Top Button--> <div class="st-actionContainer right-bottom" id="btnFlash"> <div class="st-btn-container right-bottom" onclick="flashSurvey(); return false;"> <div class="st-button-main"><i class="fa fa-bolt" aria-hidden="true"></i></div> </div> </div>
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+	  <!-- ModalLogout -->
+      <footer th:replace="layout/layout :: modalLogout"></footer>
+      <!-- End ModalLogout -->
+      
+  <!-- Bootstrap core JavaScript-->
+  <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+  <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script th:src="@{/js/sb-admin-2.min.js}"></script>
+
+  <!-- Page level plugins -->
+  <script th:src="@{/vendor/datatables/jquery.dataTables.min.js}"></script>
+  <script th:src="@{/vendor/datatables/dataTables.bootstrap4.min.js}"></script>
+
+  <!-- Page level custom scripts -->
+  <script th:src="@{/js/demo/datatables-demo.js}"></script>
+  
+  <script th:src="@{/js/datosRecursoSesion.js}"></script>
+  
+<script type="text/javascript">
+  $(document).ready(function() {
+	  
+  });
+  
+  function verDetalleSolicitud(verId){
+	  $("#detalleSolicitud").html("");
+	  var idSolicitud = verId.substring(4);
+	  $("#modalDetalleSolicitud").modal('show');
+	  $.ajax({
+			url: "/verDetalleSolicitud",
+			data: {idSolicitud:idSolicitud},
+			success: function(result){
+				$("#detalleSolicitud").html(result);
+			}
+		});
+  }
+  
+  function cancelarSolicitud(cancelacionId){
+	  $("#"+cancelacionId).html('<i class="spinner-border spinner-border-sm"></i>');
+	  var idSolicitud = cancelacionId.substring(4);
+	  $.ajax({
+			url: "/cancelarSolicitud",
+			data: {codSolicitud:idSolicitud},
+			success: function(result){
+				if(result == 'ok'){
+					location.reload();
+				}
+			}
+		});
+  }
+  
+ 
+  </script>
+  
+
+</body>
+
+</html>

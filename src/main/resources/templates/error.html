@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout::head"></head>
+<body>
+	<div style="text-align: center; ">
+		<img style="text-align: center; padding-top: 40px;"
+			th:src="@{/img/logo-regular.png}">
+	</div>
+	<div style="text-align: center; padding-top: 20px;">
+		<img style="width: 400px;" th:src="@{/img/img-error.png}">
+	</div>
+	<p style="text-align: center;">Algo sali&oacute; mal. Vuelve a intentarlo m&aacute;s tarde.</p>
+	<div style="text-align: center;">
+		<a href="/" class="btn btn-primary">Aceptar</a>
+	</div>
+</body>
+</html>

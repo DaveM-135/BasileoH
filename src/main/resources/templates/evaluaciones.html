@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+	<div th:replace="layout/layout::head"></div>
+	<link th:href="@{/css/evaluaciones.css}" rel="stylesheet">
+</head>
+
+<body id="page-top">
+<input id="authGetName" type="hidden" th:value="${#authentication.getName()}"></input>
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul th:replace="layout/layout::menu"> </ul>
+    <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <header th:replace="layout/layout::header"></header>
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-1">
+                        <h1 class="h3 mb-2 text-gray-800">Evaluaciones de desempe&ntilde;o</h1>
+                        <a href="#" onclick="nuevaEvaluacion(); return false;" class="btn btn-primary">
+                            <i class="fas fa-plus fa-sm text-white-50"></i> Nueva evaluaci&oacute;n
+                        </a>
+                    </div>
+                    
+			        <div class="card shadow mt-3">
+			        <div class="card-body"> 
+			        	<div class="d-flex justify-content-end">
+			        		<span onclick="actualizarPage();" class="close" style="font-size: 12px; cursor: pointer; padding-bottom: 10px; margin-top: -10px;" >Actualizar <i class="fas fa-sync-alt fa-fw"></i></span>
+			        	</div>
+			        	       
+					<div class="table-responsive fz-12">
+						<table class="table" id="dataTable" width="100%" cellspacing="0">
+							<thead>
+								<tr>
+									<th>Evaluaci&oacute;n</th>
+									<th>Periodo</th>
+									<th>Estatus</th>
+									<th>Promedio Metas</th>
+									<th>Promedio Competencias</th>
+									<th>Promedio Empresa</th>
+									<th>Opciones</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="evaluacionDesempeno : ${listaEvaluaciones}">
+									<td th:text="${evaluacionDesempeno.descEvaluacionDesempeno}"></td>
+									<td th:text="${#dates.monthNameShort(evaluacionDesempeno.fecPeriodoInicio)} + ' ' + ${#dates.year(evaluacionDesempeno.fecPeriodoInicio)} + ' - ' + ${#dates.monthNameShort(evaluacionDesempeno.fecPeriodoFin)} + ' ' + ${#dates.year(evaluacionDesempeno.fecPeriodoFin)}"></td>
+									<td th:text="${evaluacionDesempeno.descEstatus}"></td>
+									<td class="" th:classappend="${evaluacionDesempeno.promedioMetas} <= 60 ? 'semaforo1' : 
+										(${evaluacionDesempeno.promedioMetas} > 60 AND ${evaluacionDesempeno.promedioMetas} <= 75  ? 'semaforo2' :
+										 (${evaluacionDesempeno.promedioMetas} > 75 AND ${evaluacionDesempeno.promedioMetas} <= 90  ? 'semaforo3' :
+										  (${evaluacionDesempeno.promedioMetas} > 90  ? 'semaforo4' : '')
+										 )
+										)" th:text="${evaluacionDesempeno.promedioMetas}+'%'"></td>
+									<td class="" th:classappend="${evaluacionDesempeno.promedioCompetencias} <= 60 ? 'semaforo1' : 
+										(${evaluacionDesempeno.promedioCompetencias} > 60 AND ${evaluacionDesempeno.promedioCompetencias} <= 75  ? 'semaforo2' :
+										 (${evaluacionDesempeno.promedioCompetencias} > 75 AND ${evaluacionDesempeno.promedioCompetencias} <= 90  ? 'semaforo3' :
+										  (${evaluacionDesempeno.promedioCompetencias} > 90  ? 'semaforo4' : '')
+										 )
+										)" th:text="${evaluacionDesempeno.promedioCompetencias}+'%'"></td>
+									<td class="" th:classappend="${evaluacionDesempeno.valPromedioEmpresa} <= 60 ? 'semaforo1' : 
+										(${evaluacionDesempeno.valPromedioEmpresa} > 60 AND ${evaluacionDesempeno.valPromedioEmpresa} <= 75  ? 'semaforo2' :
+										 (${evaluacionDesempeno.valPromedioEmpresa} > 75 AND ${evaluacionDesempeno.valPromedioEmpresa} <= 90  ? 'semaforo3' :
+										  (${evaluacionDesempeno.valPromedioEmpresa} > 90  ? 'semaforo4' : '')
+										 )
+										)" th:text="${evaluacionDesempeno.valPromedioEmpresa} +'%'"></td>
+									<td>
+										<a th:if="${evaluacionDesempeno.valEstatus} == 0 OR ${evaluacionDesempeno.valEstatus} == 1" th:id="${evaluacionDesempeno.codEvaluacionDesempeno}" href="#" onclick="editarEvaluacion(this.id); return false;" class="badge badge-success">Editar <i class="far fa-edit"></i></a>
+										<a th:if="${evaluacionDesempeno.valEstatus} == 0" th:id="${evaluacionDesempeno.codEvaluacionDesempeno}" href="#" onclick="borrarEvaluacion(this.id); return false;" class="badge badge-danger">Borrar <i class="fas fa-trash-alt"></i></a>
+										<a th:if="${evaluacionDesempeno.valEstatus} == 1 OR ${evaluacionDesempeno.valEstatus} == 2" th:id="${evaluacionDesempeno.codEvaluacionDesempeno}" href="#" onclick="verDetalleEvaluacion(this.id); return false;" class="badge badge-info">Detalle <i class="fas fa-info-circle"></i></a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					</div>
+					</div>
+		
+	            </div>
+	            <!-- End of Main Content -->
+	            
+	            <div id="divDetalleEvaluacion">
+	            
+	            </div>
+	            
+	            <div id="divNuevaEvaluacion">
+	            
+	            </div>
+	            
+	            <div id="divEvaluadores">
+	            	
+	            </div>
+	            
+	            <div id="divModalDetalleRespuestas">
+	            	
+	            </div>
+	            
+	             <div id="divModalDetalleMetas">
+	            	
+	            </div>
+	            
+	            <!-- Footer -->
+	            <footer th:replace="layout/layout :: footer"></footer>
+	            <!-- End of Footer -->
+
+        	</div>
+        	<!-- End of Content Wrapper -->
+
+	    </div>
+	    <!-- End of Page Wrapper -->
+	    
+	</div>
+
+    <!-- Scroll to Top Button--> <div class="st-actionContainer right-bottom" id="btnFlash"> <div class="st-btn-container right-bottom" onclick="flashSurvey(); return false;"> <div class="st-button-main"><i class="fa fa-bolt" aria-hidden="true"></i></div> </div> </div>
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- ModalLogout -->
+    <footer th:replace="layout/layout :: modalLogout"></footer>
+    <!-- End ModalLogout -->
+
+    <!-- Bootstrap core JavaScript-->
+    <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+    <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script th:src="@{/js/sb-admin-2.min.js}"></script>
+
+    <!-- Page level plugins -->
+    <script th:src="@{/vendor/datatables/jquery.dataTables.min.js}"></script>
+    <script th:src="@{/vendor/datatables/dataTables.bootstrap4.min.js}"></script>
+
+    <!-- Page level custom scripts -->
+    <script th:src="@{/js/demo/datatables-demo.js}"></script>
+    
+    <script th:src="@{/js/datosRecursoSesion.js}"></script>
+    <script th:src="@{/js/evaluacionDesempeno.js}"></script>
+    <script th:src="@{/js/loading.js}"></script>
+    <script th:src="@{/js/select2.min.js}"></script>
+    
+    
+    
+</body>
+
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="layout/layout::head"></head>
+
+<body id="page-top">
+  <input id="authGetName" type="hidden" th:value="${#authentication.getName()}"></input>
+	<!-- Page Wrapper -->
+	<div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul th:replace="layout/layout::menu"> </ul>
+    <!-- End of Sidebar -->
+
+				<!-- Content Wrapper -->
+		<div id="content-wrapper" class="d-flex flex-column">
+
+			<!-- Main Content -->
+			<div id="content">
+
+				<header th:replace="layout/layout :: header"></header>
+
+				<!-- Begin Page Content -->
+				<div th:if="${status}" class="container-fluid">
+
+					<!-- Page Heading -->
+					<div
+						class="mb-4">
+						<h1 class="h3 mb-2 text-gray-800" th:text="'Resumen previo a la carga'"></h1>
+						<a href="#" onclick="window.history.go(-1); return false;" th:text="'&laquo; regresar'"></a>
+					</div>
+					
+					 <!-- Content Row -->
+			          <div class="row">
+			
+			            <!-- Earnings (Monthly) Card Example -->
+			            <div class="col-xl-4 col-md-6 mb-4">
+			              <div class="card border-left-primary shadow h-100 py-2">
+			                <div class="card-body">
+			                  <div class="row no-gutters align-items-center">
+			                    <div class="col mr-2">
+			                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total de recursos identificados</div>
+			                      <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${totalRecursosIdentificados}"></div>
+			                    </div>
+			                    <div class="col-auto">
+			                      <i class="fas fa-calendar fa-2x text-gray-300"></i>
+			                    </div>
+			                  </div>
+			                </div>
+			              </div>
+			            </div>
+			
+			            <!-- Earnings (Monthly) Card Example -->
+			            <div class="col-xl-4 col-md-6 mb-4">
+			              <div class="card border-left-success shadow h-100 py-2">
+			                <div class="card-body">
+			                  <div class="row no-gutters align-items-center">
+			                    <div class="col mr-2">
+			                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Fecha inicio del plan</div>
+			                      <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${fechaInicioPlan}"></div>
+			                    </div>
+			                    <div class="col-auto">
+			                      <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+			                    </div>
+			                  </div>
+			                </div>
+			              </div>
+			            </div>
+			
+			
+			            <!-- Pending Requests Card Example -->
+			            <div class="col-xl-4 col-md-6 mb-4">
+			              <div class="card border-left-warning shadow h-100 py-2">
+			                <div class="card-body">
+			                  <div class="row no-gutters align-items-center">
+			                    <div class="col mr-2">
+			                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Fecha fin del plan</div>
+			                      <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${fechaFinPlan}"></div>
+			                    </div>
+			                    <div class="col-auto">
+			                      <i class="fas fa-comments fa-2x text-gray-300"></i>
+			                    </div>
+			                  </div>
+			                </div>
+			              </div>
+			            </div>
+			          </div>
+					 
+					<p class="mb-4">Verifica que la informaci&oacute;n sea correcta antes de cargar la planeaci&oacute;n.</p>
+
+<!-- 					<p><a th:href="@{'/planeacionProyecto/'} + ${proyecto.codProyecto}" th:text="'&laquo; regresar'"></a></p> -->
+					
+					<!-- DataTales Example -->
+					<div class="card shadow mb-4">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">Listado de actividades origen</h6>
+						</div>
+						<div class="card-body">
+							<div class="table-responsive fz-12">
+								<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+									<thead>
+										<tr>
+											<th>id</th>
+											<th>nombre</th>
+											<th>duraci&oacute;n</th>
+											<th>esfuerzo</th>
+											<th>% completado</th>
+											<th>inicio</th>
+											<th>fin</th>
+											<th>predecesora</th>
+											<th>recursos</th>
+										</tr>
+									</thead>
+									
+									<tbody>
+										<tr th:each="actividad : ${actividadesPlan}">
+											<td th:text="${actividad.serie}"></td>
+											<td th:text="${actividad.nombre}"></td>
+											<td th:text="${actividad.duracion}"></td>
+											<td th:text="${actividad.esfuerzo}"></td>
+											<td th:text="${actividad.porcentajeCompletado}"></td>
+											<td th:text="${actividad.inicio}"></td>
+											<td th:text="${actividad.fin}"></td>
+											<td th:text="${actividad.predecesora}"></td>
+											<td th:text="${actividad.recursos}"></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					
+					
+					<!-- DataTales Example -->
+					<div class="card shadow mb-4">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary">Listado detallado de actividades por recurso a cargar</h6>
+						</div>
+						<div class="card-body">
+							<div class="table-responsive fz-12">
+								<table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
+									<thead>
+										<tr>
+											<th># Actividad</th>
+											<th>Act. primaria</th>
+											<th>Act. secundaria</th>
+											<th>Fecha inicio</th>
+											<th>Fecha fin</th>
+											<th># Act. dependiente</th>
+											<th>Duraci&oacute;n</th>
+											<th>Recurso</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="actividadCarga : ${actividadesCargarDto.actividades}">
+											<td th:text="${actividadCarga.valNumActividad}"></td>
+											<td th:text="${actividadCarga.descActividadPrimaria}"></td>
+											<td th:text="${actividadCarga.descActividadSecundaria}"></td>
+											<td th:text="${#dates.format(actividadCarga.fecInicioActividad, 'dd/MM/yy')}"></td>
+											<td th:text="${#dates.format(actividadCarga.fecFinActividad, 'dd/MM/yy')}"></td>
+											<td th:text="${actividadCarga.codActividadDependiente}"></td>
+											<td th:text="${actividadCarga.valDuracionActividad}"></td>
+											<td th:text="${actividadCarga.nombreRecurso}"></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					
+					<form action="#" th:action="@{/guardarPlan}" th:Object="${actividadesCargarDto}" method="post">
+					
+					<div th:each="actividad, itemStat : ${actividadesCargarDto.actividades}">
+        				<input type="hidden" th:name="|actividades[${itemStat.index}].valNumActividad|" th:value="${actividad.getValNumActividad()}"/>
+        				<input type="hidden" th:name="|actividades[${itemStat.index}].descActividadPrimaria|" th:value="${actividad.getDescActividadPrimaria()}"/>
+        				<input type="hidden" th:name="|actividades[${itemStat.index}].descActividadSecundaria|" th:value="${actividad.getDescActividadSecundaria()}"/>
+        				<input type="hidden" th:name="|actividades[${itemStat.index}].fecInicioActividad|" th:value="${#dates.format(actividad.getFecInicioActividad(),'dd/MM/yyyy')}"/>
+        				<input type="hidden" th:name="|actividades[${itemStat.index}].fecFinActividad|" th:value="${#dates.format(actividad.getFecFinActividad(),'dd/MM/yyyy')}"/>
+        				<input type="hidden" th:name="|actividades[${itemStat.index}].codActividadDependiente|" th:value="${actividad.getCodActividadDependiente()}"/>
+        				<input type="hidden" th:name="|actividades[${itemStat.index}].valDuracionActividad|" th:value="${actividad.getValDuracionActividad()}"/>
+        				<input type="hidden" th:name="|actividades[${itemStat.index}].codRecurso|" th:value="${actividad.getCodRecurso()}"/>
+        				<input type="hidden" th:name="|actividades[${itemStat.index}].nombreRecurso|" th:value="${actividad.getNombreRecurso()}"/>
+        				<input type="hidden" th:name="|actividades[${itemStat.index}].codProyecto|" th:value="${actividad.getCodProyecto()}"/>
+						<input type="hidden" th:name="|actividades[${itemStat.index}].codEstatusProyecto|" th:value="${actividad.getCodEstatusProyecto()}"/>
+						<input type="hidden" th:name="|actividades[${itemStat.index}].codCliente|" th:value="${actividad.getCodCliente()}"/>
+						<input type="hidden" th:name="|actividades[${itemStat.index}].valNuevaActividad|" th:value="${actividad.getValNuevaActividad()}"/>
+					</div>
+					
+					
+						<div class="row">
+							<div class="col-sm-6">
+								<input type="submit" value="Cargar planeaci&oacute;n" class="btn btn-primary"/>
+								<a class="btn btn-secondary" type="button" th:href="@{/preventaProyectoConsulta} + '/' + ${proyecto.codProyecto} + '/' + ${proyecto.codEstatusProyecto} + '/' + ${proyecto.codCliente}" >Cancelar</a>
+							</div>
+						</div>
+					</form>
+
+				</div>
+				<!-- /.container-fluid -->
+				<div th:unless="${status}">
+					<div style="text-align: center; padding-top: 20px;">
+						<img style="width: 400px;" th:src="@{/img/img-errorPlan.png}">
+					</div>
+					<p style="text-align: center;">
+						Algo sali&oacute; mal en la lectura del del archivo.<br>Verfica
+						que el archivo este correcto e intenta nuevamente.
+					</p>
+					<div style="text-align: center;">
+						<a href="#" onclick="window.history.go(-1); return false;"
+							class="btn btn-primary">Aceptar</a>
+					</div>
+				</div>
+				
+				
+
+			</div>
+			<!-- End of Main Content -->
+
+			<!-- Footer -->
+			<footer th:replace="layout/layout :: footer"></footer>
+			<!-- End of Footer -->
+
+		</div>
+		<!-- End of Content Wrapper -->
+
+	</div>
+	<!-- End of Page Wrapper -->
+
+	<!-- Scroll to Top Button-->
+	<a class="scroll-to-top rounded" href="#page-top"> <i
+		class="fas fa-angle-up"></i>
+	</a>
+
+	<!-- ModalLogout -->
+	<footer th:replace="layout/layout :: modalLogout"></footer>
+	<!-- End ModalLogout -->
+
+	<!-- Bootstrap core JavaScript-->
+	<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+	<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+	<!-- Core plugin JavaScript-->
+	<script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+	<!-- Custom scripts for all pages-->
+	<script th:src="@{/js/sb-admin-2.min.js}"></script>
+
+	<!-- Page level plugins -->
+	<script th:src="@{/vendor/datatables/jquery.dataTables.min.js}"></script>
+	<script th:src="@{/vendor/datatables/dataTables.bootstrap4.min.js}"></script>
+
+	<!-- Page level custom scripts -->
+	<script th:src="@{/js/demo/datatables-demo.js}"></script>
+
+    <script th:src="@{/js/datosRecursoSesion.js}"></script>
+
+</body>
+
+</html>

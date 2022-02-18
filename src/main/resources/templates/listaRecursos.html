@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="layout/layout::head"></head>
+
+<body id="page-top">
+  <input id="authGetName" type="hidden" th:value="${#authentication.getName()}"></input>
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul th:replace="layout/layout::menu"> </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+<!-- 		<div id="encabezado"> -->
+		<!-- 		encabezado con datos de recurso en sesion -->
+<!-- 		</div> -->
+		<header th:replace="layout/layout :: header"></header>
+
+        <!-- Begin Page Content -->
+        <div th:if="${listAdminRh.contains(#authentication.getName())}" class="container-fluid">
+
+          <!-- Page Heading -->
+          
+          <div class="d-sm-flex align-items-center justify-content-between mb-1">
+            <h1 class="h3 mb-2 text-gray-800">Mis recursos</h1>
+            <a type="button" class="btn btn-primary" th:href="@{/formRecurso/}" >
+              <i class="fas fa-plus fa-sm text-white-50"></i> Nuevo
+            </a>
+          </div>
+          <div class="d-flex flex-row">
+			<label style="padding-right: 15px;">Ver:</label>
+            <div class="custom-control custom-radio" style="padding-right: 15px;  cursor: pointer;">
+              <input type="radio" id="radioActivos" name="customRadio" class="custom-control-input" style="cursor: pointer;" checked="checked">
+              <label class="custom-control-label" for="radioActivos" style="cursor: pointer;">Activos</label>
+            </div>
+            <div class="custom-control custom-radio" style="padding-right: 15px; cursor: pointer;">
+              <input type="radio" id="radioBajas" name="customRadio" class="custom-control-input" style="cursor: pointer;">
+              <label class="custom-control-label" for="radioBajas" style="cursor: pointer;">Bajas</label>
+            </div>
+            <div class="custom-control custom-radio" style="padding-right: 15px; cursor: pointer;">
+              <input type="radio" id="radioTodos" name="customRadio" class="custom-control-input" style="cursor: pointer;" >
+              <label class="custom-control-label" for="radioTodos" style="cursor: pointer;">Todos</label>
+            </div>
+			</div>
+			
+<!--            <p class="mb-4">Encuentra aqu&iacute; el listado de todos tus recursos registrados en <b>Sophitech</b>, podr&aacute;s registrar un nuevo recurso y gestionar los datos existentes.</p> -->
+	      
+<!--           <a th:href="@{'/'}" th:text="'&laquo; volver'"></a> -->
+          <!-- DataTales Example -->
+          <section class="main-content">
+          	<div class="container">
+          		<div class="row">
+          			<div th:attr="name=${recurso.valActivo == 1} ? 'activo' : 'baja'" class="col-lg-4 col-xl-3 col-md-6 col-sm-6" style="padding: 0 10px 10px 0;" th:each="recurso: ${recursos}">
+						<div class="profile-card card shadow text-center position-relative overflow-hidden" style="border-radius: 15px !important; padding: 20px;">
+							<div class="banner"></div>
+							<img th:if="${recurso.foto} != null" th:src="@{'/fotoRecursoPerfil/' + ${recurso.codRecurso}}" alt="${recurso.descRecurso}" class="img-profile imgPrevCircleRecurso mx-auto mb-3">
+<!-- 							img-profile imgPrevCircleRecurso -->
+							<h5>[[${recurso.descRecurso}]]<br>[[${recurso.descApellidoPaterno}]]&nbsp;[[${recurso.descApellidoMaterno}]]</h5>
+							<div class="text-left">
+								<p style="font-size: 13px;"><i class="fa fa-envelope mr-2"></i>[[${recurso.descCorreoElectronico}]]</p>
+								<p style="font-size: 13px;"><i class="fa fa-phone mr-2"></i>[[${recurso.descTelCelular}]] <img style="width: 12px; cursor: pointer; padding-bottom: 3px;" th:src="@{/img/whapp.png}" th:attr="onclick=|loadWA('${recurso.descTelCelular}','${recurso.descRecurso}')|" ></p>
+							</div>
+							<div class="button mt-2 d-flex flex-row align-items-center"> 
+							<a th:href="@{/verRecurso/} + ${recurso.codRecurso}" class="btn btn-sm btn-outline-primary w-100">Ver</a> 
+<!-- 							<a th:href="@{/formRecurso/} + ${recurso.codRecurso}" class="btn btn-sm btn-primary w-100 ml-2">Editar</a>  -->
+							</div>
+						</div>
+					</div>
+          		</div>
+          	</div>
+          </section>
+
+        </div>
+        <!-- /.container-fluid -->
+        
+        <div th:unless="${listAdminRh.contains(#authentication.getName())}">
+			<div style="text-align: center;">
+				<img style="width: 30%; border-radius: 20px;"
+					th:src="@{/img/img-accessDenied.png}">
+				<p style="font-size: 14px; color: red; font-stretch: 500;">Acceso denegado</p>
+			</div>
+		</div>
+
+      </div>
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      <footer th:replace="layout/layout :: footer"></footer>
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button--> <div class="st-actionContainer right-bottom" id="btnFlash"> <div class="st-btn-container right-bottom" onclick="flashSurvey(); return false;"> <div class="st-button-main"><i class="fa fa-bolt" aria-hidden="true"></i></div> </div> </div>
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+	  <!-- ModalLogout -->
+      <footer th:replace="layout/layout :: modalLogout"></footer>
+      <!-- End ModalLogout -->
+
+  <!-- Bootstrap core JavaScript-->
+  <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+  <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script th:src="@{/js/sb-admin-2.min.js}"></script>
+
+  <!-- Page level plugins -->
+  <script th:src="@{/vendor/datatables/jquery.dataTables.min.js}"></script>
+  <script th:src="@{/vendor/datatables/dataTables.bootstrap4.min.js}"></script>
+
+  <!-- Page level custom scripts -->
+  <script th:src="@{/js/demo/datatables-demo.js}"></script>
+  
+  <script th:src="@{/js/datosRecursoSesion.js}"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+	  	
+	  $("div[name = 'baja']").hide();
+      $("div[name = 'activo']").show();
+	  
+	  
+	    $("#radioTodos").click(function(){
+	        $("div[name = 'baja']").show();
+	        $("div[name = 'activo']").show();
+	    });
+	    $("#radioActivos").click(function(){
+	        $("div[name = 'baja']").hide();
+	        $("div[name = 'activo']").show();
+	    });
+	    $("#radioBajas").click(function(){
+	        $("div[name = 'activo']").hide();
+	        $("div[name = 'baja']").show();
+	    });
+	})
+	
+  function loadWA(numero, nombre){
+	  window.open('http://wppredirect.tk/go/?p=52'+numero+'&m=Hola '+nombre);
+  }
+  
+  
+  
+  
+  </script>
+
+</body>
+
+</html>

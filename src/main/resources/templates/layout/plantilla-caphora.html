@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+	<div class="col-sm-12" th:fragment="recursos-caphoras">
+			<div class="table-responsive fz-12">
+				<table class="table" id="dataTable" width="100%" cellspacing="0">
+					<thead>
+						<tr>
+							<th>Recurso</th>
+							<th>Capturadas</th>
+							<th>Aprobadas</th>
+							<th>Rechazadas</th>
+							<th>Estatus</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="recursoProyecto : ${listRecursos}">
+							<td class="refDetalle"><a th:text="${recursoProyecto.nombreRecurso}" th:id="${recursoProyecto.link}" href="#" onclick="detalleCaptura(this); return false;"></a></td>
+							<td><span th:text="${recursoProyecto.capturadas}"></span></td>
+							<td><span th:text="${recursoProyecto.aprobadas}"></span></td>
+							<td><span th:text="${recursoProyecto.rechazadas}"></span></td>
+							<td>
+								<div class="progress"> 
+									<div class="progress-bar bg-danger" role="progressbar" th:text="${recursoProyecto.rechazadas}*1" th:style="'width:' + @{${recursoProyecto.rechazadas}*100/40} + '%;'"></div>
+									<div class="progress-bar bg-success" role="progressbar" th:text="${recursoProyecto.aprobadas}*1" th:style="'width:' + @{${recursoProyecto.aprobadas}*100/40} + '%;'"></div>
+									<div class="progress-bar bg-warning" role="progressbar" th:text="${recursoProyecto.capturadas} - ${recursoProyecto.aprobadas} - ${recursoProyecto.rechazadas} " th:style="'width:' + @{(${recursoProyecto.capturadas}-${recursoProyecto.aprobadas}- ${recursoProyecto.rechazadas})*100/40} + '%;'"></div>
+									
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+		<script type="text/javascript" charset="UTF-8">
+		$('#dataTable').DataTable( {
+	  	    language: {
+	  	    	sProcessing:     "Procesando...",
+	  	        sLengthMenu:     "Mostrar _MENU_ registros",
+	  	        sZeroRecords:    "No se encontraron resultados",
+	  	        sEmptyTable:     "Ning\u00FAn dato disponible en esta tabla",
+	  	        sInfo:           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+	  	        sInfoEmpty:      "Mostrando registros del 0 al 0 de un total de 0 registros",
+	  	        sInfoFiltered:   "(filtrado de un total de _MAX_ registros)",
+	  	        sInfoPostFix:    "",
+	  	        sSearch:         "Buscar:",
+	  	        sUrl:            "",
+	  	        sInfoThousands:  ",",
+	  	        sLoadingRecords: "Cargando...",
+	  	        oPaginate: {
+	  	            sFirst:    "Primero",
+	  	            sLast:     "Último",
+	  	            sNext:     "Siguiente",
+	  	            sPrevious: "Anterior"
+	  	        },
+	  	        oAria: {
+	  	            sSortAscending:  ": Activar para ordenar la columna de manera ascendente",
+	  	            sSortDescending: ": Activar para ordenar la columna de manera descendente"
+	  	        },
+	  	        buttons: {
+	  	            copy: "Copiar",
+	  	            colvis: "Visibilidad"
+	  	        }
+	  	    },
+	  	  "searching": false,
+	  	  "paging": false,
+	  	  "columns": [
+	  	   null,
+	  	    null,
+	  	    null,
+	  	    null,
+	  	  { "width": "40%" }
+	  	  ]
+	  	} );
+		
+		</script>
+		
+	</div>
+	
+	<div class="col-sm-12" th:fragment="recursos-vacaciones">
+			<div class="table-responsive fz-12">
+				<table class="table" id="dataTable" width="100%" cellspacing="0">
+					<thead>
+						<tr>
+							<th>Recurso</th>
+							<th>Total d&iacute;as</th>
+							<th>D&iacute;as disponibles</th>
+							<th>D&iacute;as aprobados</th>
+							<th>D&iacute;as pendientes</th>
+							<th>Estatus</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="recursoVacaciones : ${listRecursos}">
+							<td class="refDetalle"><a th:text="${recursoVacaciones.nombreRecurso}" th:id="${recursoVacaciones.codRecurso}" href="#" onclick="detalleVacaciones(this.id); return false;"></a></td>
+							<td><span th:text="${recursoVacaciones.valTotal}" style="font-weight: 700;"></span></td>
+							<td><span th:text="${recursoVacaciones.valDisponibles}"></span></td>
+							<td><span th:text="${recursoVacaciones.valAprobado}"></span></td>
+							<td><span th:text="${recursoVacaciones.valPendientes}"></span></td>
+							<td>
+								<div class="progress"> 
+									<div class="progress-bar bg-success" role="progressbar" th:text="${recursoVacaciones.valAprobado}*1" th:style="'width:' + @{${recursoVacaciones.valAprobado}*100/${recursoVacaciones.valTotal}} + '%;'"></div>
+									<div class="progress-bar bg-warning" role="progressbar" th:text="${recursoVacaciones.valPendientes}*1" th:style="'width:' + @{${recursoVacaciones.valPendientes}*100/${recursoVacaciones.valTotal}} + '%;'"></div>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+		<script type="text/javascript" charset="UTF-8">
+		$('#dataTable').DataTable( {
+	  	    language: {
+	  	    	sProcessing:     "Procesando...",
+	  	        sLengthMenu:     "Mostrar _MENU_ registros",
+	  	        sZeroRecords:    "No se encontraron resultados",
+	  	        sEmptyTable:     "Ning\u00FAn dato disponible en esta tabla",
+	  	        sInfo:           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+	  	        sInfoEmpty:      "Mostrando registros del 0 al 0 de un total de 0 registros",
+	  	        sInfoFiltered:   "(filtrado de un total de _MAX_ registros)",
+	  	        sInfoPostFix:    "",
+	  	        sSearch:         "Buscar:",
+	  	        sUrl:            "",
+	  	        sInfoThousands:  ",",
+	  	        sLoadingRecords: "Cargando...",
+	  	        oPaginate: {
+	  	            sFirst:    "Primero",
+	  	            sLast:     "Último",
+	  	            sNext:     "Siguiente",
+	  	            sPrevious: "Anterior"
+	  	        },
+	  	        oAria: {
+	  	            sSortAscending:  ": Activar para ordenar la columna de manera ascendente",
+	  	            sSortDescending: ": Activar para ordenar la columna de manera descendente"
+	  	        },
+	  	        buttons: {
+	  	            copy: "Copiar",
+	  	            colvis: "Visibilidad"
+	  	        }
+	  	    },
+	  	  "searching": false,
+	  	  "paging": false,
+	  	  "columns": [
+	  		{ "width": "20%" },
+	  	    null,
+	  	    null,
+	  	    null,
+	  	    null,
+	  	  { "width": "40%" }
+	  	  ]
+	  	} );
+		
+		</script>
+		
+	</div>
+	
+	<div class="col-sm-12" th:fragment="detalle-recursos-vacaciones">
+			<a href="#" onclick="datosInicial(); return false;"><span class="fas fa-chevron-circle-left"></span> </a> <span style="font-size: 20px; font-stretch: 700;" th:text=" ${nombre}"></span></a>
+			<div class="table-responsive fz-12">
+				<table class="table" id="dataTableDetalleVacaciones" width="100%" cellspacing="0">
+					<thead>
+						<tr>
+							<th style="text-align: center;">Fecha de solicitud</th>
+							<th style="text-align: center;">Dias solicitados </th>
+							<th style="text-align: center;">Estatus </th>
+							<th style="text-align: center;">Opciones</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="solicitud : ${listaSolicitudes}">
+							<td style="text-align: center;"><span th:text="${#dates.format(solicitud.fecSolicitud,'dd/MM/yyyy')}"></span></td>
+							<td style="text-align: center;"><span th:text="${solicitud.valDiasSolicitados}" class="badge badge-info" style="font-weight: 700;"></span> <a href="#" th:id="'det_'+${solicitud.codSolicitud}" onclick="verDetalleSolicitud(this.id); return false;"> detalle..</a></td>
+							<td style="text-align: center;" th:id="'estat_'+${solicitud.codSolicitud}">
+	                            <span th:if="${solicitud.fecAprobacion != null and solicitud.fecCancelacion == null}" class="badge badge-pill badge-success">Aprobada <i class="far fa-check-circle"></i></span>
+	                            <span th:if="${solicitud.fecRechazo != null}" class="badge badge-pill badge-danger">Rechazada <i class="far fa-times-circle"></i></span>
+	                            <span th:if="${solicitud.fecCancelacion != null and solicitud.fecAprobacion != null}" class="badge badge-pill badge-danger">Cancelada <i class="fas fa-times-circle"></i></span>
+	                            <span th:if="${solicitud.fecAprobacion == null and solicitud.fecRechazo == null and solicitud.fecCancelacion == null}" class="badge badge-pill badge-warning">Pendiente <i class="fas fa-hourglass-half"></i></span>
+                            </td>
+							<td style="text-align: center;" th:id="'opcs_'+${solicitud.codSolicitud}">
+								<a  th:if="${solicitud.fecAprobacion == null and solicitud.fecRechazo == null and solicitud.fecCancelacion == null}" th:id="'aprSol_'+${solicitud.codSolicitud}" th:onclick="aprobarSolicitud([[${solicitud.codSolicitud}]]); return false;" href="#" class="badge badge-success">Aprobar  <i class="far fa-check-circle"></i></a>
+								<a  th:if="${solicitud.fecAprobacion == null and solicitud.fecRechazo == null and solicitud.fecCancelacion == null}" th:id="'recSol_'+${solicitud.codSolicitud}" th:onclick="rechazarSolicitud([[${solicitud.codSolicitud}]]); return false;" href="#" class="badge badge-danger">Rechazar  <i class="far fa-times-circle"></i></a>
+								<a  th:if="${solicitud.fecAprobacion != null and solicitud.fecCancelacion == null and solicitud.fecAprobacion > #dates.createNow()}" th:id="'canSol_'+${solicitud.codSolicitud}" th:onclick="cancelarSolicitud([[${solicitud.codSolicitud}]]); return false;" href="#" class="badge badge-danger">Cancelar  <i class="far fa-times-circle"></i></a>
+							</td>
+						</tr>						
+					</tbody>
+				</table>
+			</div>
+
+		<script type="text/javascript" charset="UTF-8">
+		$('#dataTableDetalleVacaciones').DataTable( {
+	  	    language: {
+	  	    	sProcessing:     "Procesando...",
+	  	        sLengthMenu:     "Mostrar _MENU_ registros",
+	  	        sZeroRecords:    "No se encontraron resultados",
+	  	        sEmptyTable:     "Ning\u00FAn dato disponible en esta tabla",
+	  	        sInfo:           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+	  	        sInfoEmpty:      "Mostrando registros del 0 al 0 de un total de 0 registros",
+	  	        sInfoFiltered:   "(filtrado de un total de _MAX_ registros)",
+	  	        sInfoPostFix:    "",
+	  	        sSearch:         "Buscar:",
+	  	        sUrl:            "",
+	  	        sInfoThousands:  ",",
+	  	        sLoadingRecords: "Cargando...",
+	  	        oPaginate: {
+	  	            sFirst:    "Primero",
+	  	            sLast:     "Último",
+	  	            sNext:     "Siguiente",
+	  	            sPrevious: "Anterior"
+	  	        },
+	  	        oAria: {
+	  	            sSortAscending:  ": Activar para ordenar la columna de manera ascendente",
+	  	            sSortDescending: ": Activar para ordenar la columna de manera descendente"
+	  	        },
+	  	        buttons: {
+	  	            copy: "Copiar",
+	  	            colvis: "Visibilidad"
+	  	        }
+	  	    },
+	  	  "searching": false,
+	  	  "paging": false,
+	  	  "columns": [
+	  		null,
+	  		{ "width": "25%" },
+	  		{ "width": "25%" },
+	  		{ "width": "25%" },
+	  	  	{ "width": "25%" }
+	  	  ]
+	  	} );
+		
+// 		$("span.captura").dblclick(function(){
+// 			var actual = $(this).text();
+// 			var cod= $(this).attr("id").substring(3);
+// 			  var num = prompt("Ingresa las horas a aprobar:", actual);
+// 			  if (!isNaN(num) && num != null && num != "") {
+// 				  if(num > 0 && num <=18){
+// 					  $(this).text(num);
+// 					  $("#aprA"+cod).html('Aprobar <i class="far fa-check-circle"></i>');
+// 					  totales();
+// 				  }else {
+// 					  $(this).text(actual);
+// 				  }
+				  
+// 			  } else {
+// 				  $(this).text(actual);
+// 			  }
+// 		});
+		
+		
+		</script>
+		
+	</div>
+	
+	
+	
+		<div class="col-sm-12" th:fragment="detalle-recursos-caphoras">
+			<a href="#" onclick="datosInicial(); return false;"><span class="fas fa-chevron-circle-left"></span> </a> <span style="font-size: 20px; font-stretch: 700;" th:text=" ${nombre}"></span> <span id="totalSemana"></span> </a>
+			<div class="table-responsive fz-12">
+				<table class="table" id="dataTableDetalle" width="100%" cellspacing="0">
+					<thead>
+						<tr>
+							<th style="text-align: left; vertical-align: middle; font-size: 14px;">Actividad</th>
+							<th class="text-center">Lunes <span th:text="${#dates.format(fechas[0],'dd/MM/yy')}"></span> <span class="badge badge-pill badge-info" id="dia1"></span></th>
+							<th class="text-center">Martes <span th:text="${#dates.format(fechas[1],'dd/MM/yy')}"></span> <span class="badge badge-pill badge-info" id="dia2"></span></th>
+							<th class="text-center">Miercoles <span th:text="${#dates.format(fechas[2],'dd/MM/yy')}"></span> <span class="badge badge-pill badge-info" id="dia3"></span></th>
+							<th class="text-center">Jueves <span th:text="${#dates.format(fechas[3],'dd/MM/yy')}"></span> <span class="badge badge-pill badge-info" id="dia4"></span></th>
+							<th class="text-center">Viernes <span th:text="${#dates.format(fechas[4],'dd/MM/yy')}"></span> <span class="badge badge-pill badge-info" id="dia5"></span></th>
+							<th class="text-center">Sabado <span th:text="${#dates.format(fechas[5],'dd/MM/yy')}"></span> <span class="badge badge-pill badge-info" id="dia6"></span></th>
+							<th class="text-center">Domingo <span th:text="${#dates.format(fechas[6],'dd/MM/yy')}"></span> <span class="badge badge-pill badge-info" id="dia7"></span></th>
+							<th style="text-align: left; vertical-align: middle;">Opciones</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="horaCapturada : ${listActHoraCapturadas}">
+							<td>
+								<i class='fas fa-tasks'></i><b><span th:text="' ' + ${horaCapturada.descProyecto}"></span>
+								<span th:text="' - ' + ${horaCapturada.descActividad}"></span></b><br>
+								<i class='fas fa-align-left'></i><span th:text="' ' + ${horaCapturada.descComentario}"></span><br>
+								<div th:id="'est' +${horaCapturada.idCapHora}">
+								<span th:if="${horaCapturada.fechaValidada != null}" class="badge badge-success"><i class="far fa-check-circle"></i></span>
+								<span th:if="${horaCapturada.fechaValidada == null && horaCapturada.valRechazo != 1}" class="badge badge-warning"><i class="far fa-bell"></i></span>
+								<span th:if="${horaCapturada.valRechazo == 1}" class="badge badge-danger"><i class="far fa-times-circle"></i></span>
+								</div>
+							</td>
+							<td class="text-center"><span th:attr="class=${horaCapturada.dia == 1 ? 'captura' : 'noCaptura'}, id=${horaCapturada.dia == 1 ? ('apr'+ horaCapturada.idCapHora) : null}" th:title="'Planeadas: ' + (${horaCapturada.dia == 1} ? ${horaCapturada.horasPlaneadas} : 0) + ', Capturadas: ' + (${horaCapturada.dia == 1} ? ${horaCapturada.horasCapturadas} : 0)" th:text="${horaCapturada.dia == 1} ? (${horaCapturada.fechaValidada != null} ? ${horaCapturada.horasAprobadas} : ${horaCapturada.horasCapturadas}) : 0"></span></td>
+							<td class="text-center"><span th:attr="class=${horaCapturada.dia == 2 ? 'captura' : 'noCaptura'}, id=${horaCapturada.dia == 2 ? ('apr'+ horaCapturada.idCapHora) : null}" th:title="'Planeadas: ' + (${horaCapturada.dia == 2} ? ${horaCapturada.horasPlaneadas} : 0) + ', Capturadas: ' + (${horaCapturada.dia == 2} ? ${horaCapturada.horasCapturadas} : 0)" th:text="${horaCapturada.dia == 2} ? (${horaCapturada.fechaValidada != null} ? ${horaCapturada.horasAprobadas} : ${horaCapturada.horasCapturadas}) : 0"></span></td>
+							<td class="text-center"><span th:attr="class=${horaCapturada.dia == 3 ? 'captura' : 'noCaptura'}, id=${horaCapturada.dia == 3 ? ('apr'+ horaCapturada.idCapHora) : null}" th:title="'Planeadas: ' + (${horaCapturada.dia == 3} ? ${horaCapturada.horasPlaneadas} : 0) + ', Capturadas: ' + (${horaCapturada.dia == 3} ? ${horaCapturada.horasCapturadas} : 0)" th:text="${horaCapturada.dia == 3} ? (${horaCapturada.fechaValidada != null} ? ${horaCapturada.horasAprobadas} : ${horaCapturada.horasCapturadas}) : 0"></span></td>
+							<td class="text-center"><span th:attr="class=${horaCapturada.dia == 4 ? 'captura' : 'noCaptura'}, id=${horaCapturada.dia == 4 ? ('apr'+ horaCapturada.idCapHora) : null}" th:title="'Planeadas: ' + (${horaCapturada.dia == 4} ? ${horaCapturada.horasPlaneadas} : 0) + ', Capturadas: ' + (${horaCapturada.dia == 4} ? ${horaCapturada.horasCapturadas} : 0)" th:text="${horaCapturada.dia == 4} ? (${horaCapturada.fechaValidada != null} ? ${horaCapturada.horasAprobadas} : ${horaCapturada.horasCapturadas}) : 0"></span></td>
+							<td class="text-center"><span th:attr="class=${horaCapturada.dia == 5 ? 'captura' : 'noCaptura'}, id=${horaCapturada.dia == 5 ? ('apr'+ horaCapturada.idCapHora) : null}" th:title="'Planeadas: ' + (${horaCapturada.dia == 5} ? ${horaCapturada.horasPlaneadas} : 0) + ', Capturadas: ' + (${horaCapturada.dia == 5} ? ${horaCapturada.horasCapturadas} : 0)" th:text="${horaCapturada.dia == 5} ? (${horaCapturada.fechaValidada != null} ? ${horaCapturada.horasAprobadas} : ${horaCapturada.horasCapturadas}) : 0"></span></td>
+							<td class="text-center"><span th:attr="class=${horaCapturada.dia == 6 ? 'captura' : 'noCaptura'}, id=${horaCapturada.dia == 6 ? ('apr'+ horaCapturada.idCapHora) : null}" th:title="'Planeadas: ' + (${horaCapturada.dia == 6} ? ${horaCapturada.horasPlaneadas} : 0) + ', Capturadas: ' + (${horaCapturada.dia == 6} ? ${horaCapturada.horasCapturadas} : 0)" th:text="${horaCapturada.dia == 6} ? (${horaCapturada.fechaValidada != null} ? ${horaCapturada.horasAprobadas} : ${horaCapturada.horasCapturadas}) : 0"></span></td>
+							<td class="text-center"><span th:attr="class=${horaCapturada.dia == 7 ? 'captura' : 'noCaptura'}, id=${horaCapturada.dia == 7 ? ('apr'+ horaCapturada.idCapHora) : null}" th:title="'Planeadas: ' + (${horaCapturada.dia == 7} ? ${horaCapturada.horasPlaneadas} : 0) + ', Capturadas: ' + (${horaCapturada.dia == 7} ? ${horaCapturada.horasCapturadas} : 0)" th:text="${horaCapturada.dia == 7} ? (${horaCapturada.fechaValidada != null} ? ${horaCapturada.horasAprobadas} : ${horaCapturada.horasCapturadas}) : 0"></span></td>
+							<td th:id="'opc'+${horaCapturada.idCapHora}"> <a th:id="'aprA'+${horaCapturada.idCapHora}" th:onclick="aprobar([[${horaCapturada.idCapHora}]]); return false;" href="#" class="badge badge-success">Aprobar  <i class="far fa-check-circle"></i></a><br>
+<!-- 								<a th:if="${horaCapturada.fechaValidada == null}" th:id="'aprR'+${horaCapturada.idCapHora}" th:onclick="rechazar([[${horaCapturada.idCapHora}]]); return false;" href="#" class="badge badge-danger">Rechazar  <i class="far fa-times-circle"></i></a> -->
+								<a th:id="'aprR'+${horaCapturada.idCapHora}" th:onclick="rechazar([[${horaCapturada.idCapHora}]]); return false;" href="#" class="badge badge-danger">Rechazar  <i class="far fa-times-circle"></i></a>
+							</td>
+							
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+		<script type="text/javascript" charset="UTF-8">
+		$('#dataTableDetalle').DataTable( {
+	  	    language: {
+	  	    	sProcessing:     "Procesando...",
+	  	        sLengthMenu:     "Mostrar _MENU_ registros",
+	  	        sZeroRecords:    "No se encontraron resultados",
+	  	        sEmptyTable:     "Ning\u00FAn dato disponible en esta tabla",
+	  	        sInfo:           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+	  	        sInfoEmpty:      "Mostrando registros del 0 al 0 de un total de 0 registros",
+	  	        sInfoFiltered:   "(filtrado de un total de _MAX_ registros)",
+	  	        sInfoPostFix:    "",
+	  	        sSearch:         "Buscar:",
+	  	        sUrl:            "",
+	  	        sInfoThousands:  ",",
+	  	        sLoadingRecords: "Cargando...",
+	  	        oPaginate: {
+	  	            sFirst:    "Primero",
+	  	            sLast:     "Último",
+	  	            sNext:     "Siguiente",
+	  	            sPrevious: "Anterior"
+	  	        },
+	  	        oAria: {
+	  	            sSortAscending:  ": Activar para ordenar la columna de manera ascendente",
+	  	            sSortDescending: ": Activar para ordenar la columna de manera descendente"
+	  	        },
+	  	        buttons: {
+	  	            copy: "Copiar",
+	  	            colvis: "Visibilidad"
+	  	        }
+	  	    },
+	  	  "searching": false,
+	  	  "paging": false,
+	  	  "columns": [
+	  		null,
+	  		{ "width": "5%" },
+	  		{ "width": "5%" },
+	  		{ "width": "5%" },
+	  		{ "width": "5%" },
+	  		{ "width": "5%" },
+	  		{ "width": "5%" },
+	  		{ "width": "5%" },
+	  	  	{ "width": "5%" }
+	  	  ]
+	  	} );
+		
+		$("span.captura").dblclick(function(){
+			var actual = $(this).text();
+			var cod= $(this).attr("id").substring(3);
+			  var num = prompt("Ingresa las horas a aprobar:", actual);
+			  if (!isNaN(num) && num != null && num != "") {
+				  if(num > 0 && num <=18){
+					  $(this).text(num);
+					  $("#aprA"+cod).html('Aprobar <i class="far fa-check-circle"></i>');
+					  totales();
+				  }else {
+					  $(this).text(actual);
+				  }
+				  
+			  } else {
+				  $(this).text(actual);
+			  }
+		});
+		
+		
+		</script>
+		
+	</div>
+
+</body>
+</html>

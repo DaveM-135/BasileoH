@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="layout/layout::head"></head>
+
+<body id="page-top">
+<input id="authGetName" type="hidden" th:value="${#authentication.getName()}"></input>
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul th:replace="layout/layout::menu"> </ul>
+    <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <header th:replace="layout/layout::header"></header>
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-1">
+                        <h1 class="h3 mb-2 text-gray-800">Aprobaci&oacute;n de gastos</h1>
+                    </div>
+                    <form th:action="@{/validar}" th:Object="${aprobaciongastoslista}" method="POST">
+                    <input id="codRecVal" type="hidden" th:value="${r}">
+                    <!-- Filter -->
+                    <div class="row">
+                        <div class="input-group col-sm-4">
+                            <div class="input-group mb-4">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="inputGroupSelectProyecto">Proyecto</label>
+                                </div>
+                                <select name="Proyecto" class="custom-select" id="filterProyecto">
+                                    <option selected value="-1">Todos</option>
+                                    <option th:each="proyecto:${proyectos}" th:value="${proyecto.codProyecto}" th:text="${proyecto.descProyecto}"></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DataTales Example -->
+                    <div class="card shadow mb-4">
+<!--                         <div class="card-header py-3"> -->
+<!--                             <h6 class="m-0 font-weight-bold text-primary">Detalle de gastos de la semana</h6> -->
+<!--                         </div> -->
+                        <div class="card-body" id="contenidoTabla">
+                            <div class="table-responsive fz-12">
+                                <table class="table" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Proyecto</th>
+                                            <th>Tipo de gasto</th>
+                                             <th>Fecha</th>
+                                            <th>Colaborador</th>
+                                            <th>Descripci&oacute;n</th>
+                                            <th>Comprobante</th>
+                                            <th>Importe</th>
+                                            <th>Importe aprobado</th>
+                                            <th>Planeado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="aprobaciongastosunico, item : ${aprobaciongastoslista.aprobaciongastos}" th:if="${aprobaciongastosunico.getFecValidacion() == null AND aprobaciongastosunico.getCodRecursoValidador() == null}">
+                                        	<td><input id="check" type="checkbox" th:name="|aprobaciongastos[${item.index}].fecValidacion|" th:value="${aprobaciongastosunico.getFecValidacion()}" onclick="validacion();">
+                                        	<input id="RecVal" type="hidden" th:name="|aprobaciongastos[${item.index}].codRecursoValidador|" th:value="${aprobaciongastosunico.getCodRecursoValidador()}">
+                                        	<input class="codProyecto" type="hidden" th:value="${aprobaciongastosunico.codProyecto}"/>
+                                        	<input type="hidden" th:name="|aprobaciongastos[${item.index}].descComprobante|" th:value="${aprobaciongastosunico.getDescComprobante()}"/>
+                                        	</td>
+                                            <td><span th:text="${aprobaciongastosunico.Proyecto.descProyecto}"></span></td>
+                                            <td><span th:text="${aprobaciongastosunico.tipogasto.descTipoGasto}"></span></td>
+                                            <td><span th:text="${#dates.format(aprobaciongastosunico.fecRegistro,'dd/MM/yy')}"></span></td>
+                                            <td><span th:text="${aprobaciongastosunico.recurso.descRecurso}"></span></td>
+                                            <td><span th:text="${aprobaciongastosunico.descComentario}"></span></td>
+                                            <td><a data-toggle="modal" href="#modalComprobante" th:id="${aprobaciongastosunico.codRecursoGasto}" class="badge badge-info" onclick="verComprobante(this.id); return false;">Comprobante <i class="fas fa-ticket-alt"></i></a></td>
+                                            <td>$<span th:text="${aprobaciongastosunico.impGasto}"></span></td>
+                                            <td><input id="validar" step="any" type="number" style="height:20px; width:60px;" th:name="|aprobaciongastos[${item.index}].valImporteValidado|" th:value="${aprobaciongastosunico.getValImporteValidado()}" onchange="handleChange(this);" disabled></td>
+<!--                                             <td><input type="text" th:name="|aprobaciongastos[${item.index}].valGastoPlaneado|" th:value="${aprobaciongastosunico.getValGastoPlaneado()}"/></td> -->
+<!--                                             <td><input type="text" th:field="*{aprobaciongastosunico.valGastoPlaneado}"/></td> -->
+                                            <td>
+	                                            <select id="planeado" th:field="*{aprobaciongastos[__${item.index}__].valGastoPlaneado}" disabled="disabled">
+												    <option th:value="0" th:text="No"></option>
+												    <option th:value="1" th:text="Si"></option>
+												</select>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-5 mb-3 mb-sm-0">
+                            <input type="submit" value="Aprobar" class="btn btn-primary"/>
+                        </div>
+                        <div class="col-sm-5 mb-3 mb-sm-0">
+                        </div>
+                        <div class="col-sm-2 mb-3 mb-sm-0">
+                        </div>
+                    </div>
+                    </form>
+                </div>
+                <!-- /.container-fluid -->
+                <!-- Button trigger modal 
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop">
+                    Launch static backdrop modal
+                </button>-->
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer th:replace="layout/layout :: footer"></footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button--> <div class="st-actionContainer right-bottom" id="btnFlash"> <div class="st-btn-container right-bottom" onclick="flashSurvey(); return false;"> <div class="st-button-main"><i class="fa fa-bolt" aria-hidden="true"></i></div> </div> </div>
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- ModalLogout -->
+    <footer th:replace="layout/layout :: modalLogout"></footer>
+    <!-- End ModalLogout -->
+
+
+	<!-- Logout Modal-->
+	<div class="modal fade" id="modalComprobante" tabindex="-1"
+		role="dialog" aria-labelledby="capHoraModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="capHoraModalLabel">
+						Comprobante<br>
+					</h5>
+					<button class="close" type="button" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">x</span>
+					</button>
+				</div>
+				<div class="modal-body">
+
+					<div class="row">
+						<div class="form-group col-12 col-md-12">
+							<div id="verComprobante" class="text-center">
+                    			<img id="imgComprobante" class="img-thumbnail rounded" style="max-height: 300px;" src="" alt="imagen">
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-primary" type="button"
+						data-dismiss="modal">Aceptar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+	<!-- Bootstrap core JavaScript-->
+    <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+    <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script th:src="@{/js/sb-admin-2.min.js}"></script>
+
+    <!-- Page level plugins -->
+    <script th:src="@{/vendor/datatables/jquery.dataTables.min.js}"></script>
+    <script th:src="@{/vendor/datatables/dataTables.bootstrap4.min.js}"></script>
+
+    <!-- Page level custom scripts -->
+    <script th:src="@{/js/demo/datatables-demo.js}"></script>
+    
+    <script th:src="@{/js/validaciongastos.js}"></script>
+    <script th:src="@{/js/mostrarGastosRecurso.js}"></script>
+    
+    <script th:src="@{/js/datosRecursoSesion.js}"></script>  
+
+</body>
+
+</html>

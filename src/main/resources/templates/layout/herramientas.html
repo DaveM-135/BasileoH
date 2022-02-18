@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	
+	<div th:fragment="fragmentModalHerramientas">
+		<!-- INICIAL Modal Registrar Herramienta -->
+		<div class="modal fade" id="registroHerramientaModal" tabindex="-1" role="dialog" aria-labelledby="registroHerramientaModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h6 class="modal-title" id="registroHerramientaModalLabel">Herramientas</h6>
+						<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<form id="formularioHerramientas" th:action="@{/formRecursoHerramientas}" role="form" th:object="${recursoHerramienta}" method="post" enctype="multipart/form-data">
+						<div class="modal-body" style="font-size: 14px;">
+						
+							<div class="row" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_RH')">
+								<div class="form-group col-12 col-md-12">
+									<label class="col-form-label">Tipo herramienta*</label>
+									<select id="codTipoHerramienta" class="form-control" style="padding: 0;">
+										<option value="-1" selected disabled hidden>--- Seleccione ---</option>
+										<option
+											th:each="tipoHerramientaLista : ${tipoHerramientaList}"
+											th:value="${tipoHerramientaLista.codTipoHerramienta}"
+											th:text="${tipoHerramientaLista.descTipoHerramienta}"></option>
+									</select>
+								</div>
+							</div>
+							
+							<div class="row" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_RH')">
+								<div id="listaTodo" class="form-group col-12 col-md-12">
+									<label class="col-form-label">Herramienta*</label>
+									<div id="divSelectHerramientas">
+										<select id="selectHerramientas" th:fragment="fragmentHerramientasPorTipo" th:field="*{codHerramienta}" class="form-control" style="padding: 0;">
+											<option value="-1">--- Seleccione ---</option>
+											<option th:each="equipoLista : ${listaEquiposTodo}"
+												th:value="${equipoLista.codHerramienta}"
+												th:text="${equipoLista.descHerramienta} + ' ' + ${equipoLista.descModelo}">
+											</option>
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="row" sec:authorize="hasAnyRole('ROLE_USER','ROLE_APROB')">
+								<input type="hidden" th:field="*{codHerramienta}"></input>
+							</div>
+							<div class="row">
+								<div class="form-group col-12 col-md-12">
+									<label class="col-form-label">Observaciones*</label>
+									<textarea th:field="*{descObservaciones}" class="form-control"></textarea>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div id="divInputEvidencia" class="form-group col-12 col-md-12">
+									<label class="col-form-label">Responsiva</label>
+							   		<div class="custom-file">
+							       		<input type="file" name="fotoResponsiva" id="fotoResponsiva" class="custom-file-input" accept="image/png, .jpeg, .jpg">
+							       		<label class="custom-file-label"></label>
+							   		</div>
+							   		<small th:if="${recursoHerramienta.responsiva != null}"><a th:href="'/herramienta/responsiva?rh=' + ${recursoHerramienta.codHerramientaRecurso}" target="_blank">Ver responsiva actual</a></small>
+								</div>
+							</div>
+							
+							<div class="row" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_RH')">
+								<div class="form-group col-6 col-md-6">
+									<label class="col-form-label">Fecha prestamos*</label>
+									<input type="date" th:field="*{fecPrestamo}" class="form-control"></input>
+								</div>
+								<div class="form-group col-6 col-md-6">
+									<label class="col-form-label">Fecha devoluci&oacute;n*</label>
+									<input type="date" th:field="*{fecDevolucion}" class="form-control"></input>
+								</div>
+							</div>
+							
+							<div class="row" sec:authorize="hasAnyRole('ROLE_USER','ROLE_APROB')">
+								<input type="hidden" th:field="*{fecPrestamo}"></input>
+								<input type="hidden" th:field="*{fecDevolucion}"></input>
+							</div>
+							
+							
+							<script>
+								$('#fotoResponsiva').on('change', function() {
+									var fileName = $(this).val().split('\\').pop();
+									$(this).next('.custom-file-label').html(fileName);
+								})
+
+								$("#codTipoHerramienta").change( function() {
+									console.log("cambiando de tipo");
+									var codTipoHerramienta = $(this).val();
+// 									var url = "/cargaHerramientas/?cth=" + codTipoHerramienta;
+// 									$("#divSelectHerramientas") .load(url);
+									$.ajax({
+									    type: "GET",
+									    url: "/cargaHerramientas",
+									    data: {cth: codTipoHerramienta},
+										success: function(opciones){
+											$("#selectHerramientas").html(opciones);
+										}
+									});
+								});
+							</script>
+							
+							<input type="hidden" th:field="*{codRecurso}"/>
+							<input type="hidden" th:field="*{codHerramientaRecurso}"/>
+							<input type="hidden" th:field="*{responsiva}"/>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+							<button onclick="submitFormHerramientas();" id="btnSubmitFormCapacitacion" type="button" class="btn btn-primary">Aceptar</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!-- TERMINA Modal Registrar Herramienta -->
+	</div>
+	
+
+
+</body>
+</html>

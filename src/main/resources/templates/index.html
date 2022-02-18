@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="layout/layout::head"></head>
+
+<body id="page-top">
+  <input id="authGetName" type="hidden" th:value="${#authentication.getName()}"></input>
+  <!-- <input id="valCodRecurso" type="hidden" value="16"></input>-->
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul th:replace="layout/layout::menu"> </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+		<header th:replace="layout/layout :: header"></header>
+		
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <div class="col-lg-12 mb-10">
+
+              <!-- Illustrations -->
+              <div class="card shadow mb-4">
+                <div class="card-body">
+                <div class="d-flex justify-content-between">
+                <h3 style="color: #292f33; font-weight: 500;" >Buen d&iacute;a</h3>
+<!--                 <a target="_blank" href="https://hotelmix.es/weather/mexico-city-18199"><img src="https://w.bookcdn.com/weather/picture/21_18199_1_4_ecf0f1_250_bdc3c7_9da2a6_ffffff_1_2071c9_ffffff_0_6.png?scode=124&domid=583&anc_id=27248" /></a> -->
+<!-- <div id="cont_db08042677fe06aa806202f89ab06a73"><script type="text/javascript" async src="https://www.theweather.com/wid_loader/db08042677fe06aa806202f89ab06a73"></script></div> -->
+
+					<div class="crop">
+						<img src="https://www.theweather.com/wimages/foto04074011a4f67154cb89c13f44f01321.png">
+					</div>
+
+                 </div>
+                 <div class="row">
+                  <div class="col-sm-6">
+                  
+<!--                   	<iframe src="https://calendar.google.com/calendar/embed?height=280&amp;wkst=1&amp;bgcolor=%23ffffff&amp;ctz=America%2FMexico_City&amp;src=ZXMubWV4aWNhbiNob2xpZGF5QGdyb3VwLnYuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&amp;color=%230B8043&amp;showTz=0&amp;showCalendars=0&amp;showTabs=0&amp;showPrint=0&amp;showDate=1&amp;showNav=1&amp;showTitle=0" style="border-width: 0" width="100%" height="280" frameborder="0" scrolling="no"></iframe> -->
+
+
+
+
+  <div>
+    <!-- <h1>Calendar Sophitech Plugin</h1>  -->
+    <!-- <p class="lead">A simple-to-use jQuery plugin to generate a clean-looking, HTML table based monthly calendar for data picking.</p> -->
+    <div >
+      <div class="d-flex justify-content-start">
+<!--       <h6><span class="prev-month" style="padding: 0px 15px 0px 0px; cursor:pointer;">&lt;</span></h6> -->
+      <h6><i class="prev-month fa fa-caret-left" style="padding: 0px 10px 0px 0px; cursor:pointer;"></i></h6>
+      <span style="font-size: 14px;" class="month-year"></span>
+      <h6><i class="next-month fa fa-caret-right" style="padding: 0px 10px; cursor:pointer;"></i> </h6>
+<!--       <h6><span class="next-month" style="padding: 0px 15px; cursor:pointer;">&gt;</span></h6> -->
+    </div>
+<div class="table-responsive">
+<table class="date_table table table-bordered table-striped">
+<tr>
+<th>Dom</th> <th>Lun</th> <th>Mar</th><th>Mie</th>
+<th>Jue</th> <th>Vie</th> <th>Sab</th>
+</tr>
+</table>
+</div>
+<!--  <div class="alert alert-info output mt-3">Selected Date: </div>  -->
+</div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script th:src="@{/js/osmanli_calendar.js}"></script>
+<script>
+  var start_date_dialog = osmanli_calendar
+$('.prev-month').click(function () {start_date_dialog.pre_month()});
+$('.next-month').click(function () {start_date_dialog.next_month()});
+
+start_date_dialog.init();
+start_date_dialog.ON_SELECT_FUNC = function(){
+  $('.output').html(osmanli_calendar.SELECT_DATE);
+}
+</script>
+
+
+                  </div>
+				  
+				  <div class="col-sm-6">
+                   
+                   <!--<div class="card mb-4" style="margin-top: 27px;">
+                 		<div class="card-header" th:text=${titulo}>
+                		</div>
+                		<div class="card-body"  style="text-align: center;">
+                  			<p style="font-weight: 600;">As&iacute; estuvo el clima la semana pasada</p>
+                  			<div class="sv__point-wrapper">
+								<div class="sv__smiley-scale">
+									<table style="width: 100%;">
+									<tr>
+										<td th:each="emoji : ${respuestasFlash}">
+											<img class="img_emoji_resultado" th:src="${emoji.valImagenRespuesta}">
+											<p style="font-size: 14px; font-weight: 600;" th:text="${emoji.porcentaje}+'%'"></p>
+										</td>
+									</tr>
+									</table>
+								</div>
+							</div>
+							<p th:text="'Participaci&oacute;n ' + ${participacion} + ' de ' + ${totalActivos}" style="font-size: 12px;"></p>
+	     	 			</div>
+              		</div>-->
+					<div class="container">
+						<div class="row">
+							<iframe width="560" height="315" src="https://www.youtube.com/embed/XIMmGymRRTQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+						</div>
+					</div>
+                  </div>
+                  
+                </div>
+                <div class="row" sec:authorize="hasRole('ROLE_ADMIN')">
+                	<div class="col-sm">
+						<div id="dossierContainer" style="width: 600px; height: 600px;"></div>
+						<!--<a class="twitter-timeline" href="https://twitter.com/projecttips?ref_src=twsrc%5Etfw">Tweets by Project Tips</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>-->
+						<a class="twitter-timeline" href="https://twitter.com/Microstrategy?ref_src=twsrc%5Etfw">Tweets by Microstrategy</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+						<!--<a class="twitter-timeline" href="https://twitter.com/CNN?ref_src=twsrc%5Etfw">Tweets by CNN</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>-->
+                	</div>
+					<div class="col-sm">
+						<a class="twitter-timeline" href="https://twitter.com/El_Universal_Mx?ref_src=twsrc%5Etfw">Tweets by El Universal</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+						<!--<a class="twitter-timeline" href="https://twitter.com/trello?ref_src=twsrc%5Etfw">Tweets by Trello</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+						<a class="twitter-timeline" href="https://twitter.com/miro?ref_src=twsrc%5Etfw">Tweets by Miro</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>-->
+					</div>
+                </div>
+                <div class="row" sec:authorize="hasAnyRole('ROLE_USER', 'ROLE_APROB', 'ROLE_RH')">
+                	<div class="col-sm">
+						<div id="dossierContainer" style="width: 600px; height: 600px;"></div>
+						<!--<a class="twitter-timeline" href="https://twitter.com/projecttips?ref_src=twsrc%5Etfw">Tweets by Project Tips</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>-->
+						<a class="twitter-timeline" href="https://twitter.com/Microstrategy?ref_src=twsrc%5Etfw">Tweets by Microstrategy</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+						<!--<a class="twitter-timeline" href="https://twitter.com/CNN?ref_src=twsrc%5Etfw">Tweets by CNN</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>-->
+                	</div>
+                	<div class="col-sm">
+                		<!-- Begin Page Content -->
+			        <div class="container-fluid">
+			
+			          <!-- Page Heading -->
+			          <p id="fechaDiaActual"></p>
+			          <div class="pb-3">
+			              
+			          <a class="btn btn-primary" data-toggle="modal" data-target="#capHoraModal"  href="#" role="button">
+			          <i class="fas fa-calendar-plus fa-sm text-white-50"></i> Nueva captura</a>
+			          </div>
+			          
+			          <div class="card shadow mb-4">
+						
+						<div id="semanaDias">
+							<div class="list-group list-group-horizontal-sm">
+							  <a id="da0" href="#!" class="noLink list-group-item list-group-item-action" style="font-size: 12px; padding: 5px 5px;"><b>Dom</b><br><span id="d0"></span></a>
+							  <a id="da1" href="#!" class="noLink list-group-item list-group-item-action" style="font-size: 12px; padding: 5px 5px;"><b>Lun</b><br><span id="d1"></span></a>
+							  <a id="da2" href="#!" class="noLink list-group-item list-group-item-action" style="font-size: 12px; padding: 5px 5px;"><b>Mar</b><br><span id="d2"></span></a>
+							  <a id="da3" href="#!" class="noLink list-group-item list-group-item-action" style="font-size: 12px; padding: 5px 5px;"><b>Mie</b><br><span id="d3"></span></a>
+							  <a id="da4" href="#!" class="noLink list-group-item list-group-item-action" style="font-size: 12px; padding: 5px 5px;"><b>Jue</b><br><span id="d4"></span></a>
+							  <a id="da5" href="#!" class="noLink list-group-item list-group-item-action" style="font-size: 12px; padding: 5px 5px;"><b>Vie</b><br><span id="d5"></span></a>
+							  <a id="da6" href="#!" class="noLink list-group-item list-group-item-action" style="font-size: 12px; padding: 5px 5px;"><b>Sab</b><br><span id="d6"></span></a>
+							  <a id="da7" href="#!" class="noLink list-group-item list-group-item-action disabled" tabindex="-1" aria-disabled="true"  style="font-size: 12px; padding: 5px 5px;">Total:<br><span id="dt" style="font-weight: 700;"></span></a>
+							</div>
+						</div>
+						
+						
+						<div id="detalleHorasCapturadas" style="font-size: 14px;">
+			<!-- 				Aqui va el detalle de las horas capturadas por fecha seleccionada			 -->
+						</div>
+			
+			          </div>
+						
+					</div>
+			        <a class="twitter-timeline" href="https://twitter.com/El_Universal_Mx?ref_src=twsrc%5Etfw">Tweets by El Universal</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+					<!--<a class="twitter-timeline" href="https://twitter.com/trello?ref_src=twsrc%5Etfw">Tweets by Trello</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+					<a class="twitter-timeline" href="https://twitter.com/miro?ref_src=twsrc%5Etfw">Tweets by Miro</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>-->
+                	</div>
+                </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+        
+      </div>
+      <!-- End of Main Content -->
+
+       <!-- Footer -->
+      <footer th:replace="layout/layout :: footer"></footer>
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <div class="st-actionContainer right-bottom" id="btnFlash">
+	<div class="st-btn-container right-bottom" onclick="flashSurvey(); return false;">
+		<div class="st-button-main"><i class="fa fa-bolt" aria-hidden="true"></i></div>
+	</div>
+  </div>
+  
+  
+  
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+  <div th:fragment="modalCapHora">
+ <!-- Logout Modal-->
+  <div class="modal fade" id="capHoraModal" tabindex="-1" role="dialog" aria-labelledby="capHoraModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          	<h5 class="modal-title" id="capHoraModalLabel">
+			    Captura de horas<br>
+			    <span style="font-size: 12px;" id="fechaModal">
+			        
+			    </span>
+			</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body" style="font-size: 14px;">
+		
+			<div class="row">
+				<div class="form-group col-12 col-md-12">
+					<div id="resultListProyecto">
+						<label class="col-form-label">Proyecto</label>
+						<div class="input-group">
+							<select class="custom-select" id="selectProyecto" style="font-size: 14px; padding: 0px 10px;">
+								<option th:each="entry : ${proyectoList}" th:value="${entry.key}" th:text="${entry.value}"></option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="form-group col-12 col-md-12">	
+					<div id="resultListActividadesPrimarias">
+						<!--aqui va listado de actividades primarias por proyecto y recurso -->
+					</div>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="form-group col-12 col-md-12">	
+					<div id="resultListActividadesSecundarias">
+						<!--aqui va listado de actividades por proyecto y recurso -->
+					</div>
+				</div>
+			</div>
+			
+<!-- 			<div class="row"> -->
+<!-- 				<div class="form-group col-12 col-md-12">	 -->
+					<div id="resultDetActividades">
+						<!--aqui va el complemento para el detalle de actividades -->
+					</div>
+<!-- 				</div> -->
+<!-- 			</div> -->
+			
+		
+<!--    	</form> onclick="validaForm();"--> 
+		</div>
+       <div class="modal-footer">
+    		<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+          	<button type="submit" onclick="validaForm();" class="btn btn-primary">Aceptar</button>
+  		</div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  	  <div th:fragment="modalCapHoraEdit">
+ <!-- Logout Modal-->
+  <div class="modal fade" id="capHoraModalEdit" tabindex="-1" role="dialog" aria-labelledby="capHoraModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          	<h5 class="modal-title" id="capHoraModalLabel">
+			    Editar captura de horas<br>
+			 
+			</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+		
+			<div class="row">
+				<div class="form-group col-12 col-md-12">
+					<div id="formEditCaptura">
+											
+					</div>
+				</div>
+			</div>
+			
+		</div>
+       <div class="modal-footer">
+    		<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+          	<button onclick="validaFormEdit();" class="btn btn-primary" type="submit">Aceptar</button>
+  		</div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div th:fragment="modalCapHoraCopia">
+  	<div class="modal fade" id="capHoraModalCopiar" tabindex="-1" role="dialog" aria-labelledby="capHoraModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          	<h5 class="modal-title" id="capHoraModalLabel">
+			    Copiar captura de horas<br>
+			 
+			</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+		
+			<div class="row">
+				<div class="form-group col-12 col-md-12">
+					<div id="formCopiarCaptura">
+											
+					</div>
+				</div>
+			</div>
+			
+		</div>
+       <div class="modal-footer">
+    		<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+          	<button onclick="validaFormCopia();" class="btn btn-primary" type="submit">Pegar</button>
+  		</div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+	<!-- Modal HTML -->
+	<div id="modalHorasCapturadas" class="modal fade">
+		<div class="modal-dialog modal-confirm modal-md">
+			<div class="modal-content">
+				<div class="modal-header">
+					<div class="icon-box">
+						<i class="fas fa-download"></i>
+					</div>				
+					<h4 class="modal-title w-100">Selecciona el periodo:</h4>	
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="form-group col-6 col-md-6">
+							<label style="font-size: 14px;" class="col-form-label">Fecha inicio</label>
+							<input type="date" id="fecInicioReporte" max="" class="form-control required" onchange="valorInicio(this.value);" style="font-size: 14px; padding: 0px 10px;" />
+						</div>
+						<div class="form-group col-6 col-md-6">
+							<label style="font-size: 14px;" class="col-form-label">Fecha fin</label>
+							<input type="date" id="fecFinReporte" min="" class="form-control required" onchange="valorFinal(this.value);" style="font-size: 14px; padding: 0px 10px;" />
+						</div>
+					</div>
+					<div class="row" style="padding-top: 15px;">
+						<ul>
+							<li><a href="#" onclick="dwlPdf();"><i class="far fa-file-pdf"></i> descargar versi&oacute;n .pdf</a></li>
+							<li><a href="#" onclick="dwlXlsx();"><i class="far fa-file-excel"></i> descargar versi&oacute;n .xlsx</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-success btn-block" data-dismiss="modal">Cerrar</button>
+				</div>
+			</div>
+		</div>
+	</div> 
+
+	  <!-- ModalLogout -->
+      <footer th:replace="layout/layout :: modalLogout"></footer>
+      <!-- End ModalLogout -->
+      
+  <!-- Bootstrap core JavaScript-->
+  <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+  <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+ 
+  <!-- Core plugin JavaScript-->
+  <script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script th:src="@{/js/sb-admin-2.min.js}"></script>
+  <script th:src="@{/js/datosRecursoSesion.js}"></script>
+  <script th:src="@{/js/capHoras_Ini.js}"></script>
+
+  <script src="https://analytics.guay.digital/MicroStrategyLibrary/javascript/embeddinglib.js"></script>
+  <script th:src="@{/js/embedmstr.js}"></script>
+</body>
+
+</html>

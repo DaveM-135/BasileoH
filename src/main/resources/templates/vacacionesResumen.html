@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="layout/layout::head"></head>
+
+<body id="page-top">
+  <input id="authGetName" type="hidden" th:value="${#authentication.getName()}"></input>
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul th:replace="layout/layout::menu"> </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+        <header th:replace="layout/layout :: header"></header>
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid" id="resumen">
+<!-- 			<div class="d-flex align-items-center"> -->
+<!-- 				Cargando... -->
+				<div class="spinner-grow ml-auto" role="status" aria-hidden="true"></div>
+<!-- 			</div> -->
+		</div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      <footer th:replace="layout/layout :: footer"></footer>
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+  
+  
+  <div class="modal fade" id="modalDetalleVacaciones" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="modalDetalleVacacionesLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h6 class="modal-title" id="modalDetalleVacacionesLabel">Solicitudes </h6>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+ 				</div>
+				<div class="modal-body" style="text-align: center;">
+					<div id="detalleVacaciones">
+						<!-- DETALLE DE VACACIONES -->
+					</div>
+				</div>
+<!-- 				<div class="modal-footer"> -->
+<!-- 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Aceptar</button> -->
+<!-- 				</div> -->
+    		</div>
+  		</div>
+	</div>
+  
+  
+ 	  <div class="modal fade" id="modalDetalleSolicitud" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="modalDetalleSolicitudLabel" aria-hidden="true">
+		<div class="modal-dialog modal-sm" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h6 class="modal-title" id="modalDetalleSolicitudLabel">Detalle de la solicitud</h6>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+ 				</div>
+				<div class="modal-body" style="text-align: center;">
+					<i class="far fa-calendar-alt fa-2x text-gray-300"></i>
+					<div id="detalleSolicitud">
+						<!-- DETALLE DE VACACIONES -->
+					</div>
+				</div>
+<!-- 				<div class="modal-footer"> -->
+<!-- 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Aceptar</button> -->
+<!-- 					<button type="button" class="btn btn-primary" onclick="enviarMailCalidad(); return false;">Aceptar</button> -->
+<!-- 				</div> -->
+    		</div>
+  		</div>
+	</div>
+  
+  
+  
+  
+  
+
+  <!-- Scroll to Top Button--> <div class="st-actionContainer right-bottom" id="btnFlash"> <div class="st-btn-container right-bottom" onclick="flashSurvey(); return false;"> <div class="st-button-main"><i class="fa fa-bolt" aria-hidden="true"></i></div> </div> </div>
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+	  <!-- ModalLogout -->
+      <footer th:replace="layout/layout :: modalLogout"></footer>
+      <!-- End ModalLogout -->
+      
+  <!-- Bootstrap core JavaScript-->
+  <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+  <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script th:src="@{/js/sb-admin-2.min.js}"></script>
+
+  <!-- Page level plugins -->
+  <script th:src="@{/vendor/datatables/jquery.dataTables.min.js}"></script>
+  <script th:src="@{/vendor/datatables/dataTables.bootstrap4.min.js}"></script>
+
+  <!-- Page level custom scripts -->
+  <script th:src="@{/js/demo/datatables-demo.js}"></script>
+  
+  <script th:src="@{/js/datosRecursoSesion.js}"></script>
+  
+<script type="text/javascript">
+  $(document).ready(function() {
+	  var url = "/vacacionesResumen?mail=" + $("#authGetName").val();
+  	  $("#resumen").load(url);
+  });
+  
+  function notificaAcumulado(id){
+	  var id=id.substring(13);
+	  calcula(id);
+	  btnActualizar(id);
+  }
+  
+  function notificaRecuperado(id){
+	  var id=id.substring(14);
+	  calcula(id);
+	  btnActualizar(id);
+  }
+  
+  function notificaContrato(id){
+	  var id=id.substring(12);
+	  calcula(id);
+	  btnActualizar(id);
+  }
+  
+  function calcula(id){
+	  var acumulado =  parseInt($("#valAcumulado_"+id).val());
+	  var recuperado =  parseInt($("#valRecuperado_"+id).val());
+	  var contrato =  parseInt($("#valContrato_"+id).val());
+	  var aprobado =  parseInt($("#valAprobado_"+id).html());
+	  var total =  acumulado+recuperado+contrato;
+	  $("#valTotal_"+id).html(total);
+	  $("#valDisponible_"+id).html(total-aprobado);
+  }
+  
+  function btnActualizar(id){
+	  $("#btnActualizar_"+id).removeClass( "badge-secondary" ).addClass( "badge-success btnActualizarVacaciones" ).html("Actualizar").attr( "onclick", "actualizarDias(this.id)");
+  }
+  
+  function actualizarDias(id){
+	var r = confirm("Se actualizaran los d\u00EDas de vacaciones para el recurso.");
+	if (r == true) {
+		$("#btnActualizar_"+id).html("Actualizando...");
+		var id=id.substring(14);
+		var acumulado =  $("#valAcumulado_"+id).val();
+		var recuperado =  $("#valRecuperado_"+id).val();
+		var contrato =  $("#valContrato_"+id).val();
+		$.ajax({
+			url: "/actualizarDiasVacaciones",
+			data: {codRecurso:id,
+				acumulado:acumulado,
+				recuperado:recuperado,
+				contrato:contrato},
+			success: function(result){
+				if(result == 'ok'){
+					$("#btnActualizar_"+id).removeClass("badge-success btnActualizarVacaciones" ).addClass("badge-secondary").html("Actualizado").removeAttr("onclick");
+				}
+			}
+		});
+	}
+  }
+  
+  function verDetalleSolicitud(verId){
+	  $("#detalleSolicitud").html("");
+	  var idSolicitud = verId.substring(4);
+	  $("#modalDetalleSolicitud").modal('show');
+	  $.ajax({
+			url: "/verDetalleSolicitud",
+			data: {idSolicitud:idSolicitud},
+			success: function(result){
+				$("#detalleSolicitud").html(result);
+			}
+		});
+  }
+  
+  
+  function detalleVacaciones(id){
+	  $("#detalleVacaciones").html("");
+	  $("#modalDetalleVacaciones").modal("toggle");
+	  var url = "/detalleVacacionesRecurso/"+id;
+	  $("#detalleVacaciones").load(url);
+  }
+  
+ 
+  </script>
+  
+
+</body>
+
+</html>

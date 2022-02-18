@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="layout/layout::head"></head>
+
+<body id="page-top">
+  <input id="authGetName" type="hidden" th:value="${#authentication.getName()}"></input>
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul th:replace="layout/layout::menu"> </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+        <header th:replace="layout/layout :: header"></header>
+        
+        <input id="mes1" type="hidden" th:value="${listaPeriodos[0].mesHabil.codMes}"></input>
+        <input id="mes2" type="hidden" th:value="${listaPeriodos[1].mesHabil.codMes}"></input>
+        <input id="mes3" type="hidden" th:value="${listaPeriodos[2].mesHabil.codMes}"></input>
+        <input id="codRecurso" type="hidden" value=""></input>
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+        	
+		<div class="d-sm-flex align-items-center justify-content-between mb-1">
+			<h1 class="h3 text-gray-800">Resumen forecast</h1>
+			
+          </div>
+
+			<div class="row">
+
+				<div class="col-xl-4 col-md-4 mb-3">
+	              <div class="card border-left-success  shadow h-100 py-2">
+	                <div class="card-body">
+	                  <div class="row no-gutters align-items-center">
+	                    <div class="col mr-2">
+	                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1" th:text="'Horas h&aacute;biles de ' + ${listaPeriodos[0].nombreMes}"></div>
+	                      <div id="valDiasHabiles" class="h5 mb-0 font-weight-bold text-gray-800" th:text="${listaPeriodos[0].totalHorasHabiles}"></div>
+	                    </div>
+	                    <div class="col-auto">
+	                      <i class="far fa-calendar-check fa-2x text-gray-300"></i>
+	                    </div>
+	                  </div>
+	                </div>
+	              </div>
+	            </div>
+	            
+				<div class="col-xl-4 col-md-4 mb-3">
+	              <div class="card border-left-success  shadow h-100 py-2">
+	                <div class="card-body">
+	                  <div class="row no-gutters align-items-center">
+	                    <div class="col mr-2">
+	                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1" th:text="'Horas h&aacute;biles de ' + ${listaPeriodos[1].nombreMes}"></div>
+	                      <div id="valDiasHabiles" class="h5 mb-0 font-weight-bold text-gray-800" th:text="${listaPeriodos[1].totalHorasHabiles}"></div>
+	                    </div>
+	                    <div class="col-auto">
+	                      <i class="far fa-calendar-check fa-2x text-gray-300"></i>
+	                    </div>
+	                  </div>
+	                </div>
+	              </div>
+	            </div>
+
+				<div class="col-xl-4 col-md-4 mb-3">
+	              <div class="card border-left-success  shadow h-100 py-2">
+	                <div class="card-body">
+	                  <div class="row no-gutters align-items-center">
+	                    <div class="col mr-2">
+	                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1" th:text="'Horas h&aacute;biles de ' + ${listaPeriodos[2].nombreMes}"></div>
+	                      <div id="valDiasHabiles" class="h5 mb-0 font-weight-bold text-gray-800" th:text="${listaPeriodos[2].totalHorasHabiles}"></div>
+	                    </div>
+	                    <div class="col-auto">
+	                      <i class="far fa-calendar-check fa-2x text-gray-300"></i>
+	                    </div>
+	                  </div>
+	                </div>
+	              </div>
+	            </div>
+			</div>
+        	
+        	
+        <div  class="card shadow mb-3">
+            <div class="card-body" id="contenidoTabla" th:fragment="listaForecast">
+				<div class="table-responsive fz-12">
+	                <table class="table" id="dataTableResumenForecast" width="100%" cellspacing="0">
+		                 <thead>
+		                   <tr>
+		                   	  <th>Recurso</th>
+		                      <th th:text="${listaPeriodos[0].nombreMes}"></th>
+		                      <th th:text="${listaPeriodos[1].nombreMes}"></th>
+		                      <th th:text="${listaPeriodos[2].nombreMes}"></th>
+		                   </tr>
+		                 </thead>
+		                 <tbody>
+		                 	<tr th:each="recurso : ${listaRecursosConsultores}">
+		                 		<td> <a href="#" th:id="'fst_'+${recurso.codRecurso}" onclick="detalleForecast(this.id); return false;" th:text="${recurso.descRecurso} + ' ' + ${recurso.descApellidoPaterno}"></a></td>
+<!-- 		                 		<td th:text="${recurso.totalHorasForecast}"></td> -->
+                            	<td>
+									<div th:if="(${recurso.totalHorasForecast[0]}*100/${listaPeriodos[0].totalHorasHabiles}) < 85" class="progress"> 
+										<div class="progress-bar bg-danger" role="progressbar" th:text="${recurso.totalHorasForecast[0]}*1" 
+										th:style="'width:' + @{${recurso.totalHorasForecast[0]}*100/${listaPeriodos[0].totalHorasHabiles}} + '%;'"></div>
+									</div>
+									<div th:if="(${recurso.totalHorasForecast[0]}*100/${listaPeriodos[0].totalHorasHabiles}) >= 85 AND (${recurso.totalHorasForecast[0]}*100/${listaPeriodos[0].totalHorasHabiles}) < 100" 
+										class="progress"> 
+										<div class="progress-bar bg-warning" role="progressbar" th:text="${recurso.totalHorasForecast[0]}*1" 
+										th:style="'width:' + @{${recurso.totalHorasForecast[0]}*100/${listaPeriodos[0].totalHorasHabiles}} + '%;'"></div>
+									</div>
+									<div th:if="(${recurso.totalHorasForecast[0]}*100/${listaPeriodos[0].totalHorasHabiles}) >= 100" 
+										class="progress"> 
+										<div class="progress-bar bg-success" role="progressbar" th:text="${recurso.totalHorasForecast[0]}*1" 
+										th:style="'width:' + @{${recurso.totalHorasForecast[0]}*100/${listaPeriodos[0].totalHorasHabiles}} + '%;'"></div>
+									</div>
+								</td>
+								<td>
+									<div th:if="(${recurso.totalHorasForecast[1]}*100/${listaPeriodos[1].totalHorasHabiles}) < 85" class="progress"> 
+										<div class="progress-bar bg-danger" role="progressbar" th:text="${recurso.totalHorasForecast[1]}*1" 
+										th:style="'width:' + @{${recurso.totalHorasForecast[1]}*100/${listaPeriodos[1].totalHorasHabiles}} + '%;'"></div>
+									</div>
+									<div th:if="(${recurso.totalHorasForecast[1]}*100/${listaPeriodos[1].totalHorasHabiles}) >= 85 AND (${recurso.totalHorasForecast[1]}*100/${listaPeriodos[1].totalHorasHabiles}) < 100" 
+										class="progress"> 
+										<div class="progress-bar bg-warning" role="progressbar" th:text="${recurso.totalHorasForecast[1]}*1" 
+										th:style="'width:' + @{${recurso.totalHorasForecast[1]}*100/${listaPeriodos[1].totalHorasHabiles}} + '%;'"></div>
+									</div>
+									<div th:if="(${recurso.totalHorasForecast[1]}*100/${listaPeriodos[1].totalHorasHabiles}) >= 100" 
+										class="progress"> 
+										<div class="progress-bar bg-success" role="progressbar" th:text="${recurso.totalHorasForecast[1]}*1" 
+										th:style="'width:' + @{${recurso.totalHorasForecast[1]}*100/${listaPeriodos[1].totalHorasHabiles}} + '%;'"></div>
+									</div>
+								</td>
+								<td>
+									<div th:if="(${recurso.totalHorasForecast[2]}*100/${listaPeriodos[2].totalHorasHabiles}) < 85" class="progress"> 
+										<div class="progress-bar bg-danger" role="progressbar" th:text="${recurso.totalHorasForecast[2]}*1" 
+										th:style="'width:' + @{${recurso.totalHorasForecast[2]}*100/${listaPeriodos[2].totalHorasHabiles}} + '%;'"></div>
+									</div>
+									<div th:if="(${recurso.totalHorasForecast[2]}*100/${listaPeriodos[2].totalHorasHabiles}) >= 85 AND (${recurso.totalHorasForecast[2]}*100/${listaPeriodos[2].totalHorasHabiles}) < 100" 
+										class="progress"> 
+										<div class="progress-bar bg-warning" role="progressbar" th:text="${recurso.totalHorasForecast[2]}*1" 
+										th:style="'width:' + @{${recurso.totalHorasForecast[2]}*100/${listaPeriodos[2].totalHorasHabiles}} + '%;'"></div>
+									</div>
+									<div th:if="(${recurso.totalHorasForecast[2]}*100/${listaPeriodos[2].totalHorasHabiles}) >= 100" 
+										class="progress"> 
+										<div class="progress-bar bg-success" role="progressbar" th:text="${recurso.totalHorasForecast[2]}*1" 
+										th:style="'width:' + @{${recurso.totalHorasForecast[2]}*100/${listaPeriodos[2].totalHorasHabiles}} + '%;'"></div>
+									</div>
+								</td>
+							</tr>
+		                 </tbody>
+	                </table>
+	              </div>
+			</div>
+		</div>
+		
+
+		</div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      <footer th:replace="layout/layout :: footer"></footer>
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+  
+  <div id="tablaEmailForecast">
+  
+  
+  </div>
+  
+  
+  <div class="modal fade" id="modalDetalleForecastRecurso" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="modalDetalleForecastRecursoLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header" style="border: none;">
+					<h6 class="modal-title" id="modalDetalleForecastRecursoLabel">Detalle de la planeaci&oacute;n</h6>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+ 				</div>
+				<div class="modal-body" style="padding-top: 0px;">
+					<div id="detalleForecastRecurso">
+						<!-- DETALLE DE FORECAST -->
+					</div>
+					
+				</div>
+    		</div>
+  		</div>
+	</div>
+  
+  
+  
+  
+  
+
+  <!-- Scroll to Top Button--> <div class="st-actionContainer right-bottom" id="btnFlash"> <div class="st-btn-container right-bottom" onclick="flashSurvey(); return false;"> <div class="st-button-main"><i class="fa fa-bolt" aria-hidden="true"></i></div> </div> </div>
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+	  <!-- ModalLogout -->
+      <footer th:replace="layout/layout :: modalLogout"></footer>
+      <!-- End ModalLogout -->
+      
+  <!-- Bootstrap core JavaScript-->
+  <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+  <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script th:src="@{/js/sb-admin-2.min.js}"></script>
+
+  <!-- Page level plugins -->
+  <script th:src="@{/vendor/datatables/jquery.dataTables.min.js}"></script>
+  <script th:src="@{/vendor/datatables/dataTables.bootstrap4.min.js}"></script>
+
+  <!-- Page level custom scripts -->
+  <script th:src="@{/js/demo/datatables-demo.js}"></script>
+  
+  <script th:src="@{/js/datosRecursoSesion.js}"></script>
+  
+<script type="text/javascript">
+  $(document).ready(function() {
+	  
+	  $("#inicioActividad").on(
+				"change",
+				function() {
+					$("#finActividad").attr("min" , this.value);
+				});
+	    
+	  
+	  $("#finActividad").on(
+				"change",
+				function() {
+					$("#Actividad").attr("max" , this.value);
+				});
+	  
+	  
+	  $("#selectClasificacionPresupuesto").on(
+				"change",
+				function() {
+					var clasificacion = encodeURIComponent($(this).val());
+					var url = "/actualizaClasificacion/"+clasificacion;
+					$("#descClasificacion").load(url);
+				});
+	  
+		$("#tablaEmailForecast").load("/tablaMailForecast");
+		
+		
+	  
+  });
+  
+  function cerrarModalDetalle(){
+	  $("#modalDetalleForecastRecurso").modal("toggle");  
+  }
+  
+  function cerrarModalFormulario(){
+	  $("#modalNuevoForecast").modal("toggle");  
+  }
+  
+  
+  function detalleForecast(valorId){
+	  $("#detalleForecastRecurso").html('<div class="spinner-grow text-muted"></div>');
+	  var codRecurso = valorId.substring(4);
+	  $("#codRecurso").val(valorId);
+	  var url="detalleForecastRecurso/"+ codRecurso + "/"+ $("#mes1").val() + "/" + $("#mes2").val() +"/" +$("#mes3").val();
+	  $("#detalleForecastRecurso").load(url);
+	  $.ajax({
+			url: "/getNombreRecurso",
+			data: {codRecurso:codRecurso},
+			success: function(result){
+				$("#modalDetalleForecastRecursoLabel").html("Detalle de la planeaci&oacute;n de " + result);
+			}
+			});
+	  
+	  $("#modalDetalleForecastRecurso").modal("toggle");
+  }
+  
+  function borrarForecast(id){
+	  var codForecast = id.substring(4);
+	  $.ajax({
+			url: "/borrarForecast",
+			data: {codForecast:codForecast},
+			success: function(result){
+				if(result == "0"){
+					
+					
+					var codRecurso = $("#codRecurso").val().substring(4);
+					  var url="detalleForecastRecurso/"+ codRecurso + "/"+ $("#mes1").val() + "/" + $("#mes2").val() +"/" +$("#mes3").val();
+					  $("#detalleForecastRecurso").load(url);
+				}
+			}
+		});
+	  
+  }
+  
+  function editarForecast(id){
+	  var codForecast = id.substring(4);
+	  resetDatos();
+	  $.ajax({
+			url: "/editarForecast",
+			data: {codForecast:codForecast},
+			success: function(forecast){
+// 				$("#modalDetalleForecastRecurso").modal("hide");
+				var codForecast = encodeURIComponent(forecast[0]); //codForecast
+				var valHoras = encodeURIComponent(forecast[1]); //valHoras
+				var fecInicioActividad = encodeURIComponent(forecast[2]); //fecInicioActividad
+				var fecFinActividad = encodeURIComponent(forecast[3]); //fecFinActividad
+				var codProyecto = encodeURIComponent(forecast[4]); //codProyecto
+				var clasificacion = forecast[5]; //descClasificacionPresupuesto
+				var codClasificacion = encodeURIComponent(forecast[6]); //codClasificacion
+				var codMesHabil = encodeURIComponent(forecast[7]); //codMesHabil
+				
+				var url = "/actualizaClasificacion/" + encodeURIComponent(clasificacion);
+				 
+				$("#descClasificacion").load(url, function(){
+					
+					$("#selectClasificacion option[value='" + codClasificacion + "']").prop("selected", true);
+					$("#codForecast").val(codForecast);
+					$("#selectProyecto option[value='" + codProyecto + "']").prop("selected", true);
+					$("#selectClasificacionPresupuesto option[value='" + clasificacion + "']").prop("selected", true);
+					$("#inicioActividad").val(fecInicioActividad);
+					$("#finActividad").val(fecFinActividad)
+					$("#horasPlaneadas").val(valHoras);
+					$("#selectMesHabil option[value='" + codMesHabil + "']").prop("selected", true);
+					
+					$("#modalNuevoForecast").modal("toggle");
+				});
+				
+				
+			}
+		});
+  }
+  
+  
+  function enviarFormForecast(){
+	  var codForecast = $("#codForecast").val();
+	  var proyecto = $("#selectProyecto").val();
+	  var clasificacion = $("#selectClasificacion").val();
+	  var inicioActividad = $("#inicioActividad").val();
+	  var finActividad = $("#finActividad").val();
+	  var horasPlaneadas = $("#horasPlaneadas").val();
+	  var mesHabil = $("#selectMesHabil").val();
+	  var codRecurso = $("#codRecurso").val().substring(4);
+	  
+	  var errores = 0
+	  
+	  if(inicioActividad.length == 0 ){
+		  $("#errorInicioActividad").html("Selecciona una fecha");
+		  errores++;
+	  } else {
+		  $("#errorInicioActividad").html("");
+	  }
+	  
+	  if(finActividad.length == 0 ){
+		  $("#errorFinActividad").html("Selecciona una fecha");
+		  errores++;
+	  } else {
+		  $("#errorFinActividad").html("");
+	  } 
+	  
+	  if(horasPlaneadas.length == 0 ){
+		  $("#errorHorasPlaneadas").html("Ingresa horas pleneadas")
+		  errores++;
+	  } else if (horasPlaneadas < 0.5){
+		  $("#errorHorasPlaneadas").html("El valor minimo debe ser 0.5");
+		  errores++;
+	  } else {
+		  $("#errorHorasPlaneadas").html("");
+	  }
+	  
+	  if (errores == 0){
+// 		  $("#detalleForecastRecurso").html('<i class="spinner-grow spinner-grow-sm"></i>');
+		  $.ajax({
+				url: "/guardaForecast",
+				data: {codRecurso:codRecurso,
+					proyecto:proyecto,
+					codForecast:codForecast,
+					clasificacion:clasificacion,
+					inicioActividad:inicioActividad,
+					finActividad:finActividad,
+					horasPlaneadas:horasPlaneadas,
+					mesHabil:mesHabil},
+				success: function(result){
+						
+					  var codRecurso = $("#codRecurso").val().substring(4);
+					  var url="detalleForecastRecurso/"+ codRecurso + "/"+ $("#mes1").val() + "/" + $("#mes2").val() +"/" +$("#mes3").val();
+					  $("#detalleForecastRecurso").load(url);
+					  $("#modalNuevoForecast").modal("toggle");  
+					 
+				}
+			});
+// 		  $("#detalleForecastRecurso").html('<i class="spinner-grow spinner-grow-sm"></i>');
+// 		  $("#modalNuevoForecast").modal('toggle');
+// 		  $("#modalNuevoForecast").modal('hide');
+// 		  $("#modalDetalleForecastRecurso").modal("toggle");
+	  }
+	  
+  }
+  
+  function definePeriodos(){	  
+	  var  diasDelMes = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+	  var fechaPeriodo = $("#selectMesHabil").val();
+	  var anio = fechaPeriodo.substring(0,4);
+	  var mes = fechaPeriodo.substring(4,6);
+	  var fechaInicialPeriodo = anio+'-'+mes + '-01';
+	  var diaFinMes = diasDelMes[mes.replace("0","") - 1];
+	  var fechaFinPeriodo = anio+'-'+mes + "-" + diaFinMes;
+	  $("#inicioActividad").attr("min" , fechaInicialPeriodo);
+	  $("#inicioActividad").attr("max" , fechaFinPeriodo);
+	  
+	  $("#finActividad").attr("min" , fechaInicialPeriodo);
+	  $("#finActividad").attr("max" , fechaFinPeriodo);
+	  
+	  
+	  
+	  
+	  $("#mesHabil").val(anio + mes);
+  }
+  
+  
+  function resetDatos(){
+	  
+	  $("#inicioActividad").val("");
+	  $("#finActividad").val("");
+	  $("#horasPlaneadas").val("");
+	  $("#errorInicioActividad").html("");
+	  $("#errorFinActividad").html("");
+	  $("#errorHorasPlaneadas").html("");
+	  $("#codForecast").val("");
+// 	  document.getElementById('selectProyecto').selectedIndex=0;
+	  $('#selectProyecto option:selected').prop("selected", false);
+// 	  document.getElementById('selectClasificacionPresupuesto').selectedIndex=0;
+	  $('#selectClasificacionPresupuesto option:selected').prop("selected", false);
+	  
+	  $('#selectMesHabil option:selected').prop("selected", false);
+	  
+	  var url = "/actualizaClasificacion/" + encodeURIComponent($("#selectClasificacionPresupuesto").val());
+		 
+	  $("#descClasificacion").load(url, function(){
+// 		  document.getElementById('selectClasificacion').selectedIndex=0;
+		  $('#selectClasificacion option:selected').prop("selected", false);
+		});
+	  
+	  definePeriodos();
+	  
+  }
+  
+  function getHorasPeriodo(val){
+	var actual = $("#actual").val();
+		
+		if ( val < actual){
+			$("#btnNuevoRegistro").hide();
+		} else {
+			$("#btnNuevoRegistro").show();
+		}
+		$("#contenidoTabla").html('<i class="spinner-grow spinner-grow-sm"></i>');
+		definePeriodos();
+		var url = "/actualizaListadoForecast/"+$("#codRecurso").val()+"/"+$("#selectPeriodo").val();
+		sumaForecast();
+		$("#contenidoTabla").load(url, function(){
+			if ( val < actual){
+				$(".btnEliminarRegistro").hide();
+				$(".btnEditarRegistro").hide();
+				$(".btnEliminarRegistroDisable").show();
+			} else {
+				$(".btnEliminarRegistro").show();
+				$(".btnEditarRegistro").show();
+				$(".btnEliminarRegistroDisable").hide();
+			}
+		});
+	  	$.ajax({
+			url: "/horasPeriodo",
+			data: {periodo:val},
+			success: function(mesHabil){
+				$("#valDiasHabiles").html(mesHabil.valHorasHabiles);
+				$("#valDiasInhabiles").html(mesHabil.valHorasFestivos);
+			}
+		});
+  }
+  
+  function sumaForecast(){
+	  var mesHabil = $("#selectPeriodo").val();
+	  var codRecurso = $("#codRecurso").val();
+	  $.ajax({
+			url: "/sumaHorasForecast",
+			data: {codRecurso:codRecurso,
+				mesHabil:mesHabil},
+			success: function(result){
+				$("#valHorasForecast").html(result);
+			}
+		});
+  }
+  
+  
+ 
+  </script>
+  
+
+</body>
+
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="layout/layout::head"></head>
+
+<body id="page-top">
+ <input id="authGetName" type="hidden" th:value="${#authentication.getName()}"></input>
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul th:replace="layout/layout::menu"> </ul>
+    <!-- End of Sidebar -->
+
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <header th:replace="layout/layout :: header"></header>
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+					<!-- Page Heading -->
+					<!-- <h1 class="h3 mb-2 text-gray-800" th:text="${titulo}"></h1> -->
+					<a th:href="@{/listaClientes}" th:text="'&laquo; regresar'"></a>
+					<!-- <p class="mb-4">Completa la informaci&oacute;n del nuevo cliente.</p> -->
+
+					<form th:action="@{/formCliente}" th:Object="${cliente}" method="POST" onSubmit="fecregact();">
+                            <!-- Collapsable Card Datos personales -->
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Accordion -->
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Datos del cliente</h6>
+                                </div>
+                                <!-- Card Content - Collapse -->
+                                <div class="collapse show" id="collapseCardCliente">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="form-group col-12 col-md-4">
+                                                <label class="col-form-label">Nombre:</label>
+                                                <input id="Nombre" type="text" maxlength="500" th:field="*{descCliente}" class="form-control" th:errorClass="form-control alert-danger" onkeyup="codigo_cliente();" oninvalid="setCustomValidity('Campo inv\u00E1lido')" onchange="try{setCustomValidity('')}catch(e){}" required/>
+                                                <small class="form-text text-danger" th:if="${#fields.hasErrors('descCliente')}" th:errors="*{descCliente}"></small>
+                                                <small id="Nombre_ant" class="form-text" th:if="${cliente.descClienteAnterior != NULL}" th:text="'Anteriormente: ' + ${cliente.descClienteAnterior}"></small>
+                                        	</div>
+	                                        <div class="form-group col-12 col-md-2">
+	                                            <label class="col-form-label">C&oacute;digo de cliente:</label>
+	                                            <input id="codigocliente" type="text" maxlength="500" th:field="*{descCodigoCliente}" class="form-control" th:errorClass="form-control alert-danger"/>
+	                                            <small class="form-text text-danger" th:if="${#fields.hasErrors('descCodigoCliente')}" th:errors="*{descCodigoCliente}"></small>
+	                                        </div>
+	                                        <div class="form-group col-12 col-md-4">
+	                                            <label class="col-form-label">Grupo empresarial:</label>
+	                                            <input id="gpo_empresarial" type="text" maxlength="500" th:field="*{descGrupoEmpresarial}" class="form-control" th:errorClass="form-control alert-danger"/>
+	                                            <small class="form-text text-danger" th:if="${#fields.hasErrors('descGrupoEmpresarial')}" th:errors="*{descGrupoEmpresarial}"></small>
+	                                        </div>
+	                                        <input id="valActivo" type="hidden" th:field="*{valActivo}"/>
+                                        </div>
+                                        <div class="row">
+	                                        <div class="form-group col-12 col-md-8">
+	                                            <label class="col-form-label">Direcci&oacute;n fiscal:</label>
+	                                            <input type="text" th:field="*{descDireccionFiscal}" class="form-control" th:errorClass="form-control alert-danger"/>
+	                                            <small class="form-text text-danger" th:if="${#fields.hasErrors('descDireccionFiscal')}" th:errors="*{descDireccionFiscal}"></small>
+	                                        </div>
+	                                        <div class="form-group col-12 col-md-3">
+	                                            <label class="col-form-label">R.F.C. con homoclave:</label>
+	                                            <input type="text" th:field="*{descRFC}" class="form-control" th:errorClass="form-control alert-danger" oninvalid="setCustomValidity('RFC con homoclave inv\u00E1lido')" onchange="try{setCustomValidity('')}catch(e){}" pattern="([A-Z,Ñ,&]{3,4}([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1])[A-Z|\d]{3})"/>
+	                                            <small class="form-text text-danger" th:if="${#fields.hasErrors('descRFC')}" th:errors="*{descRFC}"></small>
+	                                        </div>
+	                                    </div>
+	                                    <div class="row">
+	                                        <div class="form-group col-12 col-md-2">
+	                                            <label class="col-form-label">Facturaci&oacute;n anual (MXN):</label>
+	                                            <input type="text" th:field="*{impFacturacionAnual}" min=0.0 max=99999999.0 class="form-control" th:errorClass="form-control alert-danger" placeholder="$" oninvalid="setCustomValidity('Presupuesto inv\u00E1lido')" onchange="try{setCustomValidity('')}catch(e){}"/>
+	                                            <small class="form-text text-danger" th:if="${#fields.hasErrors('impFacturacionAnual')}" th:errors="*{impFacturacionAnual}"></small>
+	                                        </div>
+	                                        <div class="form-group col-12 col-md-3">
+	                                            <label class="col-form-label">Tama&ntilde;o de la empresa:</label>
+	                                            <select th:field="*{descRangoRecursos}" class="custom-select">
+				      									<option value="Micro (menos de 10 empleados)">Micro (menos de 10 empleados)</option>
+				      									<option value="Peque&ntilde;o (entre 10 y 49 empleados)">Peque&ntilde;o (entre 10 y 49 empleados)</option>
+				      									<option value="Mediano (entre 50 y 249 empleados)">Mediano (entre 50 y 249 empleados)</option>
+				      									<option value="Grande (250 o m&aacute;s empleados)">Grande (250 o m&aacute;s empleados)</option>
+				   									</select>
+	                                        </div>
+	                                        <div class="form-group col-12 col-md-4">
+												<label class="col-form-label">Sector:</label>
+													<select th:field="*{sector.codSector}" class="custom-select">
+				      									<option th:each="sectorLista : ${sectoresList}" 
+				      									th:value="${sectorLista.codSector}" th:text="${sectorLista.descSector}">
+				      									</option>
+				   									</select>
+											</div>
+                                    	</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <input type="submit" value="Guardar" class="btn btn-primary"/>
+                        </div>
+					</div>
+					
+					<input id="fecact" type="hidden" th:field="*{fecActualizacion}"/>
+					<input type="hidden" th:field="*{codCliente}"/>
+                    <input id="fecreg" type="hidden" th:field="*{fecRegistro}"/>
+                    </form>
+                </div>
+                <!-- /.container-fluid -->
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer th:replace="layout/layout :: footer"></footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button--> <div class="st-actionContainer right-bottom" id="btnFlash"> <div class="st-btn-container right-bottom" onclick="flashSurvey(); return false;"> <div class="st-button-main"><i class="fa fa-bolt" aria-hidden="true"></i></div> </div> </div>
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- ModalLogout -->
+      <footer th:replace="layout/layout :: modalLogout"></footer>
+      <!-- End ModalLogout -->
+
+   <!-- Bootstrap core JavaScript-->
+  <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+  <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script th:src="@{/js/sb-admin-2.min.js}"></script>
+
+  <!-- Page level plugins -->
+  <script th:src="@{/vendor/datatables/jquery.dataTables.min.js}"></script>
+  <script th:src="@{/vendor/datatables/dataTables.bootstrap4.min.js}"></script>
+
+  <!-- Page level custom scripts -->
+  <script th:src="@{/js/demo/datatables-demo.js}"></script>
+  
+  <script th:src="@{/js/datosRecursoSesion.js}"></script>
+  <script th:src="@{/js/fecregact.js}"></script>
+  <script type="text/javascript">
+  	if($("#valActivo").val() === ''){
+  		$("#valActivo").val('1');
+  	}
+  </script>
+
+</body>
+
+</html>

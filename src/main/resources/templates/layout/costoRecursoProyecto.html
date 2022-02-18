@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	
+	<div th:fragment="costoRecursoProyecto">
+		<div class="modal-header">
+			<h5 th:text="'Costo por recursos asignados al proyecto ' + ${nombreProyecto}" class="modal-title"></h5>
+			<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">x</span>
+			</button>
+		</div>
+		<div class="modal-body">
+			<form id="costoRecursoProyectoForm" th:action="@{/formCostoRecursoProyecto}" th:Object="${formRecursosProyecto}" method="post">
+				<input type="hidden" th:name="codProyecto" th:value="${codProyecto}"/>
+				<div class="table-responsive fz-12">
+				<table class="table" width="100%" cellspacing="0">
+					<thead>
+						<tr>
+<!-- 						<th></th> -->
+							<th>Recurso</th>
+							<th>Costo</th>
+<!-- 							<th th:if="${plan == 0}">Horas planeadas</th> -->
+							<th>Horas planeadas</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="recursoProyecto, itemStat : ${formRecursosProyecto.listaRecursosProyecto}">
+							<td valign="middle"> <span th:text="${recursoProyecto.nombreRecurso}"></span> </td>
+							<td valign="middle"><input type="text" maxlength="10" onkeypress="return event.charCode >= 46 && event.charCode <= 57" style="width:120px; height:22px; margin:4px; padding: 4px; font-size: 12px;" class="form-control" 
+								th:name="|listaRecursosProyecto[${itemStat.index}].impCostoRecurso|"
+								th:value="${recursoProyecto.getImpCostoRecurso()}" /></td>
+<!-- 							<td th:if="${plan == 0}" valign="middle"><input type="text" maxlength="10" onkeypress="return event.charCode >= 46 && event.charCode <= 57" style="width:120px; height:22px; margin:4px; padding: 4px; font-size: 12px;" class="form-control"  -->
+<!-- 								th:name="|listaRecursosProyecto[${itemStat.index}].valHorasRecurso|" -->
+<!-- 								th:value="${recursoProyecto.getValHorasRecurso()}" /></td> -->
+							<td valign="middle"><input type="text" maxlength="10" onkeypress="return event.charCode >= 46 && event.charCode <= 57" style="width:120px; height:22px; margin:4px; padding: 4px; font-size: 12px;" class="form-control" 
+								th:name="|listaRecursosProyecto[${itemStat.index}].valHorasRecurso|"
+								th:value="${recursoProyecto.getValHorasRecurso() != null} ? ${recursoProyecto.getValHorasRecurso()} : 0 " /></td>
+						</tr>
+					</tbody>
+
+				</table>
+				</div>
+			</form>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+			<a class="btn btn-primary" href="#" onclick="enviarCostoRecurso(); return false;">Aceptar</a>
+		</div>
+	</div>
+
+</body>
+</html>

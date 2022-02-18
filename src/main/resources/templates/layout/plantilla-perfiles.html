@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+
+			<!-- modal para visualizar metas y competencias por perfil -->
+			<div th:fragment="modalMetasCompetencias" class="modal" id="modalMetasCompetencias" tabindex="-1" role="dialog">
+				  <div class="modal-dialog modal-lg" role="document">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <h5 class="modal-title" th:text="${perfil.descPerfil}"></h5>
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				          <span aria-hidden="true">&times;</span>
+				        </button>
+				      </div>
+				      <div class="modal-body">
+				      <ul class="nav nav-tabs" id="myTab" role="tablist">
+				      		<li class="nav-item"><a class="nav-link active"
+								id="funciones-tab" data-toggle="tab" href="#funciones" role="tab"
+								aria-controls="funciones" aria-selected="true">Funciones</a></li>
+							<li class="nav-item"><a class="nav-link"
+								id="metas-tab" data-toggle="tab" href="#metas" role="tab"
+								aria-controls="metas" aria-selected="true">Metas</a></li>
+							<li class="nav-item"><a class="nav-link" id="competencias-tab"
+								data-toggle="tab" href="#competencias" role="tab"
+								aria-controls="competencias" aria-selected="false">Competencias</a></li>
+						</ul>
+						<div class="tab-content" id="myTabContent" style="background-color: #ffffff;">
+							<div class="tab-pane fade show active" id="funciones" role="tabpanel" aria-labelledby="funciones-tab">
+								<ol style="list-style-type: inherit; padding-top: 10px;">
+								  <li th:each="funcion : ${#strings.arraySplit(perfil.descFunciones, '.')}">
+								  	<div>
+								  		<span style="font-size: 14px; font-weight: 500;" th:text="${funcion}"></span>
+								  	</div>
+								  </li>
+								</ol>
+							</div>
+							<div class="tab-pane fade" id="metas" role="tabpanel" aria-labelledby="metas-tab">
+								<ul class="list-group list-group-flush">
+								  <li class="list-group-item" th:each="metas : ${perfil.metasPerfiles}">
+								  	<div>
+								  		<span style="font-size: 14px; font-weight: 700;" th:text="${metas.meta.descMeta}"></span>
+								  		<span style="font-size: 12px; font-weight: 400; font-style: oblique;" th:text="'(' + ${metas.valPorcentaje} + '%)'"></span>
+								  		<br>
+								  		<span style="font-size: 14px; font-weight: 400;" th:text="${metas.meta.descDefinicion}"></span>
+								  	</div>
+								  </li>
+								  <li class="list-group-item">
+								  	<div class="d-flex justify-content-end">
+								  		<span style="font-size: 14px; font-weight: 700; font-style:inherit;" th:text="'TOTAL:&nbsp;'"></span>
+								  		<span style="font-size: 14px; font-weight: 400; font-style: oblique;" th:text="'100%'"></span>
+								  		
+								  	</div>
+								  </li>
+								</ul>
+								
+							</div>
+							<div class="tab-pane fade" id="competencias" role="tabpanel" aria-labelledby="competencias-tab">
+								<ul class="list-group list-group-flush">
+								  <li class="list-group-item" th:each="competencias : ${perfil.competenciasPerfiles}">
+								  	<div>
+								  		<span style="font-size: 14px; font-weight: 700;" th:text="${competencias.competencia.descCompetencias} + ' :'"></span>
+								  		<span style="font-size: 13px; font-weight: 400;" th:text="${competencias.competencia.descDefinicion} "></span>
+								  		<br>
+								  		<span style="font-size: 14px; font-weight: 700;" th:text="'Competencia a cumplir: '"></span>
+								  		<span style="font-size: 13px; font-weight: 400;" th:text="${competencias.descDefinicion}"></span>
+								  	</div>
+								  </li>
+								</ul>
+							</div>
+						</div>
+				      </div>
+				      <div class="modal-footer">
+				        <button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+				
+				
+				<!-- modal para editar o crear un nuevo perfil -->
+				<div th:fragment="modalperfil" class="modal" id="modalPerfil" tabindex="-1" role="dialog">
+				  <div class="modal-dialog modal-xl" role="document">
+				    <div class="modal-content" style="font-size: 13px;">
+				      <div class="modal-header">
+				        <h5 class="modal-title" th:text="${titulo}"></h5>
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				          <span aria-hidden="true">&times;</span>
+				        </button>
+				      </div>
+				      <form id="formularioPerfil" th:action="@{/formPerfil}" role="form" th:object="${perfil}" method="post">
+					      <div class="modal-body">
+					      <input type="hidden" th:field="*{codPerfil}">
+					      <div class="row">
+							<div class="form-group col-md-6">
+								<label for="descPerfil">Nombre del perfil</label>
+								<input type="text" class="form-control inputPerfil" th:field="*{descPerfil}" placeholder="Nombre del perfil" maxlength="100" required="required">
+								<small id="validacionDescripcion" style="color:red;">Dato requerido</small>
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-md-12">
+								<label for="descObjetivo">Objetivo <small>(280 caracteres m&aacute;x.)</small></label>
+								<textarea class="form-control inputPerfil" th:field="*{descObjetivo}" placeholder="Objetivo" maxlength="280" required="required"></textarea>
+								<small id="validacionObjetivo" style="color:red;">Dato requerido</small>
+							</div>
+							</div>
+						<div class="row">
+							<div class="form-group col-md-12">
+								<label for="descFunciones">Funciones <small>(Cada funci&oacute;n deber&aacute; estar separada por un punto)</small></label>
+								<textarea class="form-control inputPerfil" th:field="*{descFunciones}" placeholder="Funciones" required="required"></textarea>
+								<small id="validacionFunciones" style="color:red;">Dato requerido</small>
+							</div>
+							</div>
+						<div class="row">
+							<div class="form-group col-md-6">
+								<div class="d-flex justify-content-between">
+									<label>Metas</label>
+									<a href="#" style="font-size: 12px;" onclick="asignarMeta(); return false;"><i class="fas fa-plus"></i> Asignar metas</a>
+								</div>
+							
+								<div class="table-responsive-md" >
+									<table id="tableMetas" class="table" style="border-radius: 5px;">
+										<thead>
+											<tr >
+												<th style="font-size: 12px; padding: 5px;">Meta</th>
+												<th style="font-size: 12px; padding: 5px;">Porcentaje</th>
+												<th style="padding: 5px;"><i class="fas fa-ellipsis-h"></i></th>
+											</tr>
+										</thead>
+										<tbody>
+<!-- 											<tr> -->
+<!-- 												<td style="vertical-align: middle; font-size: 12px; padding: 5px;">Billability</td> -->
+<!-- 												<td class="d-none">Hola</td> -->
+<!-- 												<td style="vertical-align: middle; font-size: 12px; padding: 5px; width: 100px;"><input type="text" class="form-control inputPerfil porcentajeMetas"></td> -->
+<!-- 												<td style="vertical-align: middle; font-size: 12px; padding: 5px; width: 30px;"><i class="fas fa-trash-alt borrarMeta" style="cursor: pointer;" onclick="borrarMeta(this);"></i></td> -->
+<!-- 											</tr> -->
+										</tbody>
+									</table>
+									<small id="validacionSeleccionMetas" style="color:red;">Datos requeridos</small>
+									<div class="d-flex justify-content-end" style="font-size: 12px; font-weight: 700;">
+									<span>TOTAL:&nbsp;</span>
+									<span id="totalMetas"></span>
+									</div>
+									
+								</div>
+							</div>
+							<div class="form-group col-md-6">
+								<div class="d-flex justify-content-between">
+									<label>Competencias</label>
+									<a href="#" style="font-size: 12px;" onclick="asignarCompetencia(); return false;"><i class="fas fa-plus"></i> Asignar competencias</a>
+								</div>
+							
+								<div class="table-responsive-md" >
+									<table id="tableCompetencias" class="table" style="border-radius: 5px;">
+										<thead>
+											<tr >
+												<th style="font-size: 12px; padding: 5px;">Competencia</th>
+												<th style="font-size: 12px; padding: 5px;">Reactivo para el perfil</th>
+												<th style="padding: 5px;"><i class="fas fa-ellipsis-h"></i></th>
+											</tr>
+										</thead>
+										<tbody>
+<!-- 											<tr>  -->
+<!-- 												<td style="vertical-align: middle; font-size: 12px; padding: 5px;">Adaptaci&oacute;n al cambio</td> -->
+<!-- 												<td style="vertical-align: middle; font-size: 12px; padding: 5px;"><textarea  class="form-control inputPerfil"></textarea></td> -->
+<!-- 												<td style="vertical-align: middle; font-size: 12px; padding: 5px;"><i class="fas fa-trash-alt" style="cursor: pointer;" onclick="borrarCompetencia(this);"></i></td> -->
+<!-- 											</tr> -->
+										</tbody>
+									</table>
+									<small id="validacionSeleccionCompetencias" style="color:red;">Datos requeridos</small>
+								</div>
+							</div>
+						</div>
+							
+						  </div>
+					      <div class="modal-footer">
+					         	<button type="button" onclick="enviarFormPerfil(); return false;" class="btn btn-primary">Aceptar</button>
+								<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+					      </div>
+				      </form>
+				    </div>
+				  </div>
+				  <script type="text/javascript">
+				  $("input").keydown(function (e){
+					   var keyCode= e.which;
+					   if (keyCode == 13){
+					     event.preventDefault();
+					     return false;
+					   }
+					 });
+				  </script>
+				</div>
+				
+				
+				
+				<!-- modal para seleccionar metas -->
+				<div th:fragment="modalMetas" class="modal" id="modalMetas" tabindex="-1" role="dialog">
+				  <div class="modal-dialog modal-md" role="document">
+				    <div class="modal-content" style="font-size: 13px;">
+				      <div class="modal-header">
+				        <h5 class="modal-title" th:text="'Metas'"></h5>
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				          <span aria-hidden="true">&times;</span>
+				        </button>
+				      </div>
+<!-- 				      <form id="formularioPerfil" th:action="@{/formPerfil}" role="form" th:object="${perfil}" method="post"> -->
+					      <div class="modal-body">
+							
+							<div id="divSeleccionMeta">
+								<div class="form-group">
+									<div class="d-flex justify-content-between">
+										<label for="descPerfil">Meta</label>
+										<a href="#" style="font-size: 12px;" onclick="nuevaMeta(); return false;"><i class="fas fa-plus"></i> Nueva meta</a>
+									</div>
+									<select class="form-control inputPerfil" id="selectMeta" onchange="obtenerDefinicionMeta(this.value);">
+										<option th:each="meta : ${listaMetas}" th:text="${meta.descMeta}" th:value="${meta.codMeta}" >
+									</select>
+								</div>
+								<div class="form-group">
+									<div class="d-flex justify-content-between">
+										<label for="descFunciones">Definici&oacute;n general</label>
+										<a id="btnEditDefinicionMeta" href="#" onclick="editarDefinicionMeta(); return false;" style="font-size: 12px;"><i class="fas fa-edit"></i> Editar definici&oacute;n</a>
+										<a id="btnActuaDefinicionMeta" href="#" onclick="actualizarDefinicionMeta(); return false;" style="font-size: 12px;"><i class="fas fa-save"></i> Actualizar definici&oacute;n</a>
+									</div>
+									<textarea rows="3" class="form-control inputPerfil" id="definicionMeta" required="required" th:text="${definicionMeta}" readonly="readonly"></textarea>
+								</div>
+							</div>
+							
+							
+							<div id="divCreacionMeta">
+								<div class="form-group">
+									<div class="d-flex justify-content-between">
+										<label for="descPerfil">Meta</label>
+										<a href="#" style="font-size: 12px;" onclick="seleccionarMeta(); return false;"><i class="fas fa-chevron-left"></i> Seleccionar meta</a>
+									</div>
+									<input type="text" id="inputCreacionMeta" class="form-control inputPerfil" placeholder="Nueva meta" required="required">
+									<small id="validacionNom" style="color:red;">Dato requerido</small>
+								</div>
+								<div class="form-group">
+									<label for="descFunciones">Definici&oacute;n general</label>
+									<textarea rows="3"  id="inputDefCreacionMeta" class="form-control inputPerfil" placeholder="Nueva definici&oacute;n de la meta" required="required"></textarea>
+									<small id="validacionDef" style="color:red;">Dato requerido</small>
+								</div>
+							</div>
+							
+						  </div>
+					      <div class="modal-footer">
+					         	<button type="button" class="btn btn-primary" onclick="guardarMeta();">Asignar</button>
+								<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+					      </div>
+					      <input type="hidden" id="valNSM" value="">
+<!-- 				      </form> -->
+				    </div>
+				  </div>
+				</div>
+				
+				
+				
+				
+				<!-- modal para seleccionar competencias -->
+				<div th:fragment="modalCompetencias" class="modal" id="modalCompetencias" tabindex="-1" role="dialog">
+				  <div class="modal-dialog modal-md" role="document">
+				    <div class="modal-content" style="font-size: 13px;">
+				      <div class="modal-header">
+				        <h5 class="modal-title" th:text="'Competencias'"></h5>
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				          <span aria-hidden="true">&times;</span>
+				        </button>
+				      </div>
+					      <div class="modal-body">
+							
+							<div id="divSeleccionCompetencia">
+								<div class="form-group">
+									<div class="d-flex justify-content-between">
+										<label for="descPerfil">Competencia</label>
+										<a href="#" style="font-size: 12px;" onclick="nuevaCompetencia(); return false;"><i class="fas fa-plus"></i> Nueva competencia</a>
+									</div>
+									<select class="form-control inputPerfil" id="selectCompetencia" onchange="obtenerDefinicion(this.value);">
+										<option th:each="competencia : ${listaCompetencias}" th:text="${competencia.descCompetencias}" th:value="${competencia.codCompetencias}" >
+									</select>
+								</div>
+								<div class="form-group">
+									<div class="d-flex justify-content-between">	
+										<label for="definicionCompetencia">Definici&oacute;n general</label>
+										<a id="btnEditDefinicionCompetencia" href="#" onclick="editarDefinicionCompetencia(); return false;" style="font-size: 12px;"><i class="fas fa-edit"></i> Editar definici&oacute;n</a>
+										<a id="btnActuaDefinicionCompetencia" href="#" onclick="actualizarDefinicionCompetencia(); return false;" style="font-size: 12px;"><i class="fas fa-save"></i> Actualizar definici&oacute;n</a>
+									</div>
+									<textarea rows="3" class="form-control inputPerfil" placeholder="Definici&oacute;n" id="definicionCompetencia" required="required" th:text="${definicion}" readonly="readonly"></textarea>
+								</div>
+							</div>
+							
+							
+							<div id="divCreacionCompetencia">
+								<div class="form-group">
+									<div class="d-flex justify-content-between">
+										<label for="descPerfil">Competencia</label>
+										<a href="#" style="font-size: 12px;" onclick="seleccionarCompetencia(); return false;"><i class="fas fa-chevron-left"></i> Seleccionar competencia</a>
+									</div>
+									
+									<input type="text" class="form-control inputPerfil" placeholder="Nueva competencia" id="inputCreacionCompetencia" required="required">
+									<small id="validacionNomCom" style="color:red;">Dato requerido</small>
+								</div>
+								<div class="form-group">
+									<label for="descFunciones">Definici&oacute;n general</label>
+									<textarea rows="3" class="form-control inputPerfil" placeholder="Nueva definici&oacute;n de la competencia" id="inputDefCreacionCompetencia" required="required"></textarea>
+									<small id="validacionDefCom" style="color:red;">Dato requerido</small>
+								</div>
+							</div>
+							
+						  </div>
+					      <div class="modal-footer">
+					         	<button type="button" class="btn btn-primary" onclick="guardarCompetencia();">Asignar</button>
+								<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+					      </div>
+					      <input type="hidden" id="valNSC" value="">
+				    </div>
+				  </div>
+				</div>
+				
+				
+				<!-- modal para seleccionar competencias -->
+				<div th:fragment="modalAsignados" class="modal" id="modalAsignados" tabindex="-1" role="dialog">
+				  <div class="modal-dialog modal-md" role="document">
+				    <div class="modal-content" style="font-size: 13px;">
+				      <div class="modal-header">
+				        <h5 class="modal-title" th:text="'Recursos asignados'"></h5>
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				          <span aria-hidden="true">&times;</span>
+				        </button>
+				      </div>
+					      <div class="modal-body">
+							<div class="table-responsive fz-12">
+							<table class="table" id="dataTable" width="100%" cellspacing="0">
+								<thead>
+									<tr>
+										<th>Nombre</th>
+										<th>Correo electr&oacute;nico</th>
+										<th>Tel&eacute;fono</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="recurso : ${listaRecursosAsignados}">
+										<td><a th:href="'verRecurso/' + ${recurso.codRecurso}" target="_blank" th:text="${recurso.descRecurso}"></a></td>
+										<td th:text="${recurso.descCorreoElectronico}"></td>
+										<td th:text="${recurso.descTelCelular}"></td>
+									</tr>
+								</tbody>
+							</table>
+							</div>
+						  </div>
+					      <div class="modal-footer">
+					         	<button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+					      </div>
+				    </div>
+				  </div>
+				</div>
+
+</body>
+</html>

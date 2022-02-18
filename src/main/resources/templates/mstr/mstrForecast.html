@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript" src="https://analytics.guay.digital/MicroStrategyLibrary/javascript/embeddinglib.js"></script>
+</head>
+<body onload="load()">
+
+<div id="mydossier" height="100%" width="100%"></div>
+
+
+<script type="text/javascript">
+var myDossier;
+
+/* Minimal information necessary to authenticate with Guest(Anonymous) authentication */
+//   var postData = {
+//        loginMode: 8
+//    }
+   
+//   var postData = {};
+//   postData.username = "desarrollo";
+//   postData.password = "plataforma2020";
+//   postData.loginMode = 8;
+
+var postData = {
+  loginMode: 8
+}
+
+
+function getXHRRequestPromise(url, body, method, contentType, desiredHeader) {
+       return new Promise(function(resolve, reject) {
+           var xhr = new XMLHttpRequest();
+           xhr.open(method, url);
+           xhr.setRequestHeader('Content-Type', 'application/json');
+           xhr.setRequestHeader("Accept", "application/json");
+           xhr.send(JSON.stringify(body));
+
+           xhr.onreadystatechange = function() {
+               if (xhr.readyState === 2) {
+                   resolve(xhr.getResponseHeader(desiredHeader));
+               } else {
+                   reject({
+                       status: this.status,
+                       statusText: xhr.statusText
+                   });
+               }
+           };
+       });
+   };
+
+
+
+    function load() {
+        var container = document.getElementById("mydossier"),
+//             url = "https://analytics.guay.digital/MicroStrategyLibrary/app/FE1BF18D4A3E6C7376EFD69ED8BD79C4/932B6BCE4492A6CD79F6F5B8AA16A96B";
+            url = "http://analytics.guay.digital/MicroStrategy/servlet/mstrWeb?evt=3140&src=mstrWeb.3140&documentID=932B6BCE4492A6CD79F6F5B8AA16A96B&Server=35.231.31.201&Project=Plataforma%20Sophitech&Port=0&share=1&hiddensections=header,path,dockTop,dockLeft,footer&uid=desarrollo&pwd=plataforma2020";
+        console.log(url);
+        microstrategy.dossier.create({
+            url: url,
+            enableCustomAuthentication: true,
+            enableResponsive: true,
+            customAuthenticationType: microstrategy.dossier.CustomAuthenticationType.AUTH_TOKEN,
+            placeholder: container,
+            getLoginToken: function() {
+               return getXHRRequestPromise('https://analytics.guay.digital/MicroStrategyLibrary/api/auth/login', postData, 'POST','application/json', 'x-mstr-authToken').then(function(authToken){
+                   return authToken;
+               });
+           },
+        })
+    };
+</script>
+
+</body>
+</html>

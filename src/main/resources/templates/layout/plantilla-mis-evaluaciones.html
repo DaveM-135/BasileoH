@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+
+	<div th:fragment="listMisEvaluaciones">
+		<div class="card-body">        
+			<div class="table-responsive fz-12">
+				<table class="table" id="dataTable" width="100%" cellspacing="0">
+					<thead>
+						<tr>
+							<th>Evaluaci&oacute;n</th>
+							<th>Periodo</th>
+							<th>Metas</th>
+							<th>Competencias</th>
+							<th>Resultado</th>
+							<th>Empresa</th>
+							<th>Final</th>
+							<th>Estatus</th>
+							<th>Opciones</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="recursoEvaluacion : ${listaRecursoEvaluacion}">
+							<td th:text="${recursoEvaluacion.evaluacionDesempeno.descEvaluacionDesempeno} + ' - (' + ${recursoEvaluacion.evaluacionDesempeno.descEstatus} + ')'"></td>
+							<td th:text="${#dates.monthNameShort(recursoEvaluacion.evaluacionDesempeno.fecPeriodoInicio)} + ' ' + ${#dates.year(recursoEvaluacion.evaluacionDesempeno.fecPeriodoInicio)} + ' - ' + ${#dates.monthNameShort(recursoEvaluacion.evaluacionDesempeno.fecPeriodoFin)} + ' ' + ${#dates.year(recursoEvaluacion.evaluacionDesempeno.fecPeriodoFin)}"></td>
+							<td><a class="" th:classappend="${recursoEvaluacion.valResultadoMetas} <= 60 ? 'semaforo1' : 
+								(${recursoEvaluacion.valResultadoMetas} > 60 AND ${recursoEvaluacion.valResultadoMetas} <= 75  ? 'semaforo2' :
+								 (${recursoEvaluacion.valResultadoMetas} > 75 AND ${recursoEvaluacion.valResultadoMetas} <= 90  ? 'semaforo3' :
+								  (${recursoEvaluacion.valResultadoMetas} > 90  ? 'semaforo4' : '')
+								 )
+								)" href="#" th:id="${recursoEvaluacion.codEvaluacionDesempeno}  + '-' + ${recursoEvaluacion.codRecurso}" onclick="verDetalleMetas(this.id); return false;" th:text="${recursoEvaluacion.valResultadoMetas} + ' %'"></a></td>
+							<td><a class="" th:classappend="${recursoEvaluacion.promedioCompetencias} <= 60 ? 'semaforo1' : 
+								(${recursoEvaluacion.promedioCompetencias} > 60 AND ${recursoEvaluacion.promedioCompetencias} <= 75  ? 'semaforo2' :
+								 (${recursoEvaluacion.promedioCompetencias} > 75 AND ${recursoEvaluacion.promedioCompetencias} <= 90  ? 'semaforo3' :
+								  (${recursoEvaluacion.promedioCompetencias} > 90  ? 'semaforo4' : '')
+								 )
+								)" href="#" th:id="${recursoEvaluacion.codEvaluacionDesempeno}  + '-' + ${recursoEvaluacion.codRecurso}" onclick="verDetalleCompetenciasEvaluado(this.id); return false;" th:text="${recursoEvaluacion.promedioCompetencias} + ' %'"></a></td>
+							<td class="" th:classappend="${recursoEvaluacion.valResultadoGeneral} == NULL ? 'semaforo1' : (${recursoEvaluacion.valResultadoGeneral} <= 60 ? 'semaforo1' : 
+								(${recursoEvaluacion.valResultadoGeneral} > 60 AND ${recursoEvaluacion.valResultadoGeneral} <= 75  ? 'semaforo2' :
+								 (${recursoEvaluacion.valResultadoGeneral} > 75 AND ${recursoEvaluacion.valResultadoGeneral} <= 90  ? 'semaforo3' :
+								  (${recursoEvaluacion.valResultadoGeneral} > 90  ? 'semaforo4' : '')
+								 ))
+								)" th:text="${recursoEvaluacion.valResultadoGeneral == NULL} ? '--' : ${recursoEvaluacion.valResultadoGeneral} + ' %'"></td>
+							<td class="" th:classappend="${recursoEvaluacion.evaluacionDesempeno.valPromedioEmpresa} == NULL ? 'semaforo1' : (${recursoEvaluacion.evaluacionDesempeno.valPromedioEmpresa} <= 60 ? 'semaforo1' : 
+								(${recursoEvaluacion.evaluacionDesempeno.valPromedioEmpresa} > 60 AND ${recursoEvaluacion.evaluacionDesempeno.valPromedioEmpresa} <= 75  ? 'semaforo2' :
+								 (${recursoEvaluacion.evaluacionDesempeno.valPromedioEmpresa} > 75 AND ${recursoEvaluacion.evaluacionDesempeno.valPromedioEmpresa} <= 90  ? 'semaforo3' :
+								  (${recursoEvaluacion.evaluacionDesempeno.valPromedioEmpresa} > 90  ? 'semaforo3' : '')
+								 ))
+								)"  th:text="${recursoEvaluacion.evaluacionDesempeno.valPromedioEmpresa == NULL} ? '--' : ${recursoEvaluacion.evaluacionDesempeno.valPromedioEmpresa} + ' %'">
+							</td>
+							<td class="" th:classappend="${recursoEvaluacion.valResultadoFinal} == NULL ? 'semaforo1' : (${recursoEvaluacion.valResultadoFinal} <= 60 ? 'semaforo1' : 
+								(${recursoEvaluacion.valResultadoFinal} > 60 AND ${recursoEvaluacion.valResultadoFinal} <= 75  ? 'semaforo2' :
+								 (${recursoEvaluacion.valResultadoFinal} > 75 AND ${recursoEvaluacion.valResultadoFinal} <= 90  ? 'semaforo3' :
+								  (${recursoEvaluacion.valResultadoFinal} > 90  ? 'semaforo4' : '')
+								 ))
+								)" th:text="${recursoEvaluacion.valResultadoFinal == NULL} ? '--' : ${recursoEvaluacion.valResultadoFinal} + ' %'"></td>
+							<td>
+								<span th:if="${recursoEvaluacion.valEstatusGeneral} == 1" class="badge badge-danger" th:text="${recursoEvaluacion.estatusGeneral}"></span>
+								<span th:if="${recursoEvaluacion.valEstatusGeneral} > 1 AND ${recursoEvaluacion.valEstatusGeneral} < 5" class="badge badge-info" th:text="${recursoEvaluacion.estatusGeneral}"></span>
+								<span th:if="${recursoEvaluacion.valEstatusGeneral} == 5" class="badge badge-success" th:text="${recursoEvaluacion.estatusGeneral}"></span>
+							</td>
+							
+							
+<!-- 							<td th:text="${recursoEvaluacion.descEstatus}"></td> -->
+							<td>
+								<a  th:if="${recursoEvaluacion.valEstatus} == 1 AND ${recursoEvaluacion.evaluacionDesempeno.valEstatus} == 1" th:href="'/autoevaluacion/?re=' + ${recursoEvaluacion.codRecursoEvaluacion} + '&r=' + ${recursoEvaluacion.codRecurso} + '&e=' + ${recursoEvaluacion.codEvaluacionDesempeno}" class="badge badge-success">ir autoevaluaci&oacute;n <i class="fa fa-external-link" aria-hidden="true"></i></a>
+								<a  th:if="${recursoEvaluacion.valEstatus} == 2 AND ${recursoEvaluacion.evaluacionDesempeno.valEstatus} == 1" th:href="'/autoevaluacion/?re=' + ${recursoEvaluacion.codRecursoEvaluacion} + '&r=' + ${recursoEvaluacion.codRecurso} + '&e=' + ${recursoEvaluacion.codEvaluacionDesempeno}" class="badge badge-success">continuar autoevaluaci&oacute;n <i class="fa fa-external-link" aria-hidden="true"></i></a>
+<!-- 								<a  th:if="${recursoEvaluacion.valEstatus} == 3" th:id="${recursoEvaluacion.codEvaluacionDesempeno}  + '-' + ${recursoEvaluacion.codRecurso}" onclick="verDetalleCompetencias(this.id); return false;" href="#" class="badge badge-info">Detalle <i class="fa fa-info-circle"></i></a> -->
+								<a  th:if="${recursoEvaluacion.evaluacionDesempeno.valEstatus} == 2" th:id="${recursoEvaluacion.codEvaluacionDesempeno}  + '-' + ${recursoEvaluacion.codRecurso}" onclick="descargarResultados(this.id); return false;" href="#" class="badge badge-info">Resultados <i class="fas fa-download"></i></a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<script type="text/javascript" charset="UTF-8">
+		$('#dataTable').DataTable( {
+	  	    language: {
+	  	    	sProcessing:     "Procesando...",
+	  	        sLengthMenu:     "Mostrar _MENU_ registros",
+	  	        sZeroRecords:    "No se encontraron resultados",
+	  	        sEmptyTable:     "Ning\u00FAn dato disponible en esta tabla",
+	  	        sInfo:           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+	  	        sInfoEmpty:      "Mostrando registros del 0 al 0 de un total de 0 registros",
+	  	        sInfoFiltered:   "(filtrado de un total de _MAX_ registros)",
+	  	        sInfoPostFix:    "",
+	  	        sSearch:         "Buscar:",
+	  	        sUrl:            "",
+	  	        sInfoThousands:  ",",
+	  	        sLoadingRecords: "Cargando...",
+	  	        oPaginate: {
+	  	            sFirst:    "Primero",
+	  	            sLast:     "Último",
+	  	            sNext:     "Siguiente",
+	  	            sPrevious: "Anterior"
+	  	        },
+	  	        oAria: {
+	  	            sSortAscending:  ": Activar para ordenar la columna de manera ascendente",
+	  	            sSortDescending: ": Activar para ordenar la columna de manera descendente"
+	  	        },
+	  	        buttons: {
+	  	            copy: "Copiar",
+	  	            colvis: "Visibilidad"
+	  	        }
+	  	    }
+	  	});
+		</script>
+	</div>
+	
+	<div th:fragment="fragmentModalCierreAutoevaluacion">
+		<div id=modalCierreAutoevaluacion class="modal" tabindex="-1" role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">&iquest;Cerrar tu autoevaluaci&oacute;n?</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div th:if="${not #lists.isEmpty(listaProyectos)}">
+						<p >Lista de proyectos en los que participaste:</p>
+						<ul>
+							<li th:each="proyecto : ${listaProyectos}" th:text="${proyecto}"></li>
+						</ul>
+						</div>
+						<div>
+						<p>Lista de evaluadores:</p>
+						<ul>
+							<li th:each="evaluador : ${listaEvaluadores}" th:text="${evaluador.descEvaluador} + ' ('+ ${evaluador.descMailEvaluador} + ')'"></li>
+						</ul>
+						<small>*Se notificar&aacute; a los evaluadores la finalizaci&oacute;n de la autoevaluaci&oacute;n para iniciar la evaluaci&oacute;n.</small>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+						<button type="button" class="btn btn-primary" onclick="cerrarOkAutoevaluacion();">Aceptar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<div th:fragment="listMisEvaluados">
+		<div class="card-body">        
+			<div class="table-responsive fz-12">
+				<table class="table" id="dataTable" width="100%" cellspacing="0">
+					<thead>
+						<tr>
+							<th>Evaluaci&oacute;n</th>
+							<th>Recurso</th>
+							<th>Periodo</th>
+							<th>Metas</th>
+							<th>Competencias</th>
+							<th>Resultado</th>
+							<th>Empresa</th>
+							<th>Final</th>
+							<th>Estatus</th>
+							<th>Opciones</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="recursoEvaluacion : ${listaRecursoEvaluacion}">
+							<td th:text="${recursoEvaluacion.evaluacionDesempeno.descEvaluacionDesempeno} + ' - (' + ${recursoEvaluacion.evaluacionDesempeno.descEstatus} + ')'"></td>
+							<td th:text="${recursoEvaluacion.descRecurso}"></td>
+							<td th:text="${#dates.monthNameShort(recursoEvaluacion.evaluacionDesempeno.fecPeriodoInicio)} + ' ' + ${#dates.year(recursoEvaluacion.evaluacionDesempeno.fecPeriodoInicio)} + ' - ' + ${#dates.monthNameShort(recursoEvaluacion.evaluacionDesempeno.fecPeriodoFin)} + ' ' + ${#dates.year(recursoEvaluacion.evaluacionDesempeno.fecPeriodoFin)}"></td>
+							<td><a class="" th:classappend="${recursoEvaluacion.valResultadoMetas} <= 60 ? 'semaforo1' : 
+								(${recursoEvaluacion.valResultadoMetas} > 60 AND ${recursoEvaluacion.valResultadoMetas} <= 75  ? 'semaforo2' :
+								 (${recursoEvaluacion.valResultadoMetas} > 75 AND ${recursoEvaluacion.valResultadoMetas} <= 90  ? 'semaforo3' :
+								  (${recursoEvaluacion.valResultadoMetas} > 90  ? 'semaforo4' : '')
+								 )
+								)" href="#" th:id="${recursoEvaluacion.codEvaluacionDesempeno}  + '-' + ${recursoEvaluacion.codRecurso}" onclick="verDetalleMetas(this.id); return false;" th:text="${recursoEvaluacion.valResultadoMetas} + ' %'"></a></td>
+							<td><a class="" th:classappend="${recursoEvaluacion.promedioCompetencias} <= 60 ? 'semaforo1' : 
+								(${recursoEvaluacion.promedioCompetencias} > 60 AND ${recursoEvaluacion.promedioCompetencias} <= 75  ? 'semaforo2' :
+								 (${recursoEvaluacion.promedioCompetencias} > 75 AND ${recursoEvaluacion.promedioCompetencias} <= 90  ? 'semaforo3' :
+								  (${recursoEvaluacion.promedioCompetencias} > 90  ? 'semaforo4' : '')
+								 )
+								)" href="#" th:id="${recursoEvaluacion.codEvaluacionDesempeno}  + '-' + ${recursoEvaluacion.codRecurso} + '-' + ${codEvaluador}" onclick="verDetalleCompetenciasEvaluador(this.id); return false;" th:text="${recursoEvaluacion.promedioCompetencias} + ' %'"></a></td>
+							<td class="" th:classappend="${recursoEvaluacion.valResultadoGeneral == NULL} ? 'semaforo1' : (${recursoEvaluacion.valResultadoGeneral} <= 60 ? 'semaforo1' : 
+								(${recursoEvaluacion.valResultadoGeneral} > 60 AND ${recursoEvaluacion.valResultadoGeneral} <= 75  ? 'semaforo2' :
+								 (${recursoEvaluacion.valResultadoGeneral} > 75 AND ${recursoEvaluacion.valResultadoGeneral} <= 90  ? 'semaforo3' :
+								  (${recursoEvaluacion.valResultadoGeneral} > 90  ? 'semaforo4' : '')
+								 ))
+								)" th:text="${recursoEvaluacion.valResultadoGeneral == NULL} ? '--' : ${recursoEvaluacion.valResultadoGeneral} + ' %'"></td>
+							<td class="" th:classappend="${recursoEvaluacion.evaluacionDesempeno.valPromedioEmpresa == NULL} ? 'semaforo1' : (${recursoEvaluacion.evaluacionDesempeno.valPromedioEmpresa} <= 60 ? 'semaforo1' : 
+								(${recursoEvaluacion.evaluacionDesempeno.valPromedioEmpresa} > 60 AND ${recursoEvaluacion.evaluacionDesempeno.valPromedioEmpresa} <= 75  ? 'semaforo2' :
+								 (${recursoEvaluacion.evaluacionDesempeno.valPromedioEmpresa} > 75 AND ${recursoEvaluacion.evaluacionDesempeno.valPromedioEmpresa} <= 90  ? 'semaforo3' :
+								  (${recursoEvaluacion.evaluacionDesempeno.valPromedioEmpresa} > 90  ? 'semaforo4' : '')
+								 ))
+								)" th:text="${recursoEvaluacion.evaluacionDesempeno.valPromedioEmpresa == NULL} ? '--' : ${recursoEvaluacion.evaluacionDesempeno.valPromedioEmpresa} + ' %'"></td>
+							<td class="" th:classappend="${recursoEvaluacion.valResultadoFinal == NULL} ? 'semaforo1' : (${recursoEvaluacion.valResultadoFinal} <= 60 ? 'semaforo1' : 
+								(${recursoEvaluacion.valResultadoFinal} > 60 AND ${recursoEvaluacion.valResultadoFinal} <= 75  ? 'semaforo2' :
+								 (${recursoEvaluacion.valResultadoFinal} > 75 AND ${recursoEvaluacion.valResultadoFinal} <= 90  ? 'semaforo3' :
+								  (${recursoEvaluacion.valResultadoFinal} > 90  ? 'semaforo4' : '')
+								 ))
+								)" th:text="${recursoEvaluacion.valResultadoFinal == NULL} ? '--' : ${recursoEvaluacion.valResultadoFinal} + ' %'"></td>
+							<td>
+								<span th:if="${recursoEvaluacion.valEstatusGeneral} == 1" class="badge badge-danger" th:text="${recursoEvaluacion.estatusGeneral}"></span>
+								<span th:if="${recursoEvaluacion.valEstatusGeneral} > 1 AND ${recursoEvaluacion.valEstatusGeneral} < 5" class="badge badge-info" th:text="${recursoEvaluacion.estatusGeneral}"></span>
+								<span th:if="${recursoEvaluacion.valEstatusGeneral} == 5" class="badge badge-success" th:text="${recursoEvaluacion.estatusGeneral}"></span>
+							</td>
+							<td>
+								<a  th:if="${recursoEvaluacion.valEstatus} == 1 AND ${recursoEvaluacion.evaluacionDesempeno.valEstatus} == 1" th:href="'/evaluacion/?re=' + ${recursoEvaluacion.codRecursoEvaluacion} + '&r=' + ${recursoEvaluacion.codRecurso} + '&e=' + ${recursoEvaluacion.codEvaluacionDesempeno} + '&v=' + ${recursoEvaluacion.codRecursoEvaluador}" class="badge badge-success">ir a evaluar <i class="fa fa-external-link" aria-hidden="true"></i></a>
+								<a  th:if="${recursoEvaluacion.valEstatus} == 2 AND ${recursoEvaluacion.evaluacionDesempeno.valEstatus} == 1" th:href="'/evaluacion/?re=' + ${recursoEvaluacion.codRecursoEvaluacion} + '&r=' + ${recursoEvaluacion.codRecurso} + '&e=' + ${recursoEvaluacion.codEvaluacionDesempeno} + '&v=' + ${recursoEvaluacion.codRecursoEvaluador}" class="badge badge-success">continuar evaluaci&oacute;n <i class="fa fa-external-link" aria-hidden="true"></i></a>
+								<a  th:if="${recursoEvaluacion.evaluacionDesempeno.valEstatus} == 2" th:id="${recursoEvaluacion.codEvaluacionDesempeno}  + '-' + ${recursoEvaluacion.codRecurso}" onclick="descargarResultados(this.id); return false;" href="#" class="badge badge-info">Resultados <i class="fas fa-download"></i></a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<script type="text/javascript" charset="UTF-8">
+		$('#dataTable').DataTable( {
+	  	    language: {
+	  	    	sProcessing:     "Procesando...",
+	  	        sLengthMenu:     "Mostrar _MENU_ registros",
+	  	        sZeroRecords:    "No se encontraron resultados",
+	  	        sEmptyTable:     "Ning\u00FAn dato disponible en esta tabla",
+	  	        sInfo:           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+	  	        sInfoEmpty:      "Mostrando registros del 0 al 0 de un total de 0 registros",
+	  	        sInfoFiltered:   "(filtrado de un total de _MAX_ registros)",
+	  	        sInfoPostFix:    "",
+	  	        sSearch:         "Buscar:",
+	  	        sUrl:            "",
+	  	        sInfoThousands:  ",",
+	  	        sLoadingRecords: "Cargando...",
+	  	        oPaginate: {
+	  	            sFirst:    "Primero",
+	  	            sLast:     "Último",
+	  	            sNext:     "Siguiente",
+	  	            sPrevious: "Anterior"
+	  	        },
+	  	        oAria: {
+	  	            sSortAscending:  ": Activar para ordenar la columna de manera ascendente",
+	  	            sSortDescending: ": Activar para ordenar la columna de manera descendente"
+	  	        },
+	  	        buttons: {
+	  	            copy: "Copiar",
+	  	            colvis: "Visibilidad"
+	  	        }
+	  	    }
+	  	});
+		</script>
+	</div>
+	
+	<div th:fragment="fragmentModalDetalleRespuestas">
+		<div id=modalDetalleRespuestas class="modal" tabindex="-1" role="dialog">
+			<div class="modal-dialog  modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h6 class="modal-title">Detalle evaluaci&oacute;n</h6>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<ul class="nav nav-tabs" id="myTab" role="tablist">
+							<li  class="nav-item" th:each="evaluador, iterator : ${listaEvaluadores}">
+								<a class="nav-link" th:classappend="${iterator.index == 0} ? 'active' : '' " th:id="'tab_'+${evaluador.codRecursoEvaluacion}" data-toggle="tab" th:href="'#res_'+${evaluador.codRecursoEvaluacion}" role="tab" th:aria-controls="'res_'+${evaluador.codRecursoEvaluacion}" aria-selected="true" th:text="${iterator.index == 0} ? ${evaluador.evaluadoresConcat} + ' (A)' : ${evaluador.evaluadoresConcat} + ' (E)'"></a>
+							</li>
+						</ul>
+						<div class="tab-content" id="myTabContent">
+							<div th:each="evaluador, iterator : ${listaEvaluadores}" class="tab-pane fade" th:classappend="${iterator.index == 0} ? 'show active' : '' " th:id="'res_'+${evaluador.codRecursoEvaluacion}" role="tabpanel"
+								aria-labelledby="'res_'+${evaluador.codRecursoEvaluacion}+'-tab'">
+								<div class="table-responsive fz-12">
+								<table class="table" id="dataTable" width="100%" cellspacing="0">
+									<thead>
+										<tr>
+											<th>Competencia</th>
+											<th>Reactivo</th>
+											<th>Resultado</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="respuesta : ${evaluador.respuestasCompetencias}">
+											<td th:text="${respuesta.competencia.descCompetencias}"></td>
+											<td th:text="${respuesta.descReactivo}"></td>
+											<td th:text="${respuesta.valResultado == NULL} ? '--' : ${respuesta.valResultado} + '%'"></td>
+										</tr>
+									</tbody>
+								</table>
+								<div class="alert alert-info" role="alert">
+								<div class="d-flex justify-content-between">
+									<span style="font-weight: 600;" th:text="${evaluador.descEstatus}"></span>
+									<span style="font-weight: 600;" th:text="'Promedio: ' + ${evaluador.valResultadoCompetencias} + '%'"></span>
+								</div>
+								</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<div th:fragment="fragmentModalDetalleMetas">
+		<div id=modalDetalleMetas class="modal" tabindex="-1" role="dialog">
+			<div class="modal-dialog  modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h6 class="modal-title" th:text="${recursoDescripcion}"></h6>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="table-responsive fz-12">
+							<table class="table" id="dataTable" width="100%" cellspacing="0">
+								<thead>
+									<tr>
+										<th>Meta</th>
+										<th>Porcentaje</th>
+										<th>Resultado</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="respuesta : ${listaRespuestasMetas}">
+										<td>
+											<div>
+									  			<span style="font-size: 14px; font-weight: 700;" th:text="${respuesta.meta.descMeta}"></span>
+									  			<br>
+									  			<span style="font-size: 14px; font-weight: 400;" th:text="${respuesta.meta.descDefinicion}"></span>
+									  		</div>
+										</td>
+										<td style="vertical-align: middle;" th:text="${respuesta.valPorcentaje} + '%'"></td>
+										<td style="vertical-align: middle;" th:text="${respuesta.valResultadoPorcentaje == NULL} ? '--' : ${respuesta.valResultadoPorcentaje} + '%'"></td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="alert alert-info" role="alert">
+								<div class="d-flex justify-content-between">
+									<span style="font-weight: 600;" th:text="${msj}"></span>
+									<span style="font-weight: 600;" th:text="'Requerido: ' + ${porcentajeTotal} + '%&nbsp;&nbsp;&nbsp;&nbsp;'+'Resultado: ' + ${resultadoTotal} + '%'"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+		<div th:fragment="fragmentModalDetalleMetasEdicion">
+		<div id=modalDetalleMetasEdicion class="modal" tabindex="-1" role="dialog">
+			<div class="modal-dialog  modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h6 class="modal-title" th:text="${recursoDescripcion}"></h6>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="table-responsive fz-12">
+							<table class="table" id="dataTable" width="100%" cellspacing="0">
+								<thead>
+									<tr>
+										<th>Meta</th>
+										<th>Porcentaje</th>
+										<th>Resultado</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="respuesta : ${listaRespuestasMetas}">
+										<td>
+											<div>
+									  			<span style="font-size: 14px; font-weight: 700;" th:text="${respuesta.meta.descMeta}"></span>
+									  			<br>
+									  			<span style="font-size: 14px; font-weight: 400;" th:text="${respuesta.meta.descDefinicion}"></span>
+									  		</div>
+										</td>
+										<td style="vertical-align: middle;" th:text="${respuesta.valPorcentaje} + '%'"></td>
+										<td style="vertical-align: middle;">
+										<div class="d-flex justify-content-center align-items-center" style="vertical-align: middle;">
+							 				<div class="input-group">
+							 					<input type="text" name="porcentajeMeta[]" th:id="'eval_' + ${respuesta.codResultadoMeta}" class="form-control"  maxlength="3"  th:value="${respuesta.valResultado}" onkeypress="return event.charCode >= 48 && event.charCode <= 57; "  onkeyup="validarCalificacion(this.id);" >
+												<div class="input-group-append">
+													<span class="input-group-text">%</span>
+												</div>
+											</div>
+											<i class="fas fa-save btnSave" th:id="'save_' + ${respuesta.codResultadoMeta}" onclick="registrarMeta(this.id); return false;" style="padding-left: 10px; cursor: pointer;"></i>	
+										</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="alert alert-info" role="alert">
+								<div class="d-flex justify-content-between">
+									<span style="font-weight: 600;" th:text="${msj}"></span>
+									<span style="font-weight: 600;" th:text="'Requerido: ' + ${porcentajeTotal} + '%&nbsp;&nbsp;&nbsp;&nbsp;'+'Resultado: ' + ${resultadoTotal} + '%'"></span>
+								</div>
+							</div>
+						</div>
+						<input type="hidden" id="re" th:value="${re}">
+						<input type="hidden" id="ev" th:value="${ev}">
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary"  onclick="actualizarDetalleMetas(); return false;">Aceptar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	
+	
+	
+</body>
+</html>

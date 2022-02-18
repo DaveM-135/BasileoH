@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="layout/layout::head"></head>
+
+<body id="page-top">
+<input id="authGetName" type="hidden" th:value="${#authentication.getName()}"></input>
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+     <!-- Sidebar -->
+    <ul th:replace="layout/layout::menu"> </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+         <header th:replace="layout/layout :: header"></header>
+         
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <h1 class="h3 mb-2 text-gray-800">Alta de recurso</h1>
+          <a href="#" onclick="window.history.go(-1); return false;" th:text="'&laquo; regresar'"></a>
+			
+			<form th:action="@{/formRecurso}" th:Object="${recurso}" method="post" enctype="multipart/form-data">
+			
+				<div class="card shadow mb-4">
+					<!-- Card Header - Accordion -->
+					<a href="#collapseCardGenerales" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardGenerales">
+						<h6 class="m-0 font-weight-bold text-primary">Datos iniciales</h6>
+					</a>
+					<!-- Card Content - Collapse -->
+					<div class="collapse show" id="collapseCardGenerales">
+						<div class="card-body">
+							<div class="form-group col-12 col-md-4">
+                                  <div class="custom-file">
+                                      <input type="file" name="fotoPerfil" class="custom-file-input" id="inputFotoPerfilFile">
+                                      <label class="custom-file-label">Foto personal</label>
+                                  </div>
+                              </div>
+                              <small th:if="${recurso.foto} != null" th:text="' Ya hay una foto asociada'" style="color: green;"></small>
+							<div class="row">
+								<div class="form-group col-12 col-md-4">
+									<label class="col-form-label">Nombre*</label>
+									<input type="text" th:field="*{descRecurso}" class="form-control" th:errorclass="'form-control alert-danger'" required/>
+									<small class="form-text text-danger" th:if="${#fields.hasErrors('descRecurso')}" th:errors="*{descRecurso}"></small>
+								</div>
+								<div class="form-group col-12 col-md-4">
+									<label class="col-form-label">Ap. Paterno*</label>
+									<input type="text" th:field="*{descApellidoPaterno}" class="form-control" th:errorclass="'form-control alert-danger'" required/>
+									<small class="form-text text-danger" th:if="${#fields.hasErrors('descApellidoPaterno')}" th:errors="*{descApellidoPaterno}"></small>
+								</div>
+								<div class="form-group col-12 col-md-4">
+									<label class="col-form-label">Ap. Materno</label>
+									<input type="text" th:field="*{descApellidoMaterno}" class="form-control"/>
+								</div>
+								<div class="form-group col-12 col-md-4">
+									<label class="col-form-label">Tel. particular*</label>
+<!-- 									<input type="tel" th:field="*{descTelCelular}" class="form-control telefono" maxlength="10" th:errorclass="'form-control alert-danger'" oninvalid="setCustomValidity('N&uacute;mero inv&aacute;lido')" onchange="try{setCustomValidity('')}catch(e){}" pattern="(\d{2,3})(-)(\d{3,4})(-)(\d{4})" required/> -->
+									<input type="tel" th:field="*{descTelCelular}" class="form-control telefono" maxlength="10" th:errorclass="'form-control alert-danger'" oninvalid="setCustomValidity('N&uacute;mero inv&aacute;lido')" onchange="try{setCustomValidity('')}catch(e){}" required/>
+									<small class="form-text text-danger" th:if="${#fields.hasErrors('descTelCelular')}" th:errors="*{descTelCelular}"></small>
+								</div>
+								<div class="form-group col-12 col-md-4">
+									<label class="col-form-label">Correo*</label>
+									<input type="text" th:field="*{descCorreoElectronico}" class="form-control" th:errorclass="'form-control alert-danger'" pattern="^\S{1,}@\S{2,}\.\S{2,}$" required/>
+									<small class="form-text text-danger" th:if="${#fields.hasErrors('descCorreoElectronico')}" th:errors="*{descCorreoElectronico}"></small>
+								</div>
+								<div class="form-group col-12 col-md-4">
+									<label class="col-form-label">Puesto*</label>
+									<select th:field="*{codPuesto}" class="form-control">
+										<option th:each="puestoLista : ${puestoList}"
+												th:value="${puestoLista.codPuesto}"
+												th:text="${puestoLista.descPuesto}">
+										</option>
+									</select>
+								</div>
+								<div class="form-group col-12 col-md-4">
+									<label class="col-form-label">Area*</label>
+									<select th:field="*{codAreaRecurso}" class="form-control">
+										<option th:each="areaRecursoLista : ${areaRecursoList}"
+											th:value="${areaRecursoLista.codConsultor}"
+											th:text="${areaRecursoLista.descConsultor}">
+										</option>
+									</select>
+								</div>
+								<div class="form-group col-12 col-md-4">
+									<label class="col-form-label">Jornada*</label>
+									<select th:field="*{codJornada}" class="form-control">
+										<option th:each="jornadaLista : ${jornadaList}"
+											th:value="${jornadaLista.codJornada}"
+											th:text="${jornadaLista.descJornada}">
+										</option>
+									</select>
+								</div>
+								<div class="form-group col-12 col-md-4">
+									<label class="col-form-label">Tipo*</label>
+									<select th:field="*{codTipoRecurso}" class="form-control">
+										<option th:each="tipoRecursoLista : ${tipoRecursoList}"
+											th:value="${tipoRecursoLista.codTipoRecurso}"
+											th:text="${tipoRecursoLista.descTipoRecurso}">
+										</option>
+									</select>
+								</div>
+								<div class="form-group col-12 col-md-4">
+									<label class="col-form-label">Proveedor*</label>
+									<select th:field="*{codProveedor}" class="form-control">
+										<option th:each="proveedorLista : ${proveedorList}"
+											th:value="${proveedorLista.codProveedor}"
+											th:text="${proveedorLista.descProveedor}">
+										</option>
+									</select>
+								</div>
+								<div class="form-group col-12 col-md-4">
+									<label class="col-form-label">Perfil*</label>
+									<select th:field="*{codPerfil}" class="form-control">
+											<option th:each="perfilRecursoLista : ${perfilRecursoList}"
+												th:value="${perfilRecursoLista.codPerfil}"
+												th:text="${perfilRecursoLista.descPerfil}">
+											</option>
+									</select>
+								</div>
+								<div class="form-group col-12 col-md-4">
+									<label class="col-form-label">Estado Civil*</label>
+									<select th:field="*{codEstadoCivil}" class="form-control">
+										<option th:each="estadoCivil : ${listaEstadoCivil}"
+											th:value="${estadoCivil.codEstadoCivil}"
+											th:text="${estadoCivil.descEstadoCivil}">
+										</option>
+									</select>
+							</div>
+							</div>
+				
+				<div class="row">
+					<div class="col-sm-6">
+						<input sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_RH')" type="submit" value="Guardar" class="btn btn-primary"/>
+					</div>
+				</div>
+
+				</div>
+				</div>
+				</div>
+			</form>
+
+		</div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+       <!-- Footer -->
+      <footer th:replace="layout/layout :: footer"></footer>
+      <!-- End of Footer -->
+
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button--> <div class="st-actionContainer right-bottom" id="btnFlash"> <div class="st-btn-container right-bottom" onclick="flashSurvey(); return false;"> <div class="st-button-main"><i class="fa fa-bolt" aria-hidden="true"></i></div> </div> </div>
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+	 <!-- ModalLogout -->
+      <footer th:replace="layout/layout :: modalLogout"></footer>
+      <!-- End ModalLogout -->
+
+  <!-- Bootstrap core JavaScript-->
+  <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+  <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script th:src="@{/js/sb-admin-2.min.js}"></script>
+
+  <!-- Page level plugins -->
+  <script th:src="@{/vendor/datatables/jquery.dataTables.min.js}"></script>
+  <script th:src="@{/vendor/datatables/dataTables.bootstrap4.min.js}"></script>
+
+  <!-- Page level custom scripts -->
+  <script th:src="@{/js/demo/datatables-demo.js}"></script>
+  
+  <script th:src="@{/js/datosRecursoSesion.js}"></script>
+  <!-- <script th:src="@{/js/phone.js}"></script>-->
+
+</body>
+
+</html>

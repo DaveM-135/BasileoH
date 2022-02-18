@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="layout/layout::head"></head>
+
+<body id="page-top">
+<input id="authGetName" type="hidden" th:value="${#authentication.getName()}"></input>
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul th:replace="layout/layout::menu"> </ul>
+    <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <header th:replace="layout/layout::header"></header>
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-1">
+                        <h1 class="h3 mb-2 text-gray-800">Aprobaci&oacute;n de horas</h1>
+                    </div>
+                    <form th:action="@{/guardar}" th:object="${aprobacionhoraslista}" method="POST">
+                    <input id="codRecVal" type="hidden" th:value="${r}" name="codRecurso">
+                    <!-- Filter -->
+                    <div class="row">
+                        <div class="input-group col-sm-4">
+                            <div class="input-group mb-4">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="inputGroupSelectProyecto">Proyecto</label>
+                                </div>
+                                <select name="Proyecto" class="custom-select" id="filterProyecto">
+                                    <option selected value="-1">Todos</option>
+                                    <option th:each="proyecto:${proyectos}" th:value="${proyecto.codProyecto}" th:text="${proyecto.descProyecto}"></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DataTales Example -->
+                    <div class="card shadow mb-4">
+                        <div class="card-body" id="contenidoTabla">
+                            <div class="table-responsive fz-12">
+                                <table class="table" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Fecha actividad</th>
+                                            <th>Proyecto</th>
+                                            <th>Colaborador</th>
+                                            <th>Actividad</th>
+                                            <th>Comentario</th>
+                                            <th>Horas Planeadas</th>
+                                            <th>Horas Capturadas</th>
+                                            <th>Horas Validadas</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+										<tr th:each="aprobacionhorasunico, itemStat : ${aprobacionhoraslista.aprobacionhoras}" th:if="${aprobacionhorasunico.getFecValidacion() == null AND aprobacionhorasunico.getCodRecursoValidador() == null}">
+											<td><input id="check" type="checkbox" th:name="|aprobacionhoras[${itemStat.index}].fecValidacion|" th:value="${aprobacionhorasunico.getFecValidacion()}" onClick="checkbox();"/></td>
+											<td><span th:text="${#dates.format(aprobacionhorasunico.fecInicioActividad,'dd/MM/yy')}"></span></td>
+											<td><span th:text="${aprobacionhorasunico.descProyecto}"></span></td>
+											<td><span th:text="${aprobacionhorasunico.recurso.descRecurso}"></span></td>
+											<td><span th:text="${aprobacionhorasunico.descActividadSecundaria}"></span></td>
+											<td><span th:text="${aprobacionhorasunico.descComentarioDetalle}"></span></td>
+											<td><span th:text="${aprobacionhorasunico.horasPlaneadas}"></span></td>
+											<td><span th:text="${aprobacionhorasunico.valDuracionReportada}"></span></td>
+											<td>
+											<input id="validar" step="any" type="number" style="height:20px; width:40px;" min=0.0 max=24.0 th:name="|aprobacionhoras[${itemStat.index}].valDuracionValidada|" th:value="${aprobacionhorasunico.getValDuracionValidada()}" onchange="handleChange(this);" disabled/>
+											<input id="RecVal" type="hidden" th:name="|aprobacionhoras[${itemStat.index}].codRecursoValidador|" th:value="${aprobacionhorasunico.getCodRecursoValidador()}">
+											<input class="codProyecto" type="hidden" th:value="${aprobacionhorasunico.codProyecto}"/>
+											
+											<input type="hidden" th:name="|aprobacionhoras[${itemStat.index}].codCapHora|" th:value="${aprobacionhorasunico.getCodCapHora()}"/>
+											<input type="hidden" th:name="|aprobacionhoras[${itemStat.index}].codActividad|" th:value="${aprobacionhorasunico.getCodActividad()}"/>
+											<input type="hidden" th:name="|aprobacionhoras[${itemStat.index}].codRecurso|" th:value="${aprobacionhorasunico.getCodRecurso()}"/>
+											<input type="hidden" th:name="|aprobacionhoras[${itemStat.index}].codCliente|" th:value="${aprobacionhorasunico.getCodCliente()}"/>
+											<input type="hidden" th:name="|aprobacionhoras[${itemStat.index}].codEstatusProyecto|" th:value="${aprobacionhorasunico.getCodEstatusProyecto()}"/>
+											<input type="hidden" th:name="|aprobacionhoras[${itemStat.index}].codProyecto|" th:value="${aprobacionhorasunico.getCodProyecto()}"/>
+											<input type="hidden" th:name="|aprobacionhoras[${itemStat.index}].descComentarioDetalle|" th:value="${aprobacionhorasunico.getDescComentarioDetalle()}"/>
+											<input type="hidden" th:name="|aprobacionhoras[${itemStat.index}].fecInicioActividad|" th:value="${#dates.format(aprobacionhorasunico.getFecInicioActividad(),'yyyy-MM-dd')}"/>
+											<input type="hidden" th:name="|aprobacionhoras[${itemStat.index}].fecRegistro|" th:value="${#dates.format(aprobacionhorasunico.getFecRegistro(),'yyyy-MM-dd')}"/>
+											<input type="hidden" th:name="|aprobacionhoras[${itemStat.index}].valNuevaActividad|" th:value="${aprobacionhorasunico.getValNuevaActividad()}"/>
+											<input type="hidden" th:name="|aprobacionhoras[${itemStat.index}].valDuracionReportada|" th:value="${aprobacionhorasunico.getValDuracionReportada()}"/>
+											<input type="hidden" th:name="|aprobacionhoras[${itemStat.index}].horasPlaneadas|" th:value="${aprobacionhorasunico.getHorasPlaneadas()}"/>
+											<input type="hidden" th:name="|aprobacionhoras[${itemStat.index}].descProyecto|" th:value="${aprobacionhorasunico.getDescProyecto()}"/>
+											<input type="hidden" th:name="|aprobacionhoras[${itemStat.index}].descActividadSecundaria|" th:value="${aprobacionhorasunico.getDescActividadSecundaria()}"/>
+											
+											</td>
+										</tr>
+										</tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-5 mb-3 mb-sm-0">
+                        	<input type="submit" value="Aprobar" class="btn btn-primary"/>
+                        </div>
+                        <div class="col-sm-5 mb-3 mb-sm-0">
+                        </div>
+                        <div class="col-sm-2 mb-3 mb-sm-0">
+                        </div>
+                    </div>
+                    
+<!--                     <div th:each="aprobacionhorasunico itemStat : ${aprobacionhoraslista.aprobacionhoras}"> -->
+<!-- 						<input type="hidden" th:name="|aprobacionhoras[${itemStat.index}].codCapHora|" th:value="${aprobacionhorasunico.getCodCapHora()}"/> -->
+<!-- 						<input type="hidden" th:name="|aprobacionhoras[${itemStat.index}].codActividad|" th:value="${aprobacionhorasunico.getCodActividad()}"/> -->
+<!-- 						<input type="hidden" th:name="|aprobacionhoras[${itemStat.index}].codRecurso|" th:value="${aprobacionhorasunico.getDescActividadSecundaria()}"/> -->
+<!-- 						<input type="hidden" th:name="|aprobacionhoras[${itemStat.index}].codCliente|" th:value="${aprobacionhorasunico.getCodCliente()}"/> -->
+<!-- 						<input type="hidden" th:name="|aprobacionhoras[${itemStat.index}].codEstatusProyecto|" th:value="${aprobacionhorasunico.getCodEstatusProyecto()}"/> -->
+<!-- 						<input type="hidden" th:name="|aprobacionhoras[${itemStat.index}].codProyecto|" th:value="${aprobacionhorasunico.getCodProyecto()}"/> -->
+<!-- 						<input type="hidden" th:name="|aprobacionhoras[${itemStat.index}].descComentarioDetalle|" th:value="${aprobacionhorasunico.getDescComentarioDetalle()}"/> -->
+<!-- 						<input type="hidden" th:name="|aprobacionhoras[${itemStat.index}].fecInicioActividad|" th:value="${#dates.format(aprobacionhorasunico.getFecInicioActividad(),'yyyy-MM-dd')}"/> -->
+<!-- 						<input type="hidden" th:name="|aprobacionhoras[${itemStat.index}].fecRegistro|" th:value="${#dates.format(aprobacionhorasunico.getFecRegistro(),'yyyy-MM-dd')}"/> -->
+<!-- 						<input type="hidden" th:name="|aprobacionhoras[${itemStat.index}].valNuevaActividad|" th:value="${aprobacionhorasunico.getValNuevaActividad()}"/> -->
+<!-- 						<input type="hidden" th:name="|aprobacionhoras[${itemStat.index}].horasPlaneadas|" th:value="${aprobacionhorasunico.getHorasPlaneadas()}"/> -->
+<!-- 						<input type="hidden" th:name="|aprobacionhoras[${itemStat.index}].descProyecto|" th:value="${aprobacionhorasunico.getDescProyecto()}"/> -->
+<!-- 						<input type="hidden" th:name="|aprobacionhoras[${itemStat.index}].descActividadSecundaria|" th:value="${aprobacionhorasunico.getDescActividadSecundaria()}"/> -->
+<!-- 					</div> -->
+					
+                    </form>
+                </div>
+                <!-- /.container-fluid -->
+                <!-- Button trigger modal 
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop">
+                    Launch static backdrop modal
+                </button>-->
+                
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer th:replace="layout/layout :: footer"></footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button--> <div class="st-actionContainer right-bottom" id="btnFlash"> <div class="st-btn-container right-bottom" onclick="flashSurvey(); return false;"> <div class="st-button-main"><i class="fa fa-bolt" aria-hidden="true"></i></div> </div> </div>
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- ModalLogout -->
+    <footer th:replace="layout/layout :: modalLogout"></footer>
+    <!-- End ModalLogout -->
+
+    <!-- Bootstrap core JavaScript-->
+    <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+    <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script th:src="@{/js/sb-admin-2.min.js}"></script>
+
+    <!-- Page level plugins -->
+    <script th:src="@{/vendor/datatables/jquery.dataTables.min.js}"></script>
+    <script th:src="@{/vendor/datatables/dataTables.bootstrap4.min.js}"></script>
+
+    <!-- Page level custom scripts -->
+    <script th:src="@{/js/demo/datatables-demo.js}"></script>
+
+    <script th:src="@{/js/checkbox.js}"></script>
+    <script th:src="@{/js/mostrarHorasRecurso.js}"></script>
+    <script th:src="@{/js/datosRecursoSesion.js}"></script>
+
+</body>
+
+</html>

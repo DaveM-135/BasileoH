@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+
+	<div class="input-group mb-4" th:fragment="proyectos-filtro">
+    	<div class="input-group-prepend">
+        	<label class="input-group-text" for="filterCliente">Cliente</label>
+    	</div>
+    	<select name="cliente" class="custom-select" id="filterCliente">
+        	<option selected value="-1">Todos</option>
+        	<option th:each="cliente:${clientes}" th:value="${cliente.codCliente}" th:text="${cliente.descCliente}"></option>
+    	</select>
+    	<script type="text/javascript" charset="UTF-8">
+    	$("#filterCliente").change(function(){
+    		cargaInfo();
+    	});
+    	</script>
+	</div>
+	
+
+
+	<div class="col-sm-12" th:fragment="proyectos-listado">
+		<div class="table-responsive fz-12">
+			<table class="table" id="dataTable" width="100%" cellspacing="0">
+				<thead>
+					<tr>
+						<th>Proyecto</th>
+						<th>Fecha de inicio</th>
+						<th>Fecha fin</th>
+						<th>Responsable</th>
+						<th>Aprobador</th>
+						<th>Estatus</th>
+						<th>Acciones</th>
+					</tr>
+				</thead>
+				<tbody>
+					<th:block th:each="proyecto : ${proyectos}">
+						<tr th:if="${proyecto.codEstatusProyecto == 3}">
+							<td th:text="${proyecto.descProyecto}"></td>
+							<td th:text="${#dates.format(proyecto.fecIncioProyecto,'dd/MM/yyyy')}"></td>
+							<td th:text="${#dates.format(proyecto.fecFinProyecto,'dd/MM/yyyy')}"></td>
+							<td th:text="${proyecto.nombreRecursoLider}"></td>
+							<td th:text="${proyecto.nombreRecursoAprobador}"></td>
+							<td style="color:#6C757D;  font-weight: bold;">Cerrado</td>
+							<td>
+								<a th:href="@{/preventaProyectoConsulta/}+${proyecto.codProyecto}+'/'+${proyecto.codEstatusProyecto}+'/'+${proyecto.codCliente}" class="badge badge-secondary">Detalle  <i class="far fa-edit"></i></a>
+								<a th:if="${proyecto.numAct > 0}" th:href="@{/verPlanActividades/}+${proyecto.codProyecto}" class="badge badge-info">Plan  <i class="fas fa-tasks"></i></a>
+								<a th:if="${proyecto.valEvaluar == 1 && proyecto.valEvaluacion != 2}" th:href="@{/evaluacionProyectoValidacion/}+${proyecto.codProyecto}" class="badge badge-success">Evaluaci&oacute;n  <i class="fas fa-clipboard-check"></i></a>
+								<a th:if="${proyecto.valEvaluar == 1 && proyecto.valEvaluacion == 2}" th:href="@{/evaluacionProyectoValidacion/}+${proyecto.codProyecto}" class="badge badge-info">Evaluaci&oacute;n  <i class="fas fa-clipboard-check"></i></a>
+								<input class="codCliente" type="hidden" th:value="${proyecto.codCliente}"/>
+							</td>
+						</tr>
+						<tr th:if="${proyecto.codEstatusProyecto == 2}">
+							<td th:text="${proyecto.descProyecto}"></td>
+							<td th:text="${#dates.format(proyecto.fecIncioProyecto,'dd/MM/yyyy')}"></td>
+							<td th:text="${#dates.format(proyecto.fecFinProyecto,'dd/MM/yyyy')}"></td>
+							<td th:text="${proyecto.nombreRecursoLider}"></td>
+							<td th:text="${proyecto.nombreRecursoAprobador}"></td>
+							<td style="color: green; font-weight: bold;">En ejecuci&oacute;n</td>
+							<td>
+                      			<a th:href="@{/preventaProyectoConsulta/}+${proyecto.codProyecto}+'/'+${proyecto.codEstatusProyecto}+'/'+${proyecto.codCliente}" class="badge badge-success">Detalle  <i class="far fa-edit"></i></a>
+                      			<a th:if="${proyecto.numAct > 0}" th:href="@{/verPlanActividades/}+${proyecto.codProyecto}" class="badge badge-info">Plan  <i class="fas fa-tasks"></i></a>
+                      			<a th:if="${proyecto.valEvaluar == 1 && proyecto.valEvaluacion != 2}" th:href="@{/evaluacionProyectoValidacion/}+${proyecto.codProyecto}" class="badge badge-success">Evaluaci&oacute;n  <i class="fas fa-clipboard-check"></i></a>
+                      			<a th:if="${proyecto.valEvaluar == 1 && proyecto.valEvaluacion == 2}" th:href="@{/evaluacionProyectoValidacion/}+${proyecto.codProyecto}" class="badge badge-info">Evaluaci&oacute;n  <i class="fas fa-clipboard-check"></i></a>
+                      			<input class="codCliente" type="hidden" th:value="${proyecto.codCliente}"/>
+                      		</td>
+	                    </tr>
+						<tr th:if="${proyecto.codEstatusProyecto == 1}">
+							<td th:text="${proyecto.descProyecto}"></td>
+							<td>N/A</td>
+							<td>N/A</td>
+							<td th:text="${proyecto.nombreRecursoLider}"></td>
+							<td th:text="${proyecto.nombreRecursoAprobador}"></td>
+							<td style="color: orange; font-weight: bold;">Preventa</td>
+							<td>
+								<a th:href="@{/preventaProyectoConsulta/}+${proyecto.codProyecto}+'/'+${proyecto.codEstatusProyecto}+'/'+${proyecto.codCliente}" class="badge badge-success">Detalle  <i class="far fa-edit"></i></a>
+								<input class="codCliente" type="hidden" th:value="${proyecto.codCliente}"/>
+							</td>
+						</tr>
+						<tr th:if="${proyecto.codEstatusProyecto == 4}">
+							<td th:text="${proyecto.descProyecto}"></td>
+							<td>N/A</td>
+							<td>N/A</td>
+							<td th:text="${proyecto.nombreRecursoLider}"></td>
+							<td th:text="${proyecto.nombreRecursoAprobador}"></td>
+							<td style="color: #8D4738; font-weight: bold;">Cancelado</td>
+							<td>
+								<a th:href="@{/preventaProyectoConsulta/}+${proyecto.codProyecto}+'/'+${proyecto.codEstatusProyecto}+'/'+${proyecto.codCliente}" class="badge badge-success">Detalle  <i class="far fa-edit"></i></a>
+								<input class="codCliente" type="hidden" th:value="${proyecto.codCliente}"/>
+							</td>
+						</tr>
+					</th:block>
+				</tbody>
+			</table>
+		</div>
+
+		<script type="text/javascript" charset="UTF-8">
+		$('#dataTable').DataTable( {
+	  	    language: {
+	  	    	sProcessing:     "Procesando...",
+	  	        sLengthMenu:     "Mostrar _MENU_ registros",
+	  	        sZeroRecords:    "No se encontraron resultados",
+	  	        sEmptyTable:     "Ning\u00FAn dato disponible en esta tabla",
+	  	        sInfo:           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+	  	        sInfoEmpty:      "Mostrando registros del 0 al 0 de un total de 0 registros",
+	  	        sInfoFiltered:   "(filtrado de un total de _MAX_ registros)",
+	  	        sInfoPostFix:    "",
+	  	        sSearch:         "Buscar:",
+	  	        sUrl:            "",
+	  	        sInfoThousands:  ",",
+	  	        sLoadingRecords: "Cargando...",
+	  	        oPaginate: {
+	  	            sFirst:    "Primero",
+	  	            sLast:     "Último",
+	  	            sNext:     "Siguiente",
+	  	            sPrevious: "Anterior"
+	  	        },
+	  	        oAria: {
+	  	            sSortAscending:  ": Activar para ordenar la columna de manera ascendente",
+	  	            sSortDescending: ": Activar para ordenar la columna de manera descendente"
+	  	        },
+	  	        buttons: {
+	  	            copy: "Copiar",
+	  	            colvis: "Visibilidad"
+	  	        }
+	  	    }
+	  	});
+		
+		</script>
+	</div>
+	
+	
+	<div class="col-sm-12" th:fragment="contacto-listado">
+		<!-- <div class="table-responsive fz-12"> -->
+			<table class="table container" id="dataTable" width="100%" cellspacing="0">
+				<tbody>
+					<tr class="row row-cols-3">
+						<td class="col-6 col-md-4" th:each="agenda: ${contactos}">
+							<ul class="list-group list-group-flush">
+								<li class="list-group-item"><img th:if="${agenda.valActivo} == 1" alt="contact_active" src="/img/contact_active.png" witdh="35" height="35" style="padding: 5px;">
+								<img th:if="${agenda.valActivo} == 0" alt="contact_disabled" src="/img/contact_disabled.png" witdh="35" height="35" style="padding: 5px;"><br><h3 th:text="${agenda.descContacto}"></h3></li>
+								<li class="list-group-item">Clasificaci&oacute;n de puesto: <strong th:text="${agenda.descPuesto}"></strong></li>
+								<li class="list-group-item">Correo electr&oacute;nico: <strong th:text="${agenda.descCorreoElectronico}"></strong></li>
+								<li class="list-group-item">Tel&eacute;fono de empresa: <strong th:text="${agenda.descTelEmpresa}"></strong>&nbsp;	Extensi&oacute;n: <strong th:text="${agenda.descTelExt}"></strong></li>
+								<li class="list-group-item">Tel&eacute;fono particular: <strong th:text="${agenda.descTelCelular}"></strong>&nbsp; <img style="width: 14px; cursor: pointer; margin-bottom: 4px;" th:src="@{/img/whapp.png}" th:attr="onclick=|loadWA('${agenda.descTelCelular}')|" ></li>
+								<!-- <li class="list-group-item">Cargo que ocupa: <strong th:text="${agenda.nombreCargo}"></strong></li> -->
+								<li class="list-group-item">Recursos a cargo: <strong th:text="${agenda.valRecursosACargo}"></strong></li>
+								<li class="list-group-item">Fecha de nacimiento: <strong th:text="${agenda.fecNacimiento}"></strong></li>
+								<li class="list-group-item">
+									<a th:href="@{/formContacto/} + ${agenda.codContacto}" class="badge badge-success">Editar  <i class="far fa-edit"></i></a>
+									<a th:if="${agenda.esBorrable}" th:onclick="eliminar([[${agenda.codContacto}]])" href="#!" class="badge badge-danger">Eliminar  <i class="far fa-trash-alt"></i></a><input class="codCliente" type="hidden" th:value="${agenda.codCliente}"/>
+								</li>
+							</ul>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		<!-- </div> -->
+	
+		<script type="text/javascript" charset="UTF-8">
+		$('#dataTable').DataTable( {
+	  	    language: {
+	  	    	sProcessing:     "Procesando...",
+	  	        sLengthMenu:     "Mostrar _MENU_ registros",
+	  	        sZeroRecords:    "No se encontraron resultados",
+	  	        sEmptyTable:     "Ning\u00FAn dato disponible en esta tabla",
+	  	        sInfo:           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+	  	        sInfoEmpty:      "Mostrando registros del 0 al 0 de un total de 0 registros",
+	  	        sInfoFiltered:   "(filtrado de un total de _MAX_ registros)",
+	  	        sInfoPostFix:    "",
+	  	        sSearch:         "Buscar:",
+	  	        sUrl:            "",
+	  	        sInfoThousands:  ",",
+	  	        sLoadingRecords: "Cargando...",
+	  	        oPaginate: {
+	  	            sFirst:    "Primero",
+	  	            sLast:     "Último",
+	  	            sNext:     "Siguiente",
+	  	            sPrevious: "Anterior"
+	  	        },
+	  	        oAria: {
+	  	            sSortAscending:  ": Activar para ordenar la columna de manera ascendente",
+	  	            sSortDescending: ": Activar para ordenar la columna de manera descendente"
+	  	        },
+	  	        buttons: {
+	  	            copy: "Copiar",
+	  	            colvis: "Visibilidad"
+	  	        }
+	  	    }
+	  	});
+		
+		function loadWA(numero){
+			window.open('http://wppredirect.tk/go/?p=521'+numero+'&m=');
+		}
+		</script>
+	</div>
+	
+	
+	<div class="col-sm-12" th:fragment="actividades-listado">
+		<div class="table-responsive fz-12">
+			<table class="table" id="dataTable" width="100%" cellspacing="0">
+				<thead>
+					<tr>
+						<th>Proyecto</th>
+						<th>Fase</th>
+						<th>Actividad</th>
+						<th>Inicio</th>
+						<th>Fin</th>
+						<th>Duraci&oacute;n</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="act: ${listaActividades}">
+               			<td th:text="${act.nombreProyecto}"></td>
+						<td th:text="${act.descActividadPrimaria}"></td>
+						<td th:text="${act.descActividadSecundaria}"></td>
+						<td th:text="${#dates.format(act.fecInicioActividad,'dd/MM/yy')}"></td>
+						<td th:text="${#dates.format(act.fecFinActividad,'dd/MM/yy')}"></td>
+						<td th:text="${act.valDuracionActividad}"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	
+		<script type="text/javascript" charset="UTF-8">
+		$('#dataTable').DataTable( {
+	  	    language: {
+	  	    	sProcessing:     "Procesando...",
+	  	        sLengthMenu:     "Mostrar _MENU_ registros",
+	  	        sZeroRecords:    "No se encontraron resultados",
+	  	        sEmptyTable:     "Ning\u00FAn dato disponible en esta tabla",
+	  	        sInfo:           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+	  	        sInfoEmpty:      "Mostrando registros del 0 al 0 de un total de 0 registros",
+	  	        sInfoFiltered:   "(filtrado de un total de _MAX_ registros)",
+	  	        sInfoPostFix:    "",
+	  	        sSearch:         "Buscar:",
+	  	        sUrl:            "",
+	  	        sInfoThousands:  ",",
+	  	        sLoadingRecords: "Cargando...",
+	  	        oPaginate: {
+	  	            sFirst:    "Primero",
+	  	            sLast:     "Último",
+	  	            sNext:     "Siguiente",
+	  	            sPrevious: "Anterior"
+	  	        },
+	  	        oAria: {
+	  	            sSortAscending:  ": Activar para ordenar la columna de manera ascendente",
+	  	            sSortDescending: ": Activar para ordenar la columna de manera descendente"
+	  	        },
+	  	        buttons: {
+	  	            copy: "Copiar",
+	  	            colvis: "Visibilidad"
+	  	        }
+	  	    }
+	  	});
+		</script>
+	</div>
+	
+		<div class="col-sm-12" th:fragment="gastos-listado">
+			<div class="table-responsive fz-12">
+			    <table class="table" id="dataTable" width="100%" cellspacing="0">
+			        <thead>
+			            <tr>
+			                <th></th>
+			                <th>Proyecto</th>
+			                <th>Tipo de gasto</th>
+			                <th>Fecha</th>
+			                <th>Colaborador</th>
+			                <th>Descripci&oacute;n</th>
+			                <th>Comprobante</th>
+			                <th>Importe</th>
+			                <th>Importe aprobado</th>
+			            </tr>
+			        </thead>
+			        <tbody>
+			            <tr th:each="aprobaciongastosunico, item : ${aprobaciongastoslista.aprobaciongastos}" th:if="${aprobaciongastosunico.getFecValidacion() == null AND aprobaciongastosunico.getCodRecursoValidador() == null}">
+			            	<td><input id="check" type="checkbox" th:name="|aprobaciongastos[${item.index}].fecValidacion|" th:value="${aprobaciongastosunico.getFecValidacion()}" onclick="validacion();">
+			            	<input id="RecVal" type="hidden" th:name="|aprobaciongastos[${item.index}].codRecursoValidador|" th:value="${aprobaciongastosunico.getCodRecursoValidador()}">
+			            	<input class="codProyecto" type="hidden" th:value="${aprobaciongastosunico.codProyecto}"/>
+			            	<input type="hidden" th:name="|aprobaciongastos[${item.index}].descComprobante|" th:value="${aprobaciongastosunico.getDescComprobante()}"/>
+			            	</td>
+			                <td><span th:text="${aprobaciongastosunico.Proyecto.descProyecto}"></span></td>
+			                <td><span th:text="${aprobaciongastosunico.tipogasto.descTipoGasto}"></span></td>
+			                <td><span th:text="${#dates.format(aprobaciongastosunico.fecRegistro,'dd/MM/yy')}"></span></td>
+			                <td><span th:text="${aprobaciongastosunico.recurso.descRecurso}"></span></td>
+			                <td><span th:text="${aprobaciongastosunico.descComentario}"></span></td>
+			                <td><a data-toggle="modal" href="#modalComprobante" th:id="${aprobaciongastosunico.codRecursoGasto}" class="badge badge-info" onclick="verComprobante(this.id); return false;">Comprobante <i class="fas fa-ticket-alt"></i></a></td>
+			                <td>$<span th:text="${aprobaciongastosunico.impGasto}"></span></td>
+			                <td><input id="validar" step="any" type="number" style="height:20px; width:60px;" th:name="|aprobaciongastos[${item.index}].valImporteValidado|" th:value="${aprobaciongastosunico.getValImporteValidado()}" onchange="handleChange(this);" disabled></td>
+			            </tr>
+			        </tbody>
+			    </table>
+			</div>
+	
+		<script type="text/javascript" charset="UTF-8">
+		$('#dataTable').DataTable( {
+	  	    language: {
+	  	    	sProcessing:     "Procesando...",
+	  	        sLengthMenu:     "Mostrar _MENU_ registros",
+	  	        sZeroRecords:    "No se encontraron resultados",
+	  	        sEmptyTable:     "Ning\u00FAn dato disponible en esta tabla",
+	  	        sInfo:           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+	  	        sInfoEmpty:      "Mostrando registros del 0 al 0 de un total de 0 registros",
+	  	        sInfoFiltered:   "(filtrado de un total de _MAX_ registros)",
+	  	        sInfoPostFix:    "",
+	  	        sSearch:         "Buscar:",
+	  	        sUrl:            "",
+	  	        sInfoThousands:  ",",
+	  	        sLoadingRecords: "Cargando...",
+	  	        oPaginate: {
+	  	            sFirst:    "Primero",
+	  	            sLast:     "Último",
+	  	            sNext:     "Siguiente",
+	  	            sPrevious: "Anterior"
+	  	        },
+	  	        oAria: {
+	  	            sSortAscending:  ": Activar para ordenar la columna de manera ascendente",
+	  	            sSortDescending: ": Activar para ordenar la columna de manera descendente"
+	  	        },
+	  	        buttons: {
+	  	            copy: "Copiar",
+	  	            colvis: "Visibilidad"
+	  	        }
+	  	    }
+	  	});
+		</script>
+		
+	</div>
+
+</body>
+</html>

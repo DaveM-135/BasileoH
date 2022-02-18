@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="layout/layout::head"></head>
+
+<body id="page-top">
+  <input id="authGetName" type="hidden" th:value="${#authentication.getName()}"></input>
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul th:replace="layout/layout::menu"> </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+        <header th:replace="layout/layout :: header"></header>
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-1">
+            <h1 class="h3 text-gray-800">Mis actividades</h1>
+          </div>
+          
+          <div class="row">
+               <div class="input-group col-sm-5">
+                   <div class="input-group mb-5">
+                       <div class="input-group-prepend">
+                           <label class="input-group-text" for="filterCliente">Selecciona un proyecto</label>
+                       </div>
+                       <select name="cliente" class="custom-select" id="filterProyecto">
+                           <option selected value="-1">Todos</option>
+                           <option th:each="mapEntry :${proyectos}" th:value="${mapEntry.key}" th:text="${mapEntry.value}"></option>
+                       </select>
+                   </div>
+               </div>
+           </div>
+          
+<!--           <p class="mb-4">Encuentra aqu&iacute; el listado de todas tus actividades registradas en proyectos <b>Sophitech</b></p> -->
+
+          <!-- DataTales Example -->
+          <div class="card shadow mb-4">
+            <div class="card-body" id="contenidoTabla">
+              <div class="table-responsive fz-12">
+                <table class="table" id="dataTable" width="100%" cellspacing="0">
+	                 <thead>
+	                   <tr>
+	                   	  <th>Proyecto</th>
+	                      <th>Fase</th>
+                          <th>Actividad</th>
+                          <th>Inicio</th>
+                          <th>Fin</th>
+                          <th>Duraci&oacute;n</th>
+	                   </tr>
+	                 </thead>
+	                 <tbody>
+	                 	<tr th:each="act: ${listaActividades}">
+	                 		<td th:text="${act.nombreProyecto}"></td>
+                            <td th:text="${act.descActividadPrimaria}"></td>
+                            <td th:text="${act.descActividadSecundaria}"></td>
+                            <td th:text="${#dates.format(act.fecInicioActividad,'dd/MM/yy')}"></td>
+                            <td th:text="${#dates.format(act.fecFinActividad,'dd/MM/yy')}"></td>
+                            <td th:text="${act.valDuracionActividad}"></td>
+						</tr>
+	                 </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      <footer th:replace="layout/layout :: footer"></footer>
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button--> <div class="st-actionContainer right-bottom" id="btnFlash"> <div class="st-btn-container right-bottom" onclick="flashSurvey(); return false;"> <div class="st-button-main"><i class="fa fa-bolt" aria-hidden="true"></i></div> </div> </div>
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+	  <!-- ModalLogout -->
+      <footer th:replace="layout/layout :: modalLogout"></footer>
+      <!-- End ModalLogout -->
+      
+  <!-- Bootstrap core JavaScript-->
+  <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+  <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script th:src="@{/js/sb-admin-2.min.js}"></script>
+
+  <!-- Page level plugins -->
+  <script th:src="@{/vendor/datatables/jquery.dataTables.min.js}"></script>
+  <script th:src="@{/vendor/datatables/dataTables.bootstrap4.min.js}"></script>
+
+  <!-- Page level custom scripts -->
+  <script th:src="@{/js/demo/datatables-demo.js}"></script>
+  
+  <script th:src="@{/js/datosRecursoSesion.js}"></script>
+  <script th:src="@{/js/actividadesRecurso.js}"></script>
+
+</body>
+
+</html>

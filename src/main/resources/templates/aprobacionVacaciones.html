@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="layout/layout::head"></head>
+
+<body id="page-top">
+<input id="authGetName" type="hidden" th:value="${#authentication.getName()}"></input>
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul th:replace="layout/layout::menu"> </ul>
+    <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <header th:replace="layout/layout::header"></header>
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-1">
+                        <h1 class="h3 mb-2 text-gray-800">Aprobaci&oacute;n de vacaciones</h1>
+                    </div>
+<!--                     <form th:action="@{/guardar}" th:object="${aprobacionhoraslista}" method="POST"> -->
+                    <input id="codRecVal" type="hidden" th:value="${r}" name="codRecurso">
+                    <!-- Filter -->
+                    <div class="row">
+						<div class="input-group col-sm-8 col-md-4 mb-3">
+							<div class="input-group-prepend">
+								<label class="input-group-text" for="inputGroupSelectProyecto">Proyecto</label>
+							</div>
+							<select class="custom-select" id="proyecto" >
+								<option selected value="-1">Todos</option>
+								<option th:each="proyecto:${proyectos}" th:value="${proyecto.codProyecto}" th:text="${proyecto.descProyecto}"></option>
+							</select>
+                        </div>
+					</div>
+<!-- 					<div class="row"> -->
+<!-- 						<div class="input-group col-sm-8 col-md-4 mb-3"> -->
+<!-- 						<div class="input-group-prepend"> -->
+<!-- 								<label class="input-group-text" for="inputGroupSelectProyecto">Semana</label> -->
+<!-- 							</div> -->
+<!--             				<input type="week" id="semana" class="form-control"> -->
+<!-- 						</div> -->
+<!--                     </div> -->
+
+                    <!-- DataTales Example -->
+                    <div class="card shadow mb-4">
+                        <div class="card-body" id="recursosHoras">
+							<!-- Aqui va el listado de recursos de los filtros -->
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <!-- End of Main Content -->
+            
+            
+            <div class="modal fade" id="modalDetalleSolicitud" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="modalDetalleSolicitudLabel" aria-hidden="true">
+				<div class="modal-dialog modal-sm" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h6 class="modal-title" id="modalDetalleSolicitudLabel">Detalle de la solicitud</h6>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+		 				</div>
+						<div class="modal-body" style="text-align: center;">
+							<i class="far fa-calendar-alt fa-2x text-gray-300"></i>
+							<div id="detalleSolicitud">
+								<!-- DETALLE DE VACACIONES -->
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">Aceptar</button>
+						</div>
+		    		</div>
+		  		</div>
+			</div>
+  
+
+            <!-- Footer -->
+            <footer th:replace="layout/layout :: footer"></footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button--> <div class="st-actionContainer right-bottom" id="btnFlash"> <div class="st-btn-container right-bottom" onclick="flashSurvey(); return false;"> <div class="st-button-main"><i class="fa fa-bolt" aria-hidden="true"></i></div> </div> </div>
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- ModalLogout -->
+    <footer th:replace="layout/layout :: modalLogout"></footer>
+    <!-- End ModalLogout -->
+
+    <!-- Bootstrap core JavaScript-->
+    <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+    <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script th:src="@{/js/sb-admin-2.min.js}"></script>
+
+    <!-- Page level plugins -->
+    <script th:src="@{/vendor/datatables/jquery.dataTables.min.js}"></script>
+    <script th:src="@{/vendor/datatables/dataTables.bootstrap4.min.js}"></script>
+
+
+	<!-- scripts aprobacion de horas proyecto -->
+    <script th:src="@{/js/aprobacionVacaciones.js}"></script>
+    <script th:src="@{/js/datosRecursoSesion.js}"></script>
+    
+    <script type="text/javascript">
+	  function verDetalleSolicitud(verId){
+		  $("#detalleSolicitud").html("");
+		  var idSolicitud = verId.substring(4);
+		  $("#modalDetalleSolicitud").modal('show');
+		  $.ajax({
+				url: "/verDetalleSolicitud",
+				data: {idSolicitud:idSolicitud},
+				success: function(result){
+					$("#detalleSolicitud").html(result);
+				}
+			});
+	  }
+  	</script>
+
+</body>
+
+</html>
