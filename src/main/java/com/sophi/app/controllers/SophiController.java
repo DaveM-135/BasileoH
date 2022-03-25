@@ -87,6 +87,8 @@ public class SophiController {
 		map.put("respuestasFlash",resultados);
 		map.put("participacion", participacion);
 		map.put("totalActivos", totalActivos);
+
+		System.out.println("Nulo");
 		
 		Long codRecurso = recursoService.findByDescCorreoElectronico(auth.getName()).getCodRecurso();
 		List<Long> proyectoListId = new ArrayList<Long>();
@@ -140,6 +142,7 @@ public class SophiController {
 			}
 		}
 		
+		System.out.println("Nulo");
 		
 		Proyecto proyecto = proyectoService.findByCodProyecto(1L);
 		proyectoList.put(proyecto.getCodProyecto(),proyecto.getDescProyecto());
