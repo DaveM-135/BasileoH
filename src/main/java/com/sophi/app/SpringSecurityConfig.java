@@ -1,8 +1,8 @@
 package com.sophi.app;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -18,12 +18,6 @@ import com.sophi.app.models.service.JpaUserDetailsService;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class SpringSecurityConfig {
-	
-	 @Autowired
-	 private JpaUserDetailsService userDetailsService;
-	 
-	 @Autowired
-	 private BCryptPasswordEncoder passwordEncoder;
 		
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
@@ -50,16 +44,15 @@ public class SpringSecurityConfig {
 
 		return http.build();
 	}
-
-
 	
-	@Autowired
-	public void configurerGlobal(AuthenticationManagerBuilder builder) throws Exception {
-		builder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
-//		String[ ] pass = {"QZA3zk4P","cNV5WFjB"};
-//		for (String p : pass) {
-//			System.out.println(p + " - " + passwordEncoder.encode(p));
-//		}
+	@Bean
+	public AuthenticationManager authenticationManager(HttpSecurity http, BCryptPasswordEncoder passwordEncoder, JpaUserDetailsService userDetailsService) 
+	  throws Exception {
+	    return http.getSharedObject(AuthenticationManagerBuilder.class)
+	      .userDetailsService(userDetailsService)
+	      .passwordEncoder(passwordEncoder)
+	      .and()
+	      .build();
 	}
 	
 }
