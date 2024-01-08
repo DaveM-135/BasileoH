@@ -60,6 +60,9 @@ public class AprobacionHorasProyectoController {
     private IRolService rolService;
     
     Long codRecursoSesion;
+
+	Date inicio = new Date();
+    Date fin = new Date();
     
     @RequestMapping(value = "/aprobacionHorasProyecto/{email}", method = RequestMethod.GET)
     public String aprobacionHorasProyecto(Model model, @PathVariable(value = "email") String email){
@@ -202,8 +205,6 @@ public class AprobacionHorasProyectoController {
     											@RequestParam(value = "f") String desde, 
     											@RequestParam(value = "t") String hasta, 
     											Model model){
-    	Date inicio = new Date();
-    	Date fin = new Date();
     	try {
 			inicio =new SimpleDateFormat("MM-dd-yyyy").parse(desde);
 			fin =new SimpleDateFormat("MM-dd-yyyy").parse(hasta);

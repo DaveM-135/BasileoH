@@ -400,12 +400,8 @@ public class AprobacionVacacionesController {
     		MailResponse response = service.sendEmailEvaluador(request, modelM);
     		System.out.println(response.getMessage());
     		//Mail Notificacion FIN 
-    		
-    		return "ok";
-    	} else {
-    		return "noOK";
-    	}
-    	
+		}
+		return "ok";
     }
     
     @RequestMapping(value = "/updCancelarSolicitud", method = RequestMethod.GET)
@@ -457,13 +453,9 @@ public class AprobacionVacacionesController {
     		
     		MailResponse response = service.sendEmailEvaluador(request, modelM);
     		System.out.println(response.getMessage());
-    		//Mail Notificacion FIN 
-    		
-    		return "ok";
-    	} else {
-    		return "noOK";
+    		//Mail Notificacion FIN 	
     	}
-    	
+    	return "ok";
     }
     
     @RequestMapping(value = "/cancelarSolicitud", method = RequestMethod.GET)
@@ -490,15 +482,7 @@ public class AprobacionVacacionesController {
     				proyectoService.save(proyecto);
     			}
     		}
-    		
-    		return "ok";
-    	} else {
-    		return "noOK";
     	}
-    	
+    	return "ok";
     }
-    
-    
-    
-
 }

@@ -39,7 +39,7 @@ public class Utiles {
 		currentDate.setTimeZone(TimeZone.getTimeZone("America/Mexico_City"));
 		
 		
-		Date date = new Date(currentDate.get(Calendar.YEAR) - 1900, currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE));
+		Date date = currentDate.getTime();
 		
 		return date;
 		
@@ -65,7 +65,7 @@ public class Utiles {
 	}
 	
 	public String getHostName() {
-		return "basileo-h.herokuapp";
+		return "localhost:8090";
 	}
 
 }
